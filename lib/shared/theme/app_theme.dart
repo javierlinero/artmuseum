@@ -1,0 +1,59 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class AppTheme {
+  AppTheme._(); // This class shouldn't be instantiated
+
+  // Artwork Title TextStyle
+  static TextStyle artworkTitle = GoogleFonts.libreCaslonDisplay(
+    color: Colors.black,
+    fontSize: 40,
+    fontWeight: FontWeight.w400,
+    decoration: TextDecoration.underline,
+    height: 0.01,
+  );
+
+  // Artist TextStyle
+  static TextStyle artistName = GoogleFonts.roboto(
+    color: Colors.white,
+    fontSize: 12,
+    fontWeight: FontWeight.w700,
+    height: 0.09,
+  );
+
+  // Year TextStyle
+  static TextStyle yearText = GoogleFonts.roboto(
+    color: Colors.black,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    height: 0.09,
+  );
+
+  static BoxDecoration circleText = BoxDecoration(
+    color: const Color(0xFF3C4450),
+    borderRadius: BorderRadius.circular(50),
+  );
+
+  // Materials of the Painting TextStyle
+  static TextStyle materialsText = GoogleFonts.inter(
+    color: Colors.black,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    height: 0.11,
+  );
+
+  // Page title TextStyle
+  static TextStyle pageTitle = GoogleFonts.playfairDisplay(
+    color: Colors.black,
+    fontSize: 30,
+    fontWeight: FontWeight.w400,
+    height: 0.02,
+  );
+
+  // Artwork Description TextStyle
+  static TextStyle artworkDescription = GoogleFonts.roboto(
+    color: Colors.black,
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+  );
+}
