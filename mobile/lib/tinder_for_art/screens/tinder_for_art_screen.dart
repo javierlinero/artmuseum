@@ -18,8 +18,6 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
   ];
   AppinioSwiperController _swiperController = AppinioSwiperController();
 
-  bool _isUndoButtonEnabled = true;
-
   @override
   Widget build(BuildContext context) {
     final appinioController = AppinioController(
