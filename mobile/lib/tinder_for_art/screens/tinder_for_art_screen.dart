@@ -152,11 +152,14 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
       controller: _swiperController,
       cardsBuilder: (BuildContext context, int index) {
         return Center(
-            child: Container(
-          width: MediaQuery.of(context).size.width * 0.7,
-          height: MediaQuery.of(context).size.height * 0.6,
-          color: colorCards[index],
-        ));
+          child: Stack(children: [
+            Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: MediaQuery.of(context).size.height * 0.7,
+              color: colorCards[index],
+            )
+          ]),
+        );
       },
       cardsCount: colorCards.length,
       onSwipe: (index, direction) {
