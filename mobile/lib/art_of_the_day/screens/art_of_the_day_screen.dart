@@ -29,46 +29,57 @@ class _ArtOfTheDayPageState extends State<ArtOfTheDayPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(),
-      body: Padding(
-        padding: EdgeInsets.only(top: deviceHeight(context) * 0.03),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Text(
-                'Art of the Day',
-                style: AppTheme.pageTitle,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: constraints.maxHeight * 0.1,
+                child: Center(
+                  child: Text(
+                    'Art of the Day',
+                    style: AppTheme.pageTitle,
+                  ),
+                ),
               ),
-            ),
-            SizedBox(height: 30),
-            PaintingWidget(),
-            SizedBox(height: 30),
-            Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: deviceWidth(context) * 0.03),
-              child: ArtworkNameWidget(title: 'Artwork Title'),
-            ),
-            SizedBox(height: 30),
-            Padding(
-              padding: EdgeInsets.only(left: deviceWidth(context) * 0.03),
-              child: DetailsWidget(
-                  materials: 'Materials of Item', size: 'Size of Item'),
-            ),
-            SizedBox(height: 15),
-            Padding(
-              padding: EdgeInsets.only(left: deviceWidth(context) * 0.03),
-              child: ArtistYearWidget(artist: 'Artist Name', year: 'Year'),
-            ),
-            SizedBox(height: 10),
-            Container(
-              padding:
-                  EdgeInsets.symmetric(horizontal: deviceWidth(context) * 0.03),
-              height: deviceHeight(context) * 0.15,
-              width: deviceWidth(context),
-              child: ArtworkDescriptionWidget(description: aotd.description),
-            ),
-          ],
-        ),
+              Container(
+                height: constraints.maxHeight * 0.5,
+                child: PaintingWidget(),
+              ),
+              SizedBox(height: 25),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: deviceWidth(context) * 0.03,
+                ),
+                height: constraints.maxHeight * 0.05,
+                child: ArtworkNameWidget(title: 'Artwork Title'),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: deviceWidth(context) * 0.03,
+                ),
+                height: constraints.maxHeight * 0.025,
+                child: DetailsWidget(
+                    materials: 'Materials of Item', size: 'Size of Item'),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: deviceWidth(context) * 0.03,
+                ),
+                height: constraints.maxHeight * 0.05,
+                child: ArtistYearWidget(artist: 'Artist Name', year: 'Year'),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: deviceWidth(context) * 0.03,
+                ),
+                height: constraints.maxHeight * 0.2,
+                child: ArtworkDescriptionWidget(description: aotd.description),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
