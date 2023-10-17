@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:puam_app/tinder_for_art/bloc/index.dart';
 import 'splash_screen/index.dart';
 
 void main() {
@@ -16,14 +18,21 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      color: Colors.black,
-      debugShowCheckedModeBanner: false,
-      title: 'Princeton University Art Museum',
-      theme: ThemeData(
-        useMaterial3: true,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ArtworkBloc(),
+        )
+      ],
+      child: MaterialApp(
+        color: Colors.black,
+        debugShowCheckedModeBanner: false,
+        title: 'Princeton University Art Museum',
+        theme: ThemeData(
+          useMaterial3: true,
+        ),
+        home: MySplashScreen(),
       ),
-      home: MySplashScreen(),
     );
   }
 }

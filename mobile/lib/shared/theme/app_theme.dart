@@ -4,6 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   AppTheme._(); // This class shouldn't be instantiated
 
+  // princetonOrange color
+  static Color princetonOrange = const Color(0xFFF58025);
+
+  // Button grey color
+  static Color buttonGrey = const Color(0xFFD9D9D9);
+
   // Artwork Title TextStyle
   static TextStyle artworkTitle = GoogleFonts.libreCaslonDisplay(
     color: Colors.black,

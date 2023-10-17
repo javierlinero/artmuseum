@@ -43,6 +43,8 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   google_fonts: ^6.1.0
   auto_size_text: ^3.0.0
+  appinio_swiper: ^2.0.3
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
