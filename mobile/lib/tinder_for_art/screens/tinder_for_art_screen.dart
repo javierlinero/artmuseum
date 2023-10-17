@@ -1,25 +1,55 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
-import 'package:puam_app/shared/index.dart';
+import 'package:appinio_swiper/appinio_swiper.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:puam_app/tinder_for_art/bloc/index.dart';
 
 class TinderForArtPage extends StatefulWidget {
-  const TinderForArtPage({super.key});
-
   @override
-  State<TinderForArtPage> createState() => _TinderForArtPageState();
+  _TinderForArtPageState createState() => _TinderForArtPageState();
 }
 
 class _TinderForArtPageState extends State<TinderForArtPage> {
+  final List<Color> colorCards = [
+    Colors.red,
+    Colors.blue,
+    Colors.green,
+    Colors.yellow,
+  ];
+
+  int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBar(),
-      body: Column(
-        children: [
-          Text('TestPage'),
-        ],
-      ),
+    return BlocBuilder<ArtworkBloc, ArtworkState>(
+      builder: (context, state) {
+        _currentIndex = state.currentIndex;
+
+        return Scaffold(
+          appBar: AppBar(title: Text("Tinder for Art")),
+          body: Center(
+            child: AppinioSwiper(
+              cardsBuilder: (BuildContext context, int index) {
+                return Center(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    color: colorCards[index],
+                  ),
+                );
+              },
+              cardsCount: colorCards.length,
+              onSwipe: (index, direction) {
+                if (_currentIndex < colorCards.length - 1) {
+                  _currentIndex++;
+                  context
+                      .read<ArtworkBloc>()
+                      .add(UpdateArtworkIndex(_currentIndex));
+                }
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }
