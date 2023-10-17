@@ -39,8 +39,8 @@ class AppinioController {
   }
 
   void swipeDown() {
-    swiperController.swipeDown();
-    handleSwipe(currentIndex, AppinioSwiperDirection.bottom);
+    swiperController.swipeUp();
+    handleSwipe(currentIndex, AppinioSwiperDirection.top);
   }
 
   void swipeRight() {

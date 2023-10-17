@@ -19,6 +19,7 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
     Colors.blue,
     Colors.green,
     Colors.yellow,
+    Colors.orange,
   ];
   AppinioSwiperController _swiperController = AppinioSwiperController();
 
@@ -99,12 +100,13 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
               shape: OvalBorder(),
             ),
             child: Center(
-                child: Icon(Icons.thumb_down, size: 40, color: Colors.red)),
+                child: Icon(Icons.thumb_down,
+                    size: 40, color: Colors.red.withOpacity(0.75))),
           ),
         ),
         GestureDetector(
           onTap: () {
-            _swiperController.swipeDown();
+            _swiperController.swipeUp();
           },
           child: Container(
             width: 75,
@@ -130,7 +132,8 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
               shape: OvalBorder(),
             ),
             child: Center(
-                child: Icon(Icons.thumb_up, size: 40, color: Colors.green)),
+                child: Icon(Icons.thumb_up,
+                    size: 40, color: Colors.green.withOpacity(0.75))),
           ),
         ),
       ],
@@ -142,8 +145,8 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
       swipeOptions: const AppinioSwipeOptions.only(
         left: true,
         right: true,
-        bottom: true,
-        top: false,
+        bottom: false,
+        top: true,
       ),
       unlimitedUnswipe: true,
       controller: _swiperController,
