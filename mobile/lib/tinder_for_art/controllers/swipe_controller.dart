@@ -33,6 +33,21 @@ class AppinioController {
     context.read<ArtworkBloc>().add(UpdateArtworkIndex(newIndex));
   }
 
+  void swipeLeft() {
+    swiperController.swipeLeft();
+    handleSwipe(currentIndex, AppinioSwiperDirection.left);
+  }
+
+  void swipeDown() {
+    swiperController.swipeDown();
+    handleSwipe(currentIndex, AppinioSwiperDirection.bottom);
+  }
+
+  void swipeRight() {
+    swiperController.swipeRight();
+    handleSwipe(currentIndex, AppinioSwiperDirection.right);
+  }
+
   void undoSwipe() {
     debugPrint('Trying to undo swipe.');
 

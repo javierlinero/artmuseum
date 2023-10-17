@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:puam_app/art_of_the_day/index.dart';
+import 'package:puam_app/shared/index.dart';
 import 'package:puam_app/tinder_for_art/index.dart';
 
 class CustomNavigationBar extends StatefulWidget {
@@ -10,7 +11,7 @@ class CustomNavigationBar extends StatefulWidget {
 
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
   int _currentIndex = 0;
-  Color princetonOrange = const Color(0xFFF58025);
+  Color princetonOrange = AppTheme.princetonOrange;
 
   final _featureScreens = [
     ArtOfTheDayPage(),
