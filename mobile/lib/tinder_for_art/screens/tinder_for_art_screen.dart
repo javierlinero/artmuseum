@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:puam_app/tinder_for_art/bloc/index.dart';
+import 'package:puam_app/tinder_for_art/index.dart';
 
 class TinderForArtPage extends StatefulWidget {
   @override
@@ -15,38 +15,39 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
     Colors.green,
     Colors.yellow,
   ];
-
-  int _currentIndex = 0;
+  AppinioSwiperController _swiperController = AppinioSwiperController();
 
   @override
   Widget build(BuildContext context) {
+    final appinioController = AppinioController(
+      context: context,
+      swiperController: _swiperController,
+    );
+
     return BlocBuilder<ArtworkBloc, ArtworkState>(
       builder: (context, state) {
-        _currentIndex = state.currentIndex;
-
         return Scaffold(
           appBar: AppBar(title: Text("Tinder for Art")),
           body: Center(
             child: AppinioSwiper(
+              controller: _swiperController,
               cardsBuilder: (BuildContext context, int index) {
                 return Center(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    height: MediaQuery.of(context).size.height * 0.6,
-                    color: colorCards[index],
-                  ),
-                );
+                    child: Container(
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  color: colorCards[index],
+                ));
               },
               cardsCount: colorCards.length,
               onSwipe: (index, direction) {
-                if (_currentIndex < colorCards.length - 1) {
-                  _currentIndex++;
-                  context
-                      .read<ArtworkBloc>()
-                      .add(UpdateArtworkIndex(_currentIndex));
-                }
+                appinioController.handleSwipe(index, direction);
               },
             ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.undo),
+            onPressed: appinioController.undoSwipe,
           ),
         );
       },
