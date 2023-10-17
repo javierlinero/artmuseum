@@ -12,6 +12,8 @@ class TinderForArtPage extends StatefulWidget {
 }
 
 class _TinderForArtPageState extends State<TinderForArtPage> {
+  double deviceWidth(BuildContext context) => MediaQuery.of(context).size.width;
+
   final List<Color> colorCards = [
     Colors.red,
     Colors.blue,
@@ -37,11 +39,15 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
             double buttonsHeight = constraints.maxHeight * 0.25;
             double undoHeight = constraints.maxHeight * 0.05;
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                SizedBox(
-                    height: undoHeight,
-                    child: _undoButton(appinioController, state)),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: deviceWidth(context) * 0.05),
+                  child: SizedBox(
+                      height: undoHeight,
+                      child: _undoButton(appinioController, state)),
+                ),
                 Container(
                   height: swiperHeight,
                   alignment: Alignment.center,
