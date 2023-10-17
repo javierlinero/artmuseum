@@ -17,6 +17,8 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
   ];
   AppinioSwiperController _swiperController = AppinioSwiperController();
 
+  bool _isUndoButtonEnabled = true;
+
   @override
   Widget build(BuildContext context) {
     final appinioController = AppinioController(
@@ -48,7 +50,7 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
           ),
           floatingActionButton: FloatingActionButton(
             child: Icon(Icons.undo),
-            onPressed: appinioController.undoSwipe,
+            onPressed: state.canUndo ? appinioController.undoSwipe : null,
           ),
         );
       },

@@ -39,9 +39,13 @@ class AppinioController {
     if (_swipedIndexes.isNotEmpty) {
       int lastIndex = _swipedIndexes.removeLast();
       debugPrint('Removed last index from queue: $lastIndex');
-
       updateIndex(lastIndex);
       swiperController.unswipe();
+      context.read<ArtworkBloc>().add(ToggleUndo(false));
+
+      Future.delayed(Duration(milliseconds: 500), () {
+        context.read<ArtworkBloc>().add(ToggleUndo(true));
+      });
     } else {
       debugPrint('No swiped indexes to undo.');
     }

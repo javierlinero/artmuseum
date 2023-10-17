@@ -5,3 +5,9 @@ class UpdateArtworkIndex extends ArtworkEvent {
 
   UpdateArtworkIndex(this.index);
 }
+
+class ToggleUndo extends ArtworkEvent {
+  final bool canUndo;
+
+  ToggleUndo(this.canUndo);
+}
