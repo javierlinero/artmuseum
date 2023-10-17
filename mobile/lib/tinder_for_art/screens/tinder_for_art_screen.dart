@@ -30,6 +30,7 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
           appBar: AppBar(title: Text("Tinder for Art")),
           body: Center(
             child: AppinioSwiper(
+              unlimitedUnswipe: true,
               controller: _swiperController,
               cardsBuilder: (BuildContext context, int index) {
                 return Center(

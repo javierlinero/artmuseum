@@ -13,15 +13,15 @@ class AppinioController {
   AppinioController({required this.context, required this.swiperController});
 
   int get currentIndex {
-    print(
+    debugPrint(
         'Current Index accessed: ${context.read<ArtworkBloc>().state.currentIndex}');
     return context.read<ArtworkBloc>().state.currentIndex;
   }
 
   void handleSwipe(int index, AppinioSwiperDirection direction) {
-    print('Handling Swipe: index = $index, direction = $direction');
+    debugPrint('Handling Swipe: index = $index, direction = $direction');
 
-    print('Adding $currentIndex to swipedIndexes');
+    debugPrint('Adding $currentIndex to swipedIndexes');
     _swipedIndexes.addLast(currentIndex);
 
     int newIndex = currentIndex + 1;
@@ -29,21 +29,21 @@ class AppinioController {
   }
 
   void updateIndex(int newIndex) {
-    print('Updating Index to: $newIndex');
+    debugPrint('Updating Index to: $newIndex');
     context.read<ArtworkBloc>().add(UpdateArtworkIndex(newIndex));
   }
 
   void undoSwipe() {
-    print('Trying to undo swipe.');
+    debugPrint('Trying to undo swipe.');
 
     if (_swipedIndexes.isNotEmpty) {
       int lastIndex = _swipedIndexes.removeLast();
-      print('Removed last index from queue: $lastIndex');
+      debugPrint('Removed last index from queue: $lastIndex');
 
       updateIndex(lastIndex);
       swiperController.unswipe();
     } else {
-      print('No swiped indexes to undo.');
+      debugPrint('No swiped indexes to undo.');
     }
   }
 }
