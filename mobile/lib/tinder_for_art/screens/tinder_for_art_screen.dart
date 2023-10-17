@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:puam_app/shared/index.dart';
 import 'package:puam_app/tinder_for_art/index.dart';
 
 class TinderForArtPage extends StatefulWidget {
@@ -29,9 +30,15 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
     return BlocBuilder<ArtworkBloc, ArtworkState>(
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(title: Text("Tinder for Art")),
+          appBar: appBar(),
           body: Center(
             child: AppinioSwiper(
+              swipeOptions: const AppinioSwipeOptions.only(
+                left: true,
+                right: true,
+                bottom: true,
+                top: false,
+              ),
               unlimitedUnswipe: true,
               controller: _swiperController,
               cardsBuilder: (BuildContext context, int index) {
