@@ -47,123 +47,26 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
                       horizontal: deviceWidth(context) * 0.05),
                   child: SizedBox(
                       height: undoHeight,
-                      child: _undoButton(appinioController, state)),
+                      child: TinderUndoButton(
+                          appinioController: appinioController, state: state)),
                 ),
                 Container(
                   height: swiperHeight,
                   alignment: Alignment.center,
-                  child: _buildSwiper(appinioController),
+                  child: TinderSwiper(
+                      swiperController: _swiperController,
+                      colorCards: colorCards,
+                      appinioController: appinioController),
                 ),
                 SizedBox(
                   height: buttonsHeight,
-                  child: _buildButtonRow(),
+                  child: TinderButtonActionRow(
+                      swiperController: _swiperController),
                 )
               ],
             );
           }),
         );
-      },
-    );
-  }
-
-  GestureDetector _undoButton(
-      AppinioController appinioController, ArtworkState state) {
-    return GestureDetector(
-      onTap: () {
-        state.canUndo ? appinioController.undoSwipe() : null;
-      },
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: ShapeDecoration(
-          color: AppTheme.buttonGrey,
-          shape: CircleBorder(),
-        ),
-        child: Center(child: Icon(Icons.undo, size: 20, color: Colors.black)),
-      ),
-    );
-  }
-
-  Row _buildButtonRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        GestureDetector(
-          onTap: () {
-            _swiperController.swipeLeft();
-          },
-          child: Container(
-            width: 75,
-            height: 75,
-            decoration: ShapeDecoration(
-              color: AppTheme.buttonGrey,
-              shape: OvalBorder(),
-            ),
-            child: Center(
-                child: Icon(Icons.thumb_down,
-                    size: 40, color: Colors.red.withOpacity(0.75))),
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            _swiperController.swipeUp();
-          },
-          child: Container(
-            width: 75,
-            height: 75,
-            decoration: ShapeDecoration(
-              color: AppTheme.buttonGrey,
-              shape: OvalBorder(),
-            ),
-            child: Center(
-                child: Icon(Icons.horizontal_rule_outlined,
-                    size: 40, color: Colors.grey)),
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            _swiperController.swipeRight();
-          },
-          child: Container(
-            width: 75,
-            height: 75,
-            decoration: ShapeDecoration(
-              color: AppTheme.buttonGrey,
-              shape: OvalBorder(),
-            ),
-            child: Center(
-                child: Icon(Icons.thumb_up,
-                    size: 40, color: Colors.green.withOpacity(0.75))),
-          ),
-        ),
-      ],
-    );
-  }
-
-  AppinioSwiper _buildSwiper(AppinioController appinioController) {
-    return AppinioSwiper(
-      swipeOptions: const AppinioSwipeOptions.only(
-        left: true,
-        right: true,
-        bottom: false,
-        top: true,
-      ),
-      unlimitedUnswipe: true,
-      controller: _swiperController,
-      cardsBuilder: (BuildContext context, int index) {
-        return Center(
-          child: Stack(children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: MediaQuery.of(context).size.height * 0.7,
-              color: colorCards[index],
-            )
-          ]),
-        );
-      },
-      cardsCount: colorCards.length,
-      onSwipe: (index, direction) {
-        appinioController.handleSwipe(index, direction);
       },
     );
   }
