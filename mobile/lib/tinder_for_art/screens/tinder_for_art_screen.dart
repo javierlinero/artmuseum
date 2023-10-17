@@ -34,15 +34,20 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
           body: LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
             double swiperHeight = constraints.maxHeight * 0.7;
-            double buttonsHeight = constraints.maxHeight * 0.3;
+            double buttonsHeight = constraints.maxHeight * 0.25;
+            double undoHeight = constraints.maxHeight * 0.05;
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(
+                    height: undoHeight,
+                    child: _undoButton(appinioController, state)),
                 Container(
                   height: swiperHeight,
                   alignment: Alignment.center,
                   child: _buildSwiper(appinioController),
                 ),
-                Container(
+                SizedBox(
                   height: buttonsHeight,
                   child: _buildButtonRow(),
                 )
@@ -51,6 +56,24 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
           }),
         );
       },
+    );
+  }
+
+  GestureDetector _undoButton(
+      AppinioController appinioController, ArtworkState state) {
+    return GestureDetector(
+      onTap: () {
+        state.canUndo ? appinioController.undoSwipe() : null;
+      },
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: ShapeDecoration(
+          color: AppTheme.buttonGrey,
+          shape: CircleBorder(),
+        ),
+        child: Center(child: Icon(Icons.undo, size: 20, color: Colors.black)),
+      ),
     );
   }
 
