@@ -13,8 +13,6 @@ class PaintingWidget extends StatelessWidget {
         child: Container(
           alignment: Alignment.center,
           color: Colors.grey,
-          height: 350,
-          width: 350,
         ),
       ),
     );
