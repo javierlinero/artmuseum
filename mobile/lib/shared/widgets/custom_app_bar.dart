@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 AppBar appBar() {
   return AppBar(
+    scrolledUnderElevation: 0,
     backgroundColor: Colors.white,
     elevation: 0,
     title: SizedBox(
