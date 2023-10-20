@@ -16,59 +16,70 @@ class _ArtOfTheDayPageState extends State<ArtOfTheDayPage> {
       MediaQuery.of(context).size.height;
   double deviceWidth(BuildContext context) => MediaQuery.of(context).size.width;
   Artwork aotd = Artwork(
-      title: 'Artwork Title',
-      artist: 'Artwork Artist',
-      imageUrl: 'imageUrl',
-      year: 'Year',
+      title: 'Garden of Earthly Delights',
+      artist: 'Hieronymus Bosch',
+      imageUrl:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/The_Garden_of_earthly_delights.jpg/1920px-The_Garden_of_earthly_delights.jpg',
+      year: '1490-1510',
       materials: 'Materials of Artwork',
-      size: 'Size of Artwork',
+      size: '81 in. x 152 in.',
       description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
-
+          "As little is known of Bosch's life or intentions, interpretations of his artistic intent behind the work range from an admonition of worldly fleshy indulgence, to a dire warning on the perils of life's temptations, to an evocation of ultimate sexual joy. The intricacy of its symbolism, particularly that of the central panel, has led to a wide range of scholarly interpretations over the centuries. Twentieth-century art historians are divided as to whether the triptych's central panel is a moral warning or a panorama of paradise lost.");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(),
-      body: Padding(
-        padding: EdgeInsets.only(top: deviceHeight(context) * 0.03),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Text(
-                'Art of the Day',
-                style: AppTheme.pageTitle,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: constraints.maxHeight * 0.1,
+                child: Center(
+                  child: Text(
+                    'Art of the Day',
+                    style: AppTheme.pageTitle,
+                  ),
+                ),
               ),
-            ),
-            SizedBox(height: 30),
-            PaintingWidget(),
-            SizedBox(height: 30),
-            Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: deviceWidth(context) * 0.03),
-              child: ArtworkNameWidget(title: 'Artwork Title'),
-            ),
-            SizedBox(height: 30),
-            Padding(
-              padding: EdgeInsets.only(left: deviceWidth(context) * 0.03),
-              child: DetailsWidget(
-                  materials: 'Materials of Item', size: 'Size of Item'),
-            ),
-            SizedBox(height: 15),
-            Padding(
-              padding: EdgeInsets.only(left: deviceWidth(context) * 0.03),
-              child: ArtistYearWidget(artist: 'Artist Name', year: 'Year'),
-            ),
-            SizedBox(height: 10),
-            Container(
-              padding:
-                  EdgeInsets.symmetric(horizontal: deviceWidth(context) * 0.03),
-              height: deviceHeight(context) * 0.15,
-              width: deviceWidth(context),
-              child: ArtworkDescriptionWidget(description: aotd.description),
-            ),
-          ],
-        ),
+              Container(
+                height: constraints.maxHeight * 0.5,
+                child: PaintingWidget(imageUrl: aotd.imageUrl),
+              ),
+              SizedBox(height: 25),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: deviceWidth(context) * 0.03,
+                ),
+                height: constraints.maxHeight * 0.05,
+                child: ArtworkNameWidget(title: aotd.title),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: deviceWidth(context) * 0.03,
+                ),
+                height: constraints.maxHeight * 0.025,
+                child:
+                    DetailsWidget(materials: aotd.materials, size: aotd.size),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: deviceWidth(context) * 0.03,
+                ),
+                height: constraints.maxHeight * 0.05,
+                child: ArtistYearWidget(artist: aotd.artist, year: aotd.year),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: deviceWidth(context) * 0.03,
+                ),
+                height: constraints.maxHeight * 0.2,
+                child: ArtworkDescriptionWidget(description: aotd.description),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

@@ -1,8 +1,12 @@
+// ignore_for_file: prefer_const_constructors_in_immutables
+
 import 'package:flutter/material.dart';
 
 class PaintingWidget extends StatelessWidget {
+  final String imageUrl;
   PaintingWidget({
     super.key,
+    required this.imageUrl,
   });
 
   @override
@@ -12,9 +16,10 @@ class PaintingWidget extends StatelessWidget {
       child: Center(
         child: Container(
           alignment: Alignment.center,
-          color: Colors.grey,
-          height: 350,
-          width: 350,
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );
