@@ -6,12 +6,12 @@ class TinderSwiper extends StatelessWidget {
   const TinderSwiper({
     super.key,
     required AppinioSwiperController swiperController,
-    required this.colorCards,
+    required this.imageCards,
     required this.appinioController,
   }) : _swiperController = swiperController;
 
   final AppinioSwiperController _swiperController;
-  final List<Color> colorCards;
+  final List<String> imageCards;
   final AppinioController appinioController;
 
   @override
@@ -31,12 +31,12 @@ class TinderSwiper extends StatelessWidget {
             Container(
               width: MediaQuery.of(context).size.width * 0.8,
               height: MediaQuery.of(context).size.height * 0.7,
-              color: colorCards[index],
+              child: Image.network(imageCards[index]),
             )
           ]),
         );
       },
-      cardsCount: colorCards.length,
+      cardsCount: imageCards.length,
       onSwipe: (index, direction) {
         appinioController.handleSwipe(index, direction);
       },
