@@ -7,10 +7,14 @@ import 'package:puam_app/tinder_for_art/index.dart';
 class AppinioController {
   final BuildContext context;
   final AppinioSwiperController swiperController;
+  final int totalArtworks;
 
   final Queue<int> _swipedIndexes = Queue<int>();
 
-  AppinioController({required this.context, required this.swiperController});
+  AppinioController(
+      {required this.context,
+      required this.swiperController,
+      required this.totalArtworks});
 
   int get currentIndex {
     debugPrint(
@@ -25,6 +29,9 @@ class AppinioController {
     _swipedIndexes.addLast(currentIndex);
 
     int newIndex = currentIndex + 1;
+    if (newIndex == totalArtworks) {
+      debugPrint('All artworks have been swiped!');
+    }
     updateIndex(newIndex);
   }
 
