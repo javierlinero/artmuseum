@@ -28,10 +28,9 @@ class TinderSwiper extends StatelessWidget {
       cardsBuilder: (BuildContext context, int index) {
         return Center(
           child: Stack(children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: MediaQuery.of(context).size.height * 0.7,
-              child: Image.network(imageCards[index]),
+            Image.network(
+              imageCards[index],
+              fit: BoxFit.fill,
             )
           ]),
         );
