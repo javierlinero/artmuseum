@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:puam_app/art_of_the_day/index.dart';
 import 'package:puam_app/shared/index.dart';
 import 'package:puam_app/tinder_for_art/index.dart';
+import 'package:puam_app/user_profile/index.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   @override
@@ -18,7 +19,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     TinderForArtPage(),
     const Placeholder(),
     const Placeholder(),
-    const Placeholder(),
+    const SignUpPage(),
   ];
 
   @override

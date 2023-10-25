@@ -62,4 +62,14 @@ class AppTheme {
     fontSize: 16,
     fontWeight: FontWeight.w400,
   );
+  
+  // Sign up TextStyle
+  static TextStyle signUp = GoogleFonts.lato(
+    color: Colors.white,
+    fontSize: 25,
+    fontWeight: FontWeight.w700,
+    height: 0.09,
+  );
 }
+
+
