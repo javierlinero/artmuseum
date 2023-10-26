@@ -25,13 +25,30 @@ class MapPage extends StatelessWidget {
                 maxZoom: 20,
                 minZoom: 15,
                 initialZoom: 18,
+                // onPositionChanged: (MapPosition position, bool hasGesture) {
+                //   if (hasGesture) {
+                //     context.read<LocationBloc>().add(FetchCurrentLocation());
+                //   }
+                // },
               ),
               children: [
                 TileLayer(
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   maxZoom: 20,
                 ),
-                CurrentLocationLayer(),
+                CurrentLocationLayer(
+                  followCurrentLocationStream:
+                      context.read<LocationBloc>().followCurrentLocationStream,
+                  // followOnLocationUpdate: FollowOnLocationUpdate.always,
+                ),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  alignment: Alignment.topRight,
+                  child: SizedBox(
+                    height: 50,
+                    child: _locationButton(context),
+                  ),
+                ),
               ],
             );
           } else if (state is LocationError) {
@@ -40,6 +57,21 @@ class MapPage extends StatelessWidget {
             return Center(child: Text("Unknown state!"));
           }
         },
+      ),
+    );
+  }
+
+  FloatingActionButton _locationButton(BuildContext context) {
+    return FloatingActionButton(
+      backgroundColor: Colors.white.withOpacity(0.7),
+      splashColor: AppTheme.princetonOrange.withOpacity(0.4),
+      shape: CircleBorder(),
+      onPressed: () {
+        context.read<LocationBloc>().add(ZoomAndFollowCurrentLocation());
+      },
+      child: Icon(
+        Icons.navigation_outlined,
+        color: AppTheme.princetonOrange,
       ),
     );
   }
