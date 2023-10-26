@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:puam_app/map/bloc/index.dart';
 import 'package:puam_app/tinder_for_art/bloc/index.dart';
 import 'splash_screen/index.dart';
 
@@ -22,7 +23,8 @@ class _MyAppState extends State<MyApp> {
       providers: [
         BlocProvider(
           create: (context) => ArtworkBloc(),
-        )
+        ),
+        BlocProvider(create: (context) => LocationBloc())
       ],
       child: MaterialApp(
         color: Colors.black,

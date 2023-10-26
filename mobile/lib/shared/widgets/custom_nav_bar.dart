@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:puam_app/art_of_the_day/index.dart';
+import 'package:puam_app/map/index.dart';
 import 'package:puam_app/shared/index.dart';
 import 'package:puam_app/tinder_for_art/index.dart';
 
@@ -17,7 +18,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     ArtOfTheDayPage(),
     TinderForArtPage(),
     const Placeholder(),
-    const Placeholder(),
+    MapPage(),
     const Placeholder(),
   ];
 
