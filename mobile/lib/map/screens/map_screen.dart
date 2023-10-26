@@ -70,7 +70,7 @@ class MapPage extends StatelessWidget {
         context.read<LocationBloc>().add(ZoomAndFollowCurrentLocation());
       },
       child: Icon(
-        Icons.navigation_outlined,
+        Icons.near_me_outlined,
         color: AppTheme.princetonOrange,
       ),
     );
