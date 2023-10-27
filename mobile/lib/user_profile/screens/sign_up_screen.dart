@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_launcher_icons/xml_templates.dart';
@@ -14,60 +16,57 @@ class _SignUpPageState extends State<SignUpPage> {
   double deviceHeight(BuildContext context) =>
       MediaQuery.of(context).size.height;
   double deviceWidth(BuildContext context) => MediaQuery.of(context).size.width;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-            return Column (
+      body: LayoutBuilder(builder: (context, constraints) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [ 
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [ 
-                    Icon(
-                      Icons.person_outline,
-                      size: 200,)
-                  ],
-                ),
-                Container(
-                  height: constraints.maxHeight * 0.1,
-                  child:Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                    ElevatedButton(
-                      onPressed:() {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => UserCredentials())
-                        );
-                      },
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppTheme.princetonOrange
-                      ),
-                      child: Text(('Sign Up'), style: AppTheme.signUp),
-                    ),
-                    ElevatedButton(
-                      onPressed:() {},
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppTheme.princetonOrange
-                      ),
-                      child: Text(('Login'), style: AppTheme.signUp),
-                    )
-                  ],
-                  ),
-
-                ),
-               
+              children: [
+                Icon(
+                  Icons.person_outline,
+                  size: 200,
+                )
               ],
-            );
-        }
             ),
-          );
+            Container(
+              height: constraints.maxHeight * 0.1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserCredentials()));
+                    },
+                    style: FilledButton.styleFrom(
+                        backgroundColor: AppTheme.princetonOrange),
+                    child: Text(('Sign Up'), style: AppTheme.signUp),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: FilledButton.styleFrom(
+                        backgroundColor: AppTheme.princetonOrange),
+                    child: Text(('Login'), style: AppTheme.signUp),
+                  )
+                ],
+              ),
+            ),
+          ],
+        );
+      }),
+    );
   }
 }
+
+
 
 class UserCredentials extends StatefulWidget {
   const UserCredentials({super.key});
@@ -81,15 +80,40 @@ class _UserCredentialsState extends State<UserCredentials> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(),
-      body: Column(
-        children: [
-          ElevatedButton(
-            onPressed:() {},
-            style: FilledButton.styleFrom(
-              backgroundColor: AppTheme.princetonOrange
+      body: Column(children: [
+        const SizedBox(
+          width: 339.91,
+          height: 61.63,
+          child: Text(
+            'Sign up to use exclusive features for free!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+              fontFamily: 'Lato',
+              fontWeight: FontWeight.w500,
+              height: 0,
             ),
-            child: Text(('Continue with Google'), style: AppTheme.signUp),
           ),
+        ),
+        ElevatedButton(
+          onPressed: () {},
+          style:
+              FilledButton.styleFrom(backgroundColor: AppTheme.princetonOrange),
+          child: Text(('Continue with Google'), style: AppTheme.signUp),
+        ),
+        Container(
+          margin: const EdgeInsets.all(15),
+          width: .90 * MediaQuery.of(context).size.width,
+          decoration: const ShapeDecoration(
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                width: 1,
+                strokeAlign: BorderSide.strokeAlignCenter,
+              ),
+            ),
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
           child: TextFormField(
@@ -135,65 +159,63 @@ class _UserCredentialsState extends State<UserCredentials> {
           ),
         ),
         ElevatedButton(
-            onPressed:() {},
-            style: FilledButton.styleFrom(
-              backgroundColor: AppTheme.princetonOrange
-            ),
-            child: Text(('Sign Up'), style: AppTheme.signUp),
-          ),
+          onPressed: () {},
+          style:
+              FilledButton.styleFrom(backgroundColor: AppTheme.princetonOrange),
+          child: Text(('Sign Up'), style: AppTheme.signUp),
+        ),
         const SizedBox(
           width: 351,
           height: 90,
           child: Text.rich(
-              TextSpan(
-                  children: [
-                      TextSpan(
-                          text: 'By signing up, you agree to our ',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 24,
-                              fontFamily: 'Lato',
-                              fontWeight: FontWeight.w400,
-                              height: 0,
-                          ),
-                      ),
-                      TextSpan(
-                          text: 'Terms, Data Policy ',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 24,
-                              fontFamily: 'Lato',
-                              fontWeight: FontWeight.w700,
-                              height: 0,
-                          ),
-                      ),
-                      TextSpan(
-                          text: 'and ',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 24,
-                              fontFamily: 'Lato',
-                              fontWeight: FontWeight.w400,
-                              height: 0,
-                          ),
-                      ),
-                      TextSpan(
-                          text: 'Cookies Policy.',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 24,
-                              fontFamily: 'Lato',
-                              fontWeight: FontWeight.w700,
-                              height: 0,
-                          ),
-                      ),
-                  ],
-              ),
-              textAlign: TextAlign.center,
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: 'By signing up, you agree to our ',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 24,
+                    fontFamily: 'Lato',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                ),
+                TextSpan(
+                  text: 'Terms, Data Policy ',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 24,
+                    fontFamily: 'Lato',
+                    fontWeight: FontWeight.w700,
+                    height: 0,
+                  ),
+                ),
+                TextSpan(
+                  text: 'and ',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 24,
+                    fontFamily: 'Lato',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                ),
+                TextSpan(
+                  text: 'Cookies Policy.',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 24,
+                    fontFamily: 'Lato',
+                    fontWeight: FontWeight.w700,
+                    height: 0,
+                  ),
+                ),
+              ],
+            ),
+            textAlign: TextAlign.center,
           ),
-      )
-        ]
-      ),
+        )
+      ]),
     );
   }
 }
