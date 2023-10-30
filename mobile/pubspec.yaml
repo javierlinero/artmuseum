@@ -50,6 +50,7 @@ dependencies:
   geolocator: ^10.1.0
   permission_handler: ^11.0.1
   flutter_map_location_marker: ^8.0.0
+  dio: ^5.3.3
 
 dev_dependencies:
   flutter_test:
