@@ -30,6 +30,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         children: _featureScreens,
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         showSelectedLabels: false,
         showUnselectedLabels: false,
         currentIndex: _currentIndex,
