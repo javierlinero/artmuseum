@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:puam_app/shared/index.dart';
+import 'package:puam_app/user_profile/screens/settings_screen.dart';
 
 
 class Profile extends StatefulWidget {
@@ -15,6 +16,19 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       appBar: appBar(),
       body: Column(children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+          IconButton(
+              icon: Icon(Icons.settings),
+              iconSize: 40,
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => Settings()));
+              },
+          )
+        ],
+        ),
         Center(
           child: CircleAvatar(
           radius: 102, // Some padding for the border
@@ -25,8 +39,12 @@ class _ProfileState extends State<Profile> {
           ),
           )
         ),
-        Center(
-          child: Text('First Name Last Name', style: AppTheme.artworkDescription,)
+        Container(
+          padding: EdgeInsets.all(15),
+          margin: EdgeInsets.all(15),
+          child: Center(
+            child: Text('Guest', style: AppTheme.username,)
+          )
         ),
         Container(
             padding: const EdgeInsets.only(left: 20),

@@ -70,6 +70,15 @@ class AppTheme {
     fontWeight: FontWeight.w700,
     height: 0.09,
   );
+
+  // Sign up TextStyle
+  static TextStyle username = GoogleFonts.roboto(
+    color: Colors.black,
+    fontSize: 25,
+    fontWeight: FontWeight.w700,
+    height: 0.09,
+  );
+
 }
 
 
