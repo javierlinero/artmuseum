@@ -31,3 +31,6 @@ With the emulator open, make sure it is finished launching, and then you can go 
 
 ## iOS Emulation
 I have no way of verifying this for myself right now, but I believe all you need to do is download XCode, and go to `Xcode > Open Developer Tool > Simulator`, and set up the simulator there. From there, the process is similar and you need to select the device in VSCode.
+
+## Running the Database
+Set an environmental variable called PUAM\_DB\_PASSWORD that is the password to our database. The password changes periodically (weekly perhaps?), and you can ask Javi for the password.
