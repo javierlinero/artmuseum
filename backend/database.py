@@ -34,6 +34,8 @@ def get_art_by_id(art_id):
                   "description": artwork_table[0][5],
                   "artists": artists
                }
+            else:
+               return None
 
 def initDB(cursor):
   query_str = 'CREATE TABLE user_preferences(user_id int PRIMARY KEY, pref_str VARCHAR(1000))'

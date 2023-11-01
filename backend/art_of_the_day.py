@@ -9,10 +9,18 @@ app = Flask(__name__)
 
 def get_random_file():
     while True:
+        file_num = random.randint(166, 141746)  # Generate a random number between 166 and 141746
+        object_name = 'HASIMAGES/artobject_' + str(file_num) + '.json'
+        json_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), object_name)
+        if os.path.exists(json_file):
+            return json_file
+
+def get_random_art():
+    while True:
         art_id = random.randint(279, 44450)  # Generate a random number between 166 and 141746
-        artists = db.get_art_by_id(art_id)
-        if len(artists) != 0:
-            return artists
+        artwork = db.get_art_by_id(art_id)
+        if artwork is not None:
+            return artwork
 
 def get_json(file):
     f = open(file)
@@ -21,7 +29,7 @@ def get_json(file):
 
 @app.route('/art_of_the_day', methods=['GET'])
 def art_of_the_day():
-    file = get_random_file()
+    file = get_random_art()
     return jsonify(file)
 
 @app.route('/tinder_for_art', methods=['GET'])
