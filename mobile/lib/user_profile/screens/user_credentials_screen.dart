@@ -70,18 +70,7 @@ class _UserCredentialsState extends State<UserCredentials> {
               filled: true,
               fillColor: Colors.grey,
               border: UnderlineInputBorder(),
-              labelText: 'Full Name',
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-          child: TextFormField(
-            decoration: const InputDecoration(
-              filled: true,
-              fillColor: Colors.grey,
-              border: UnderlineInputBorder(),
-              labelText: 'Username',
+              labelText: 'User Name',
             ),
           ),
         ),
@@ -93,6 +82,17 @@ class _UserCredentialsState extends State<UserCredentials> {
               fillColor: Colors.grey,
               border: UnderlineInputBorder(),
               labelText: 'Password',
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          child: TextFormField(
+            decoration: const InputDecoration(
+              filled: true,
+              fillColor: Colors.grey,
+              border: UnderlineInputBorder(),
+              labelText: 'Confirm Password',
             ),
           ),
         ),

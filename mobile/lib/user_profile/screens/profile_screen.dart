@@ -29,16 +29,6 @@ class _ProfileState extends State<Profile> {
           )
         ],
         ),
-        Center(
-          child: CircleAvatar(
-          radius: 102, // Some padding for the border
-          backgroundColor: Colors.black, // Or any color for the border
-          child: CircleAvatar(
-            radius: 100,
-            backgroundColor: Colors.grey[200],
-          ),
-          )
-        ),
         Container(
           padding: EdgeInsets.all(15),
           margin: EdgeInsets.all(15),
@@ -64,6 +54,10 @@ class _ProfileState extends State<Profile> {
             endIndent: 20,
             color: Colors.black,
           ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [Text('Liked art will appear here!'),]
+        )
         ] 
         )
       );
