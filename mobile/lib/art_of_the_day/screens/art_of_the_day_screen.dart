@@ -83,7 +83,7 @@ class _ArtOfTheDayPageState extends State<ArtOfTheDayPage> {
                         ),
                         height: constraints.maxHeight * 0.05,
                         child: ArtistYearWidget(
-                            artist: aotd.artist, year: aotd.year),
+                            artists: aotd.artists, year: aotd.year),
                       ),
                       Container(
                         padding: EdgeInsets.symmetric(
