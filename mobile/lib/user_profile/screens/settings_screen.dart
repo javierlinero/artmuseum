@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:puam_app/shared/index.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:puam_app/user_profile/screens/edit_profile_screen.dart';
 
 
 class Settings extends StatefulWidget {
@@ -28,17 +29,12 @@ class _SettingsState extends State<Settings> {
               SettingsTile(
                 title: Text('Settings'),
                 leading: Icon(Icons.language),
-                onPressed: (BuildContext context) {},
-              ),
-              SettingsTile(
-                title: Text('Username'),
-                leading: Icon(Icons.person),
-                onPressed: (BuildContext context) {},
-              ),
-              SettingsTile(
-                title: Text('Password'),
-                leading: Icon(Icons.password),
-                onPressed: (BuildContext context) {},
+                onPressed: (BuildContext context) {
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditProfile()));
+                },
               ),
             ],
           ),
