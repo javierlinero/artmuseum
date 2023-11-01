@@ -1,3 +1,5 @@
 .idea
 .vscode
 backend/__pycache__
+HASIMAGES
+recommender/features

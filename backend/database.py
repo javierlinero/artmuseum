@@ -36,19 +36,19 @@ def get_art_by_id(art_id):
                }
 
 def initDB(cursor):
-  query_str = 'CREATE TABLE user_preferences(user_id int PRIMARY KEY, pref_str VARCHAR(1000))'
+  query_str = 'CREATE TABLE user_preferences2(user_id int PRIMARY KEY, pref_str VARCHAR(1000))'
   cursor.execute(query_str, [])
 
 def write_prefs(cursor, user_id, user_ratings):
   if len(read_prefs(cursor, user_id)) == 0:
-    query_str = 'INSERT INTO user_preferences VALUES (%s, %s)'
+    query_str = 'INSERT INTO user_preferences2 VALUES (%s, %s)'
     cursor.execute(query_str, (user_id, codecs.encode(pickle.dumps(user_ratings), "base64").decode()))
   else:
-    query_str = 'UPDATE user_preferences SET pref_str=%s WHERE user_id=%s'
+    query_str = 'UPDATE user_preferences2 SET pref_str=%s WHERE user_id=%s'
     cursor.execute(query_str, (codecs.encode(pickle.dumps(user_ratings), "base64").decode(), user_id))
 
 def read_prefs(cursor, user_id):
-  query_str = 'SELECT pref_str FROM user_preferences WHERE user_id=%s' % (user_id)
+  query_str = 'SELECT pref_str FROM user_preferences2 WHERE user_id=%s' % (user_id)
   cursor.execute(query_str, [])
   table = cursor.fetchall()
   if len(table) == 0:
@@ -58,7 +58,7 @@ def read_prefs(cursor, user_id):
     return pickle.loads(codecs.decode(pref, "base64"))
 
 def drop_prefs(cursor):
-  query_str = 'DELETE FROM user_preferences'
+  query_str = 'DELETE FROM user_preferences2'
   cursor.execute(query_str, [])
 
 def get_user_pref(user_id):
@@ -83,9 +83,9 @@ def set_user_pref(user_id, new_rating):
 
 def write_dummy_pref(cursor):
     pref = [
-        ('artobject_129612.json', 0.1),
-        ('artobject_136902.json', 0.8),
-        ('artobject_137530.json', 0.3),
+        (279, 0.1),
+        (280, 0.8),
+        (281, 0.3),
     ]
 
     write_prefs(cursor, 1, pref)
@@ -97,5 +97,7 @@ if __name__ == '__main__':
                           port="5432", sslmode="require") as connection:
         with contextlib.closing(connection.cursor()) as cursor:
             print('SUCCESS')
+            #initDB(cursor)
             #write_dummy_pref(cursor)
+            print(read_prefs(cursor, 1))
             #drop_prefs(cursor)
