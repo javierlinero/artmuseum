@@ -11,13 +11,15 @@ class ArtworkService {
       Response response = await _dio.get('$serverUrl/art_of_the_day');
       var data = response.data;
 
-      String artist = (data['artists'] != null && data['artists'].isNotEmpty)
-          ? data['artists'][0]
-          : 'Unknown';
+      // If 'artists' in the JSON is null or empty, default to a list containing 'Unknown'
+      List<String> artists =
+          (data['artists'] != null && data['artists'].isNotEmpty)
+              ? List<String>.from(data['artists'])
+              : ['Unknown'];
 
       return Artwork(
         title: data['title'] ?? 'Unknown',
-        artist: artist,
+        artists: artists,
         imageUrl: data['imageurl'],
         year: data['year'] ?? 'Unknown',
         materials: data['materials'] ?? 'Unknown',
