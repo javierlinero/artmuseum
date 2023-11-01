@@ -14,19 +14,24 @@ class DetailsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      AutoSizeText(
-        '$materials • ',
-        style: AppTheme.materialsText,
-        maxFontSize: 12,
-        minFontSize: 8,
-      ),
-      AutoSizeText(
-        size,
-        style: AppTheme.materialsText,
-        maxFontSize: 12,
-        minFontSize: 8,
-      )
-    ]);
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(children: [
+        AutoSizeText(
+          '$materials • ',
+          style: AppTheme.materialsText,
+          maxFontSize: 12,
+          minFontSize: 8,
+          overflow: TextOverflow.clip,
+        ),
+        AutoSizeText(
+          size,
+          style: AppTheme.materialsText,
+          maxFontSize: 12,
+          minFontSize: 8,
+          overflow: TextOverflow.clip,
+        )
+      ]),
+    );
   }
 }
