@@ -5,7 +5,6 @@ import pickle
 import PIL
 import requests
 import tensorflow as tf
-import torch
 from keras.preprocessing.image import img_to_array
 import psycopg2
 
@@ -25,12 +24,12 @@ def url_to_features(url):
     res = requests.get(url)
     img = PIL.Image.open(io.BytesIO(res.content)).resize((224, 224), PIL.Image.Resampling.LANCZOS)
     img = img_to_array(img)
-    return torch.from_numpy(resnet([img[None, :]]).numpy())
+    return resnet([img[None, :]]).numpy()[0]
   except:
     return None
 
-def write_tensor_to_file(file, tensor):
-  file.write(codecs.encode(pickle.dumps(tensor.numpy()), "base64").decode())
+def write_feature_to_file(file, feature):
+  file.write(codecs.encode(pickle.dumps(feature), "base64").decode())
 
 def write_features():
   num_features = 3
@@ -47,7 +46,7 @@ def write_features():
       i = 0
       for row in artwork_table:
         file = open('features/' + str(row[0]), 'w')
-        write_tensor_to_file(file, url_to_features(row[1]))
+        write_feature_to_file(file, url_to_features(row[1]))
 
         i += 1
         if num_features != -1 and i == num_features:

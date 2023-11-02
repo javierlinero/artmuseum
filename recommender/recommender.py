@@ -1,17 +1,16 @@
 import codecs
 import contextlib
+import numpy as np
 import pickle
 import psycopg2
 import sys
-import torch
-from torchmetrics.functional import pairwise_cosine_similarity
 import database as db
 
 def similarity(user_ratings, img_features, target_img_features):
   sim = 0
   for i, rating in enumerate(user_ratings):
     if img_features[i] is not None:
-      sim += rating[1] * pairwise_cosine_similarity(img_features[i], target_img_features)
+      sim += rating[1] * np.dot(img_features[i], target_img_features)
   return sim
 
 def id_to_feature(artid):
@@ -19,7 +18,7 @@ def id_to_feature(artid):
   pickled = ''
   for line in file:
     pickled += line
-  tensor = torch.from_numpy(pickle.loads(codecs.decode(pickled.encode(), "base64")))
+  tensor = pickle.loads(codecs.decode(pickled.encode(), "base64"))
   return tensor
 
 def get_suggestions(userid, MAX_ART_SAMPLES):
