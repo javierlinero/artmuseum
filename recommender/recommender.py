@@ -1,9 +1,11 @@
 import codecs
 import contextlib
+import glob
 import numpy as np
 import pickle
 import psycopg2
-import sys
+import os
+import random
 import database as db
 
 def similarity(user_ratings, img_features, target_img_features):
@@ -30,7 +32,7 @@ def get_suggestions(userid, MAX_ART_SAMPLES):
 		with contextlib.closing(connection.cursor()) as cursor:
 
 			img_features = []
-			full_prefs = read_prefs(cursor, userid)
+			full_prefs = db.read_prefs(cursor, userid)
 			num_pref_samples = min(len(full_prefs), MAX_PREF_SAMPLES)
 			user_ratings = random.sample(full_prefs, num_pref_samples)
 			for rating in user_ratings:
@@ -54,5 +56,5 @@ def get_suggestions(userid, MAX_ART_SAMPLES):
 
 
 if __name__ == '__main__':
-	for s in get_suggestions(1, 5):
+	for s in get_suggestions(1, 3):
 		print(s)
