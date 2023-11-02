@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:puam_app/art_of_the_day/index.dart';
+import 'package:puam_app/search/index.dart';
 import 'package:puam_app/shared/index.dart';
 import 'package:puam_app/tinder_for_art/index.dart';
 import 'package:puam_app/user_profile/index.dart';
@@ -17,7 +18,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   final _featureScreens = [
     ArtOfTheDayPage(),
     TinderForArtPage(),
-    const Placeholder(),
+    const Gallery(),
     const Placeholder(),
     const SignUpPage(),
   ];
