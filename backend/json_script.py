@@ -14,6 +14,46 @@ json_dir = "json_files"
 pswd = os.environ['PUAM_DB_PASSWORD']
 host = "puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com"
 
+def create_table(conn):
+    del_query = """
+    DROP TABLE IF EXISTS link;
+    DROP TABLE IF EXISTS artworks;
+    DROP TABLE IF EXISTS artists;
+    """
+    conn.cursor.execute(del_query)
+    conn.commit()
+
+    table_query = """
+    CREATE TABLE artists (
+        artist_id SERIAL PRIMARY KEY,
+        displayname TEXT,
+        displaydate TEXT,
+        datebegin INTEGER,
+        dateend INTEGER,
+        prefix TEXT,
+        suffix TEXT,
+        role TEXT
+    );
+    CREATE TABLE artworks (
+        artwork_id SERIAL PRIMARY KEY,
+        title TEXT,
+        imageUrl TEXT,
+        year TEXT,
+        materials TEXT,
+        size TEXT,
+        description TEXT
+    );
+    CREATE TABLE link (
+        artwork_id INTEGER,
+        artist_id INTEGER,
+        PRIMARY KEY (artwork_id, artist_id),
+        FOREIGN KEY (artwork_id) REFERENCES artworks(artwork_id),
+        FOREIGN KEY (artist_id) REFERENCES artists(artist_id)
+    );
+    """
+    conn.cursor.execute(table_query)
+    conn.commit()
+
 def main():
     try:
         with psycopg2.connect(dbname="init_db",
@@ -23,6 +63,8 @@ def main():
                               port="5432",
                               sslmode="require") as conn:
             with closing(conn.cursor()) as cursor:
+                # drop all prev tables w/ records & sets them up
+                create_table()
                 for filename in sorted(os.listdir(json_dir)):
                     if filename.endswith(".json"):
                         print(f"Processing {filename}...")
@@ -87,6 +129,7 @@ def main():
                         print(f"Skipped {filename} (not a JSON file).")
                 print("Finished processing all files.")
     except Exception as ex:
+        conn.rollback()
         print(f"An error occurred: {ex}")
 
 if __name__ == "__main__":
