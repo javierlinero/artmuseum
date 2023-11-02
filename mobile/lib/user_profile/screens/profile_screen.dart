@@ -16,6 +16,7 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       appBar: appBar(),
       body: Column(children: [
+
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -28,6 +29,12 @@ class _ProfileState extends State<Profile> {
               },
           )
         ],
+        ),        
+        Center(
+          child: Icon(
+                  Icons.account_circle,
+                  size: 100,
+                )
         ),
         Container(
           padding: EdgeInsets.all(15),

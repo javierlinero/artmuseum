@@ -58,6 +58,11 @@ class _SettingsState extends State<Settings> {
                 leading: Icon(Icons.location_city),
                 onPressed: (BuildContext context) {},
               ),
+              SettingsTile(
+                title: Text('Notifications'),
+                leading: Icon(Icons.notifications),
+                onPressed: (BuildContext context) {},
+              ),
             ],
           ),
           SettingsSection(
