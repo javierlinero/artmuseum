@@ -10,7 +10,10 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:puam_app/map/index.dart';
 
 class MapPage extends StatelessWidget {
-  const MapPage({Key? key}) : super(key: key);
+  MapPage({Key? key}) : super(key: key);
+
+  final PopupController _popupController = PopupController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,37 +24,68 @@ class MapPage extends StatelessWidget {
             context.read<LocationBloc>().add(FetchCurrentLocation());
             return Center(child: CircularProgressIndicator());
           } else if (state is LocationLoaded) {
-            return FlutterMap(
-              options: MapOptions(
-                initialCenter: state.location,
-                maxZoom: 20,
-                minZoom: 15,
-                initialZoom: 18,
-                // onPositionChanged: (MapPosition position, bool hasGesture) {
-                //   if (hasGesture) {
-                //     context.read<LocationBloc>().add(FetchCurrentLocation());
-                //   }
-                // },
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            return PopupScope(
+              popupController: _popupController,
+              child: FlutterMap(
+                options: MapOptions(
+                  initialCenter: state.location,
                   maxZoom: 20,
+                  minZoom: 15,
+                  initialZoom: 18,
+                  onTap: (_, __) => _popupController
+                      .hideAllPopups(), // Hide popup when the map is tapped.
                 ),
-                CurrentLocationLayer(
-                  followCurrentLocationStream:
-                      context.read<LocationBloc>().followCurrentLocationStream,
-                  // followOnLocationUpdate: FollowOnLocationUpdate.always,
-                ),
-                Container(
-                  padding: EdgeInsets.all(10),
-                  alignment: Alignment.topRight,
-                  child: SizedBox(
-                    height: 50,
-                    child: _locationButton(context),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    maxZoom: 20,
                   ),
-                ),
-              ],
+                  CurrentLocationLayer(
+                    followCurrentLocationStream: context
+                        .read<LocationBloc>()
+                        .followCurrentLocationStream,
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    alignment: Alignment.topRight,
+                    child: SizedBox(
+                      height: 50,
+                      child: _locationButton(context),
+                    ),
+                  ),
+                  MarkerClusterLayerWidget(
+                    options: MarkerClusterLayerOptions(
+                      maxClusterRadius: 120,
+                      rotate: false,
+                      disableClusteringAtZoom: 20,
+                      markers: artMarkers,
+                      size: const Size(40, 40),
+                      builder: (context, markers) {
+                        return FloatingActionButton(
+                          onPressed: null,
+                          backgroundColor: AppTheme.princetonOrange,
+                          child: Text(markers.length.toString()),
+                        );
+                      },
+                      popupOptions: PopupOptions(
+                          popupSnap: PopupSnap.markerTop,
+                          popupController: _popupController,
+                          popupBuilder: (_, marker) => Container(
+                                width: 200,
+                                height: 100,
+                                color: Colors.white,
+                                child: GestureDetector(
+                                  onTap: () => debugPrint('Popup tap!'),
+                                  child: const Text(
+                                    'Container popup for marker',
+                                  ),
+                                ),
+                              )),
+                    ),
+                  ),
+                ],
+              ),
             );
           } else if (state is LocationError) {
             return Center(child: Text(state.message));

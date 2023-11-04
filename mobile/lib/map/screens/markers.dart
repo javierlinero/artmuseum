@@ -5,15 +5,15 @@ import 'package:latlong2/latlong.dart';
 
 List<Marker> artMarkers = [
   Marker(
-    point: LatLng(40.3406504, -74.667012),
-    child: Icon(Icons.pin_drop),
+    point: LatLng(40.340694, -74.667000),
+    child: Icon(Icons.location_pin),
   ),
   Marker(
     point: LatLng(40.341220, -74.666132),
-    child: Icon(Icons.pin_drop),
+    child: Icon(Icons.location_pin),
   ),
   Marker(
     point: LatLng(40.340887, -74.665171),
-    child: Icon(Icons.pin_drop),
+    child: Icon(Icons.location_pin),
   ),
 ];
