@@ -137,6 +137,125 @@ List<CampusArtwork> campusArtworks = [
     lat: 40.3489,
     long: -74.6587,
   ),
+  CampusArtwork(
+    name: 'Pair of tigers',
+    year: '1910',
+    artist: 'Alexander Phimister Proctor',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/PP287-1-2_b.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3488,
+    long: -74.6594,
+  ),
+  CampusArtwork(
+    name: 'Oval with Points',
+    year: '1969-70',
+    artist: 'Henry Moore',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/CF043334.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3483,
+    long: -74.6598,
+  ),
+  CampusArtwork(
+    name:
+        'Bas-Relief on south facade of Alexander Hall depicting Arts & Sciences Paying Tribute to Learning',
+    year: 'ca. 1894',
+    artist: 'John Massey Rhind, J. A. Bolger',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/STU00214.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3482,
+    long: -74.6605,
+  ),
+  CampusArtwork(
+    name: 'The Bride',
+    year: '1956-61',
+    artist: 'Reg Butler',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/YF1V9197.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3484,
+    long: -74.6621,
+  ),
+
+  // Below East Pyne
+  // DISPLACED BECAUSE OF CONSTRUCTION
+  // CampusArtwork(
+  //   name: 'Cubi XIII',
+  //   year: '1963',
+  //   artist: 'David Smith',
+  //   imageUrl:
+  //       'https://puam-loris.aws.princeton.edu/loris/y1969-19.jp2/full/pct:25/0/default.jpg',
+  //   lat: 40.347769,
+  //   long: -74.658227,
+  // ),
+
+  // DISPLACED BECAUSE OF CONSTRUCTION
+  // CampusArtwork(
+  //   name: 'Human Condition',
+  //   year: '1960',
+  //   artist: 'Rudolf Hoflehner',
+  //   imageUrl:
+  //       'https://puam-loris.aws.princeton.edu/loris/y1968-534_c.jp2/full/pct:25/0/default.jpg',
+  //   lat: 40.347493,
+  //   long: -74.65853,
+  // ),
+
+  // DISPLACED BECAUSE OF CONSTRUCTION
+  // CampusArtwork(
+  //   name: '(Any) Body Oddly Propped',
+  //   year: '2015',
+  //   artist: 'Doug and Mike Starn',
+  //   imageUrl:
+  //       'https://puam-loris.aws.princeton.edu/loris/Barros_151030_046.jp2/full/pct:25/0/default.jpg',
+  //   lat: 40.34752,
+  //   long: -74.65769,
+  // ),
+
+  // DISPLACED BECAUSE OF CONSTRUCTION
+  // CampusArtwork(
+  //   name: 'Wellheads',
+  //   year: 'Unknown',
+  //   artist: 'Italian',
+  //   imageUrl:
+  //       'https://puam-loris.aws.princeton.edu/loris/y1971-44_OBL.jp2/full/pct:25/0/default.jpg',
+  //   lat: 40.3474,
+  //   long: -74.6572,
+  // ),
+
+  CampusArtwork(
+    name: 'Moses',
+    year: '1967-68; fabricated 1969',
+    artist: 'Tony Smith',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/y1969-104.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3477,
+    long: -74.6569,
+  ),
+  CampusArtwork(
+    name: 'Mosaic pavement: male and female heads within a meander pattern',
+    year: 'ca. 400',
+    artist: 'Roman',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/YF1V3127_1.jp2/full/pct:25/0/default.jpg',
+    lat: 40.347,
+    long: -74.6562,
+  ),
+  CampusArtwork(
+    name: 'Benjamin Franklin (1706-1790)',
+    year: 'ca. 1910',
+    artist: 'Daniel Chester French',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/STU00207.jp2/full/pct:25/0/default.jpg',
+    lat: 40.346967,
+    long: -74.655294,
+  ),
+  CampusArtwork(
+    name: 'Joseph Henry (1797-1878)',
+    year: 'ca. 1910',
+    artist: 'Daniel Chester French',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/STU00212.jp2/full/pct:25/0/default.jpg',
+    lat: 40.346947,
+    long: -74.65535,
+  ),
 
   // Graduate college
   CampusArtwork(
