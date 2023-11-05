@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:puam_app/map/domain/models/campus_art.dart';
 import 'package:puam_app/shared/index.dart';
+import 'package:puam_app/map/index.dart';
 
 class CampusArtMarker extends Marker {
   CampusArtMarker({required this.campusArtwork})
