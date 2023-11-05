@@ -114,20 +114,35 @@ class MapPage extends StatelessWidget {
       },
       child: Container(
         width: 150,
-        height: 300,
         color: Colors.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Image.network(
-                marker.campusArtwork.imageUrl,
-                fit: BoxFit.contain,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: 200,
+                ),
+                child: Image.network(
+                  marker.campusArtwork.imageUrl,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
-            Text('${marker.campusArtwork.name} (${marker.campusArtwork.year})'),
-            Text(marker.campusArtwork.artist),
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+              child: Text(
+                '${marker.campusArtwork.name} (${marker.campusArtwork.year})',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(marker.campusArtwork.artist),
+            ),
           ],
         ),
       ),
