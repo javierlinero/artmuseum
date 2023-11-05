@@ -1,4 +1,7 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
+import 'package:puam_app/shared/index.dart';
 
 class ZoomButtons extends StatelessWidget {
   final VoidCallback onZoomIn;
@@ -19,7 +22,7 @@ class ZoomButtons extends StatelessWidget {
           iconData: Icons.add,
           onPressed: onZoomIn,
         ),
-        SizedBox(height: 4), // A little space between the buttons
+        SizedBox(height: 4),
         _ZoomButton(
           iconData: Icons.remove,
           onPressed: onZoomOut,
@@ -42,22 +45,21 @@ class _ZoomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white, // Button color
+      color: Colors.white,
       elevation: 2, // Shadow elevation
-      borderRadius: BorderRadius.circular(4), // Rounded corners
+      borderRadius: BorderRadius.circular(10),
       child: InkWell(
         onTap: onPressed,
-        borderRadius: BorderRadius.circular(4), // Match the border radius
+        borderRadius: BorderRadius.circular(10),
         child: Container(
-          width: 48, // Button width
-          height: 48, // Button height
+          width: 48,
+          height: 48,
           decoration: BoxDecoration(
-            borderRadius:
-                BorderRadius.circular(4), // Again, for the ripple effect
+            borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(
             iconData,
-            color: Colors.black, // Icon color
+            color: AppTheme.princetonOrange,
           ),
         ),
       ),
