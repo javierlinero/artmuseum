@@ -82,6 +82,7 @@ class MapPage extends StatelessWidget {
                       },
                       popupOptions: PopupOptions(
                         popupSnap: PopupSnap.markerTop,
+                        popupAnimation: PopupAnimation.fade(),
                         popupController: _popupController,
                         popupBuilder: (_, marker) {
                           if (marker is CampusArtMarker) {
