@@ -70,6 +70,7 @@ class _MapPageState extends State<MapPage> {
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 maxZoom: 20,
+                userAgentPackageName: 'com.puam.app',
               ),
               CurrentLocationLayer(
                 followCurrentLocationStream:
