@@ -49,9 +49,9 @@ class MapPage extends StatelessWidget {
                   ),
                   Container(
                     padding: EdgeInsets.all(10),
-                    alignment: Alignment.topRight,
+                    alignment: Alignment.bottomRight,
                     child: SizedBox(
-                      height: 50,
+                      height: 75,
                       child: _locationButton(context),
                     ),
                   ),
@@ -59,8 +59,10 @@ class MapPage extends StatelessWidget {
                     options: MarkerClusterLayerOptions(
                       maxClusterRadius: 120,
                       rotate: false,
-                      disableClusteringAtZoom: 20,
+                      disableClusteringAtZoom: 17,
                       markers: artMarkers,
+                      onMarkersClustered: (p0) =>
+                          _popupController.hideAllPopups(),
                       size: const Size(40, 40),
                       builder: (context, markers) {
                         return FloatingActionButton(
@@ -105,6 +107,7 @@ class MapPage extends StatelessWidget {
         height: 300,
         color: Colors.white,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -127,6 +130,7 @@ class MapPage extends StatelessWidget {
       splashColor: AppTheme.princetonOrange.withOpacity(0.4),
       shape: CircleBorder(),
       onPressed: () {
+        _popupController.hideAllPopups();
         context.read<LocationBloc>().add(ZoomAndFollowCurrentLocation());
       },
       child: Icon(
