@@ -25,7 +25,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       final currentState = state as LocationLoaded;
       final newZoomLevel = (currentState.zoom + 0.5)
           .clamp(15.0, 20.0); // Ensure the zoom level is within valid bounds
-      mapController.move(currentState.location, newZoomLevel);
+      mapController.move(mapController.camera.center, newZoomLevel);
       emit(LocationLoaded(currentState.location, zoom: newZoomLevel));
     }
   }
@@ -35,7 +35,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       final currentState = state as LocationLoaded;
       final newZoomLevel = (currentState.zoom - 0.5)
           .clamp(15.0, 20.0); // Ensure the zoom level is within valid bounds
-      mapController.move(currentState.location, newZoomLevel);
+      mapController.move(mapController.camera.center, newZoomLevel);
       emit(LocationLoaded(currentState.location, zoom: newZoomLevel));
     }
   }
