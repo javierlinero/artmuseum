@@ -2,13 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:puam_app/map/domain/models/campus_art.dart';
+import 'package:puam_app/shared/index.dart';
 
 class CampusArtMarker extends Marker {
   CampusArtMarker({required this.campusArtwork})
       : super(
-          point: LatLng(campusArtwork.lat, campusArtwork.long),
-          child: const Icon(Icons.location_pin),
-        );
+            point: LatLng(campusArtwork.lat, campusArtwork.long),
+            child: Container(
+              height: 20,
+              width: 20,
+              decoration: BoxDecoration(
+                  color: AppTheme.princetonOrange,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.black,
+                    width: 2,
+                  )),
+            ));
 
   final CampusArtwork campusArtwork;
 }
