@@ -54,83 +54,87 @@ class _MapPageState extends State<MapPage> {
   PopupScope _buildMap(LocationLoaded state, BuildContext context) {
     return PopupScope(
       popupController: _popupController,
-      child: FlutterMap(
-        mapController: _mapController,
-        options: MapOptions(
-          initialCenter: state.location,
-          maxZoom: 20,
-          minZoom: 15,
-          initialZoom: 18,
-          onTap: (_, __) => _popupController
-              .hideAllPopups(), // Hide popup when the map is tapped.
-        ),
+      child: Stack(
         children: [
-          TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            maxZoom: 20,
-          ),
-          CurrentLocationLayer(
-            followCurrentLocationStream:
-                context.read<LocationBloc>().followCurrentLocationStream,
-          ),
-          Container(
-            padding: EdgeInsets.all(10),
-            alignment: Alignment.topRight,
-            child: ZoomButtons(
-              onZoomIn: () {
-                context.read<LocationBloc>().add(ZoomIn());
-              },
-              onZoomOut: () {
-                context.read<LocationBloc>().add(ZoomOut());
-              },
+          FlutterMap(
+            mapController: _mapController,
+            options: MapOptions(
+              initialCenter: state.location,
+              maxZoom: 20,
+              minZoom: 15,
+              initialZoom: 18,
+              onTap: (_, __) => _popupController
+                  .hideAllPopups(), // Hide popup when the map is tapped.
             ),
-          ),
-          Container(
-            padding: EdgeInsets.all(10),
-            alignment: Alignment.bottomRight,
-            child: SizedBox(
-              height: 75,
-              child: _locationButton(context),
-            ),
-          ),
-          MarkerClusterLayerWidget(
-            options: MarkerClusterLayerOptions(
-              maxClusterRadius: 80,
-              rotate: false,
-              disableClusteringAtZoom: 18,
-              zoomToBoundsOnClick: false,
-              markers: artMarkers,
-              onMarkersClustered: (p0) => _popupController.hideAllPopups(),
-              size: const Size(40, 40),
-              builder: (context, markers) {
-                return Container(
-                  height: 30,
-                  width: 30,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: AppTheme.princetonOrange,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 2,
-                      )),
-                  child: Text(markers.length.toString()),
-                );
-              },
-              popupOptions: PopupOptions(
-                popupSnap: PopupSnap.markerTop,
-                popupAnimation: PopupAnimation.fade(),
-                popupController: _popupController,
-                popupBuilder: (_, marker) {
-                  if (marker is CampusArtMarker) {
-                    return _buildPopup(marker);
-                  } else {
-                    throw Error();
-                  }
-                },
+            children: [
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                maxZoom: 20,
               ),
-            ),
-          ),
+              CurrentLocationLayer(
+                followCurrentLocationStream:
+                    context.read<LocationBloc>().followCurrentLocationStream,
+              ),
+              MarkerClusterLayerWidget(
+                options: MarkerClusterLayerOptions(
+                  maxClusterRadius: 80,
+                  rotate: false,
+                  disableClusteringAtZoom: 18,
+                  zoomToBoundsOnClick: false,
+                  markers: artMarkers,
+                  onMarkersClustered: (p0) => _popupController.hideAllPopups(),
+                  size: const Size(40, 40),
+                  builder: (context, markers) {
+                    return Container(
+                      height: 30,
+                      width: 30,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: AppTheme.princetonOrange,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 2,
+                          )),
+                      child: Text(markers.length.toString()),
+                    );
+                  },
+                  popupOptions: PopupOptions(
+                    popupSnap: PopupSnap.markerTop,
+                    popupAnimation: PopupAnimation.fade(),
+                    popupController: _popupController,
+                    popupBuilder: (_, marker) {
+                      if (marker is CampusArtMarker) {
+                        return _buildPopup(marker);
+                      } else {
+                        throw Error();
+                      }
+                    },
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(10),
+                alignment: Alignment.topRight,
+                child: ZoomButtons(
+                  onZoomIn: () {
+                    context.read<LocationBloc>().add(ZoomIn());
+                  },
+                  onZoomOut: () {
+                    context.read<LocationBloc>().add(ZoomOut());
+                  },
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(10),
+                alignment: Alignment.bottomRight,
+                child: SizedBox(
+                  height: 75,
+                  child: _locationButton(context),
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );
@@ -180,8 +184,8 @@ class _MapPageState extends State<MapPage> {
 
   FloatingActionButton _locationButton(BuildContext context) {
     return FloatingActionButton(
-      backgroundColor: Colors.white.withOpacity(0.7),
-      splashColor: AppTheme.princetonOrange.withOpacity(0.4),
+      backgroundColor: Colors.white,
+      splashColor: AppTheme.princetonOrange,
       shape: CircleBorder(),
       onPressed: () {
         _popupController.hideAllPopups();
