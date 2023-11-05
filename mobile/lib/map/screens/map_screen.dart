@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:puam_app/map/domain/models/art_marker.dart';
 import 'package:puam_app/map/screens/markers.dart';
 import 'package:puam_app/shared/index.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
@@ -69,19 +70,16 @@ class MapPage extends StatelessWidget {
                         );
                       },
                       popupOptions: PopupOptions(
-                          popupSnap: PopupSnap.markerTop,
-                          popupController: _popupController,
-                          popupBuilder: (_, marker) => Container(
-                                width: 200,
-                                height: 100,
-                                color: Colors.white,
-                                child: GestureDetector(
-                                  onTap: () => debugPrint('Popup tap!'),
-                                  child: const Text(
-                                    'Container popup for marker',
-                                  ),
-                                ),
-                              )),
+                        popupSnap: PopupSnap.markerTop,
+                        popupController: _popupController,
+                        popupBuilder: (_, marker) {
+                          if (marker is CampusArtMarker) {
+                            return _buildPopup(marker);
+                          } else {
+                            throw Error();
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -93,6 +91,32 @@ class MapPage extends StatelessWidget {
             return Center(child: Text("Unknown state!"));
           }
         },
+      ),
+    );
+  }
+
+  Widget _buildPopup(CampusArtMarker marker) {
+    return GestureDetector(
+      onTap: () {
+        debugPrint(marker.campusArtwork.name);
+      },
+      child: Container(
+        width: 150,
+        height: 300,
+        color: Colors.white,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.network(
+                marker.campusArtwork.imageUrl,
+                fit: BoxFit.contain,
+              ),
+            ),
+            Text('${marker.campusArtwork.name} (${marker.campusArtwork.year})'),
+            Text(marker.campusArtwork.artist),
+          ],
+        ),
       ),
     );
   }
