@@ -57,17 +57,26 @@ class MapPage extends StatelessWidget {
                   ),
                   MarkerClusterLayerWidget(
                     options: MarkerClusterLayerOptions(
-                      maxClusterRadius: 120,
+                      maxClusterRadius: 80,
                       rotate: false,
-                      disableClusteringAtZoom: 17,
+                      disableClusteringAtZoom: 18,
+                      zoomToBoundsOnClick: false,
                       markers: artMarkers,
                       onMarkersClustered: (p0) =>
                           _popupController.hideAllPopups(),
                       size: const Size(40, 40),
                       builder: (context, markers) {
-                        return FloatingActionButton(
-                          onPressed: null,
-                          backgroundColor: AppTheme.princetonOrange,
+                        return Container(
+                          height: 30,
+                          width: 30,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: AppTheme.princetonOrange,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 2,
+                              )),
                           child: Text(markers.length.toString()),
                         );
                       },

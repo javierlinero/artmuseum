@@ -9,8 +9,8 @@ class CampusArtMarker extends Marker {
       : super(
             point: LatLng(campusArtwork.lat, campusArtwork.long),
             child: Container(
-              height: 20,
-              width: 20,
+              height: 5,
+              width: 5,
               decoration: BoxDecoration(
                   color: AppTheme.princetonOrange,
                   shape: BoxShape.circle,
