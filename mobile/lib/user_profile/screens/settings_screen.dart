@@ -1,8 +1,5 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:puam_app/shared/index.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:puam_app/user_profile/screens/edit_profile_screen.dart';

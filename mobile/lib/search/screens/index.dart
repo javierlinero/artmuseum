@@ -1,1 +1,1 @@
-export 'gallery_screen.dart';
+export 'search_screen.dart';
