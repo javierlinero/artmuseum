@@ -257,6 +257,98 @@ List<CampusArtwork> campusArtworks = [
     long: -74.65535,
   ),
 
+  // Right of Washington
+  CampusArtwork(
+    name: 'Pair of topiary tigers',
+    year: '2000',
+    artist: 'Ruffin Hobbs',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/PP636_a.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3469,
+    long: -74.6505,
+  ),
+  CampusArtwork(
+    name: 'Orrery',
+    year: '1770',
+    artist: 'David Rittenhouse',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/orrery_1.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3466,
+    long: -74.6517,
+  ),
+  CampusArtwork(
+    name: 'The Hedgehog and the Fox',
+    year: '2000',
+    artist: 'Richard Serra',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/PP618_1.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3462,
+    long: -74.6519,
+  ),
+  CampusArtwork(
+    name: 'Professor Albert Einstein',
+    year: '1933',
+    artist: 'Sir Jacob Epstein',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/y1970-115_OBL1.jp2/full/pct:25/0/default.jpg',
+    lat: 40.345797,
+    long: -74.65271,
+  ),
+  CampusArtwork(
+    name: 'Five Disks: One Empty',
+    year: '1969-70',
+    artist: 'Alexander Calder',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/y1969-126_a.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3455,
+    long: -74.6522,
+  ),
+  CampusArtwork(
+    name: 'Sphere VI',
+    year: '1966',
+    artist: 'Arnaldo Pomodoro',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/y1969-20_2.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3456,
+    long: -74.6522,
+  ),
+  CampusArtwork(
+    name: 'Construction in the Third and Fourth Dimension',
+    year: '1961-62',
+    artist: 'Antoine Pevsner',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/y1969-130_b.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3451,
+    long: -74.6519,
+  ),
+  CampusArtwork(
+    name: 'Landscape, triptych',
+    year: '1910-19',
+    artist: 'Attributed to Agnes F. Northrop',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/PUAMANX23_8124.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3452,
+    long: -74.6517,
+  ),
+  CampusArtwork(
+    name: 'Resonance',
+    year: '2009-10',
+    artist: 'Kendall Buster',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/PP643_0011.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3441,
+    long: -74.6508,
+  ),
+  CampusArtwork(
+    name: 'Bill Bradley',
+    year: '2014',
+    artist: 'Harry Weber',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/STU00644.jp2/full/pct:25/0/default.jpg',
+    lat: 40.344,
+    long: -74.6489,
+  ),
+
   // Graduate college
   CampusArtwork(
     name: 'Floating Figure',
