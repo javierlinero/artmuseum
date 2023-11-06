@@ -349,6 +349,135 @@ List<CampusArtwork> campusArtworks = [
     long: -74.6489,
   ),
 
+  // Middle campus near Whitman
+  CampusArtwork(
+    name: 'Thetis Circle',
+    year: '2011',
+    artist: 'Beverly Pepper',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/STU00546.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3448,
+    long: -74.6579,
+  ),
+  CampusArtwork(
+    name: 'Head of a Woman',
+    year: 'Designed 1962, Executed 1971',
+    artist: 'Designed by Pablo Picasso, Executed by Carl Nesjar',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/y1969-131.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3443,
+    long: -74.6593,
+  ),
+  CampusArtwork(
+    name: 'Stardust',
+    year: '2013-14',
+    artist: 'Bhakti Ziek',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/STU00216.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3443,
+    long: -74.6578,
+  ),
+  CampusArtwork(
+    name: 'Circle of Animals/Zodiac Heads',
+    year: '2010',
+    artist: 'Ai Weiwei',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/ZodiacHeads.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3435,
+    long: -74.6593,
+  ),
+  CampusArtwork(
+    name: 'Einstein\'s Table',
+    year: '2019',
+    artist: 'Maya Lin',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/PUAMSTU2019__DSC1375.jp2/full/pct:25/0/default.jpg',
+    lat: 40.342904,
+    long: -74.659489,
+  ),
+  CampusArtwork(
+    name: 'The Princeton Line',
+    year: '2018',
+    artist: 'Maya Lin',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/Maya_Princeton_Line.jp2/full/pct:25/0/default.jpg',
+    lat: 40.34287,
+    long: -74.65899,
+  ),
+  CampusArtwork(
+    name: 'Mastodon VI',
+    year: '1968',
+    artist: 'Michael Hall',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/y1969-81_SL.jp2/full/pct:25/0/default.jpg',
+    lat: 40.342403,
+    long: -74.656581,
+  ),
+  CampusArtwork(
+    name: 'The Home We Share (Flower Fields Forever)',
+    year: '2022',
+    artist: 'R & R Studios, Rosario Marquardt, Roberto Behar',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/PUAM23_85A1789.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3414408,
+    long: -74.6545719,
+  ),
+  CampusArtwork(
+    name: 'The Home We Share (Forget Me Not)',
+    year: '2022',
+    artist: 'R & R Studios, Rosario Marquardt, Roberto Behar',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/PUAM23_85A1713.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3423081,
+    long: -74.6554349,
+  ),
+  CampusArtwork(
+    name: 'The Home We Share (Dreaming Room)',
+    year: '2022',
+    artist: 'R & R Studios, Rosario Marquardt, Roberto Behar',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/PUAM23_85A1753.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3426431,
+    long: -74.6540633,
+  ),
+  CampusArtwork(
+    name: 'Wall Drawing #1134, Whirls and Twirls (Princeton)',
+    year: '2004',
+    artist: 'Sol LeWitt',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/PP617.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3434,
+    long: -74.6562,
+  ),
+  CampusArtwork(
+    name: 'Up and Away',
+    year: '2009',
+    artist: 'Odili Donald Odita',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/PP639.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3441,
+    long: -74.6558,
+  ),
+  CampusArtwork(
+    name: 'Horse-Head Conference Room',
+    year: 'ca. 1999; installed in 2002',
+    artist: 'Frank Gehry',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/PP646_a.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3443,
+    long: -74.6531,
+  ),
+  // NOT VISIBLE DUE TO CONSTRUCTION
+  // CampusArtwork(
+  //   name: 'Pair of lions',
+  //   year: 'Before 1889',
+  //   artist: 'Cast by J. L. Mott Ironworks, A. Schiffelman',
+  //   imageUrl:
+  //       'https://puam-loris.aws.princeton.edu/loris/PP308-1-2_a.jp2/full/pct:25/0/default.jpg',
+  //   lat: 40.3448,
+  //   long: -74.6555,
+  // ),
+
   // Graduate college
   CampusArtwork(
     name: 'Floating Figure',
