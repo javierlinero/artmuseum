@@ -4,6 +4,7 @@ import 'package:puam_app/art_of_the_day/index.dart';
 import 'package:puam_app/map/index.dart';
 import 'package:puam_app/shared/index.dart';
 import 'package:puam_app/tinder_for_art/index.dart';
+import 'package:puam_app/auth/index.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   @override
@@ -19,7 +20,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     TinderForArtPage(),
     const Placeholder(),
     MapPage(),
-    const Placeholder(),
+    WidgetTree(),
   ];
 
   @override

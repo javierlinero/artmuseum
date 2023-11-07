@@ -1,10 +1,18 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:puam_app/map/bloc/index.dart';
-import 'package:puam_app/tinder_for_art/bloc/index.dart';
-import 'splash_screen/index.dart';
 
-void main() {
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:puam_app/firebase_options.dart';
+import 'package:puam_app/map/bloc/index.dart';
+import 'package:puam_app/splash_screen/screens/index.dart';
+import 'package:puam_app/tinder_for_art/bloc/index.dart';
+
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 

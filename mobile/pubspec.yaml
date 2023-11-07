@@ -50,6 +50,9 @@ dependencies:
   geolocator: ^10.1.0
   permission_handler: ^11.0.1
   flutter_map_location_marker: ^8.0.0
+  firebase_auth: ^4.12.1
+  firebase_core: ^2.21.0
+  google_sign_in: ^5.4.2
 
 dev_dependencies:
   flutter_test:
@@ -236,6 +239,7 @@ flutter:
   -  assets/pixel.png
   -  assets/app_icon.png
   -  assets/nav_bar/
+  -  assets/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

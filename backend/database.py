@@ -32,7 +32,7 @@ def drop_prefs(cursor):
 
 def get_user_pref(user_id):
     with psycopg2.connect(database="init_db", 
-                          user="puam", password=os.environ['PUAM_DB_PASSWORD']
+                          user="puam", password="ztZ~TIm2k9d0OoDi&<u?m9hH.?K)",
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
                           port='5432') as connection:
         with connection.cursor() as cursor:
@@ -41,7 +41,7 @@ def get_user_pref(user_id):
 
 def set_user_pref(user_id, new_rating):
     with psycopg2.connect(database="init_db", 
-                          user="puam", password=os.environ['PUAM_DB_PASSWORD']
+                          user="puam", password="ztZ~TIm2k9d0OoDi&<u?m9hH.?K)",
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
                           port='5432') as connection:
         with connection.cursor() as cursor:
@@ -61,7 +61,7 @@ def write_dummy_pref(cursor):
 
 if __name__ == '__main__':
     with psycopg2.connect(database="init_db", 
-                          user="puam", password=os.environ['PUAM_DB_PASSWORD']
+                          user="puam", password="ztZ~TIm2k9d0OoDi&<u?m9hH.?K)",
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
                           port='5432') as connection:
         with connection.cursor() as cursor:
