@@ -23,7 +23,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     const Search(),
     const Placeholder(),
     MapPage(),
-    LoginRegisterPage(),
+    SignUpPage(),
   ];
 
   @override
