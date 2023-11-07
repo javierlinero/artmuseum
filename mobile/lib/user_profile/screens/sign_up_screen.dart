@@ -39,7 +39,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => UserCredentials()));
@@ -50,7 +50,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(context,
+                      Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) => Login()));
                     },
                     style: FilledButton.styleFrom(
