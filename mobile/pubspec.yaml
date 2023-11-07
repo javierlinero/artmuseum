@@ -51,6 +51,9 @@ dependencies:
   permission_handler: ^11.0.1
   flutter_map_location_marker: ^8.0.0
   dio: ^5.3.3
+  firebase_auth: ^4.12.1
+  firebase_core: ^2.21.0
+  google_sign_in: ^5.4.2
 
 dev_dependencies:
   flutter_test:
