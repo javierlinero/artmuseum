@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:puam_app/shared/index.dart';
 
@@ -16,6 +14,47 @@ class _SearchState extends State<Search> {
       MediaQuery.of(context).size.height;
   double deviceWidth(BuildContext context) => MediaQuery.of(context).size.width;
 
+  List<String> data = [
+    'Artist',
+    'Medium',
+    'Time Period',
+    'African American Prints',
+    'Along the Edge',
+    'Women Artists',
+    'Abstractions',
+  ];
+
+   List<String> searchResults = [];
+
+  void onQueryChanged(String query) {
+    setState(() {
+      searchResults = data
+          .where((item) => item.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
+    Iterable<Widget> getSuggestions(SearchController controller) {
+    final String input = controller.value.text;
+    return data
+        .where((data) => data.contains(input))
+        .map(
+          (String filteredSearch) => ListTile(
+            title: Text(filteredSearch),
+            trailing: IconButton(
+              icon: const Icon(Icons.call_missed),
+              onPressed: () {
+                controller.text = filteredSearch;
+                controller.selection =
+                    TextSelection.collapsed(offset: controller.text.length);
+              },
+            ),
+            onTap: () {
+              controller.closeView(filteredSearch);
+            },
+          ),
+        );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,24 +76,12 @@ class _SearchState extends State<Search> {
                 onTap: () {
                   controller.openView();
                 },
-                onChanged: (_) {
-                  controller.openView();
-                },
+                onChanged:onQueryChanged,
                 leading: const Icon(Icons.search),
               );
             }, suggestionsBuilder:
                     (BuildContext context, SearchController controller) {
-              return List<ListTile>.generate(5, (int index) {
-                final String item = 'item $index';
-                return ListTile(
-                  title: Text(item),
-                  onTap: () {
-                    setState(() {
-                      controller.closeView(item);
-                    });
-                  },
-                );
-              });
+                      return getSuggestions(controller);
             }),
           ),
             _buildSectionTitle('Categories'),
@@ -129,11 +156,11 @@ Widget _buildSectionTitle(String title) {
                   Container(
                     width: 150,
                     child: Padding(
-                      padding: EdgeInsets.only(left:5, top:15),
-                      child:Text(
-                                item.name,
-                                style: AppTheme.categoryItem,
-                              ),
+                      padding: EdgeInsets.only(left: 5, top:10),
+                      child: Text(
+                            item.name,
+                            style: AppTheme.categoryItem,
+                          ),
                     ),
                   ),
                 ]),

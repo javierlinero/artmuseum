@@ -83,8 +83,7 @@ class AppTheme {
   static TextStyle categoryItem = GoogleFonts.roboto(
     color: Colors.black,
     fontSize: 15,
-    fontWeight: FontWeight.normal,
-    height: 0.09,
+    fontWeight: FontWeight.w600,
   );
 
 }
