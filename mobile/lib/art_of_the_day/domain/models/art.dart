@@ -1,6 +1,6 @@
 class Artwork {
   final String title;
-  final String artist;
+  final List<String> artists;
   final String imageUrl;
   final String year;
   final String materials;
@@ -9,7 +9,7 @@ class Artwork {
 
   Artwork({
     required this.title,
-    required this.artist,
+    required this.artists,
     required this.imageUrl,
     required this.year,
     required this.materials,

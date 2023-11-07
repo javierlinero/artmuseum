@@ -17,7 +17,7 @@ class PaintingWidget extends StatelessWidget {
         child: Container(
           alignment: Alignment.center,
           child: Image.network(
-            imageUrl,
+            '$imageUrl/full/full/0/default.jpg',
             fit: BoxFit.contain,
           ),
         ),

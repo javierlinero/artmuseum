@@ -15,11 +15,11 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
   double deviceWidth(BuildContext context) => MediaQuery.of(context).size.width;
 
   final List<String> artCards = [
-    "https://puam-loris.aws.princeton.edu/loris/STU1350.jp2/full/full/0/default.jpg",
-    "https://puam-loris.aws.princeton.edu/loris/1997-549.jp2/full/full/0/default.jpg",
-    "https://puam-loris.aws.princeton.edu/loris/L1988-62-23.jp2/full/full/0/default.jpg",
-    "https://puam-loris.aws.princeton.edu/loris/y1992-21.jp2/full/full/0/default.jpg",
-    "https://puam-loris.aws.princeton.edu/loris/L1988-62-26.jp2/full/full/0/default.jpg"
+    "https://puam-loris.aws.princeton.edu/loris/STU1350.jp2/full/pct:50/0/default.jpg",
+    "https://puam-loris.aws.princeton.edu/loris/1997-549.jp2/full/pct:50/0/default.jpg",
+    "https://puam-loris.aws.princeton.edu/loris/L1988-62-23.jp2/full/pct:50/0/default.jpg",
+    "https://puam-loris.aws.princeton.edu/loris/y1992-21.jp2/full/pct:50/0/default.jpg",
+    "https://puam-loris.aws.princeton.edu/loris/L1988-62-26.jp2/full/pct:50/0/default.jpg"
   ];
   AppinioSwiperController _swiperController = AppinioSwiperController();
 

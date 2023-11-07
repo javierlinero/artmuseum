@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:puam_app/art_of_the_day/index.dart';
+import 'package:puam_app/auth/index.dart';
+import 'package:puam_app/map/index.dart';
 import 'package:puam_app/search/index.dart';
 import 'package:puam_app/shared/index.dart';
 import 'package:puam_app/tinder_for_art/index.dart';
@@ -20,7 +22,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     TinderForArtPage(),
     const Search(),
     const Placeholder(),
-    const SignUpPage(),
+    MapPage(),
+    LoginRegisterPage(),
   ];
 
   @override
@@ -31,6 +34,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         children: _featureScreens,
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         showSelectedLabels: false,
         showUnselectedLabels: false,
         currentIndex: _currentIndex,
