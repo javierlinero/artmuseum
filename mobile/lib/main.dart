@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puam_app/art_of_the_day/index.dart';
-import 'package:puam_app/auth/index.dart';
+import 'package:puam_app/user_profile/index.dart';
 import 'package:puam_app/firebase_options.dart';
 import 'package:puam_app/map/bloc/index.dart';
 import 'package:puam_app/tinder_for_art/bloc/index.dart';
@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
         home: MySplashScreen(),
       ),
     );
-  } 
+  }
 }
 
 @override
@@ -59,4 +59,3 @@ Widget build(BuildContext context) {
     ),
   );
 }
-  

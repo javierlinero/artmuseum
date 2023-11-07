@@ -21,7 +21,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     ArtOfTheDayPage(),
     TinderForArtPage(),
     const Search(),
-    const Placeholder(),
     MapPage(),
     SignUpPage(),
   ];
