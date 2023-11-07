@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puam_app/art_of_the_day/index.dart';
+import 'package:puam_app/auth/index.dart';
 import 'package:puam_app/firebase_options.dart';
 import 'package:puam_app/map/bloc/index.dart';
 import 'package:puam_app/tinder_for_art/bloc/index.dart';
@@ -34,7 +35,8 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(
           create: (context) => LocationBloc(),
         ),
-        BlocProvider(create: (context) => ArtBloc(ArtworkRepository()))
+        BlocProvider(create: (context) => ArtBloc(ArtworkRepository())),
+        BlocProvider(create: ((context) => AuthBloc()))
       ],
       child: MaterialApp(
         color: Colors.black,

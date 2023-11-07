@@ -1,104 +1,91 @@
-import 'package:firebase_auth/firebase_auth.dart';
+// ignore_for_file: must_be_immutable, prefer_const_constructors
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puam_app/auth/index.dart';
 
-class LoginRegisterPage extends StatefulWidget {
-  const LoginRegisterPage({Key? key}) : super(key: key);
-
-  @override
-  State<LoginRegisterPage> createState() => _LoginRegisterPageState();
-}
-
-class _LoginRegisterPageState extends State<LoginRegisterPage> {
-  String? errorMessage = '';
-  bool isLogin = true;
-
+class LoginRegisterPage extends StatelessWidget {
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
+  bool isLogin = true;
 
-  Future<void> signInWithEmailAndPassword() async {
-    try {
-      await Auth().signInWithEmailAndPassword(
-          email: _controllerEmail.text, password: _controllerPassword.text);
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        errorMessage = e.message;
-      });
-    }
-  }
-
-  Future<void> createWithEmailAndPassword() async {
-    try {
-      await Auth().createWithEmailAndPassword(
-          email: _controllerEmail.text, password: _controllerPassword.text);
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        errorMessage = e.message;
-      });
-    }
-  }
-
-  Widget _title() {
-    return const Text('PUAM Authentication');
-  }
-
-  Widget _entryField(
-    String title,
-    TextEditingController controller,
-  ) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(labelText: title),
-    );
-  }
-
-  Widget _errorMessage() {
-    return Text(errorMessage == '' ? '' : 'Humm ? $errorMessage');
-  }
-
-  Widget _submitButton() {
-    return ElevatedButton(
-        onPressed:
-            isLogin ? signInWithEmailAndPassword : createWithEmailAndPassword,
-        child: Text(isLogin ? 'Login' : 'Register'));
-  }
-
-  Widget _loginOrRegistrationButton() {
-    return TextButton(
-        onPressed: () {
-          setState(() {
-            isLogin = !isLogin;
-          });
-        },
-        child: Text(isLogin ? 'Register Instead' : 'Login Instead'));
-  }
-
-  Widget _authGoogle() {
-    return ElevatedButton(
-        onPressed: Auth().signInWithGoogle,
-        child: const Text('Sign In With Google'));
-  }
+  LoginRegisterPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: _title()),
-        body: Container(
-          height: double.infinity,
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _entryField('email', _controllerEmail),
-              _entryField('password', _controllerPassword),
-              _errorMessage(),
-              _submitButton(),
-              _loginOrRegistrationButton(),
-              _authGoogle(),
-            ],
-          ),
-        ));
+      appBar: AppBar(title: Text(isLogin ? 'Login' : 'Register')),
+      body: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthStateFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error)),
+            );
+          } else if (state is AuthStateLoggedIn) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => LoginPage()),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is AuthStateLoading) {
+            return Center(child: CircularProgressIndicator());
+          }
+          return Container(
+            height: double.infinity,
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextField(
+                  controller: _controllerEmail,
+                  decoration: InputDecoration(labelText: 'Email'),
+                ),
+                TextField(
+                  controller: _controllerPassword,
+                  obscureText: true,
+                  decoration: InputDecoration(labelText: 'Password'),
+                ),
+                if (state is AuthStateFailure) ...[
+                  Text('Error: ${state.error}'), // Show error message
+                ],
+                ElevatedButton(
+                  onPressed: () {
+                    if (isLogin) {
+                      // Dispatch login event
+                      BlocProvider.of<AuthBloc>(context).add(
+                        AuthEventEmailSignIn(
+                          _controllerEmail.text,
+                          _controllerPassword.text,
+                        ),
+                      );
+                    } else {
+                      // Dispatch registration event
+                    }
+                  },
+                  child: Text(isLogin ? 'Login' : 'Register'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    // Toggle isLogin and refresh UI
+                    isLogin = !isLogin;
+                    (context as Element).markNeedsBuild();
+                  },
+                  child: Text(isLogin ? 'Register Instead' : 'Login Instead'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    // Dispatch Google sign-in event
+                  },
+                  child: const Text('Sign In With Google'),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 }
