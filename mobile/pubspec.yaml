@@ -45,6 +45,7 @@ dependencies:
   auto_size_text: ^3.0.0
   appinio_swiper: ^2.0.3
   shared_preferences: ^2.2.2
+  settings_ui: ^2.0.2
   flutter_map: ^6.0.0
   latlong2: ^0.9.0
   geolocator: ^10.1.0

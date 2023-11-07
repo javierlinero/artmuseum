@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
         home: MySplashScreen(),
       ),
     );
-  }
+  } 
 }
 
 @override
@@ -59,3 +59,4 @@ Widget build(BuildContext context) {
     ),
   );
 }
+  
