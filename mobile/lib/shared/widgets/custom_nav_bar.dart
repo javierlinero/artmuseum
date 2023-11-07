@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:puam_app/art_of_the_day/index.dart';
-import 'package:puam_app/auth/index.dart';
 import 'package:puam_app/map/index.dart';
 import 'package:puam_app/search/index.dart';
 import 'package:puam_app/shared/index.dart';
