@@ -11,6 +11,33 @@ class LoginRegisterPage extends StatelessWidget {
 
   LoginRegisterPage({super.key});
 
+  void _onSubmit(BuildContext context) {
+    if (isLogin) {
+      BlocProvider.of<AuthBloc>(context).add(
+        AuthEventEmailSignIn(
+          _controllerEmail.text,
+          _controllerPassword.text,
+        ),
+      );
+    } else {
+      BlocProvider.of<AuthBloc>(context).add(
+        AuthEventEmailSignUp(
+          _controllerEmail.text,
+          _controllerPassword.text,
+        ),
+      );
+    }
+  }
+
+  void _onGoogleSignIn(BuildContext context) {
+    BlocProvider.of<AuthBloc>(context).add(AuthEventGoogleSignIn());
+  }
+
+  void _toggleForm(BuildContext context) {
+    isLogin = !isLogin;
+    (context as Element).markNeedsBuild();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,13 +59,10 @@ class LoginRegisterPage extends StatelessWidget {
             return Center(child: CircularProgressIndicator());
           }
           return Container(
-            height: double.infinity,
-            width: double.infinity,
             padding: const EdgeInsets.all(20),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              children: [
                 TextField(
                   controller: _controllerEmail,
                   decoration: InputDecoration(labelText: 'Email'),
@@ -48,37 +72,17 @@ class LoginRegisterPage extends StatelessWidget {
                   obscureText: true,
                   decoration: InputDecoration(labelText: 'Password'),
                 ),
-                if (state is AuthStateFailure) ...[
-                  Text('Error: ${state.error}'), // Show error message
-                ],
+                if (state is AuthStateFailure) Text('Error: ${state.error}'),
                 ElevatedButton(
-                  onPressed: () {
-                    if (isLogin) {
-                      // Dispatch login event
-                      BlocProvider.of<AuthBloc>(context).add(
-                        AuthEventEmailSignIn(
-                          _controllerEmail.text,
-                          _controllerPassword.text,
-                        ),
-                      );
-                    } else {
-                      // Dispatch registration event
-                    }
-                  },
+                  onPressed: () => _onSubmit(context),
                   child: Text(isLogin ? 'Login' : 'Register'),
                 ),
                 TextButton(
-                  onPressed: () {
-                    // Toggle isLogin and refresh UI
-                    isLogin = !isLogin;
-                    (context as Element).markNeedsBuild();
-                  },
+                  onPressed: () => _toggleForm(context),
                   child: Text(isLogin ? 'Register Instead' : 'Login Instead'),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    // Dispatch Google sign-in event
-                  },
+                  onPressed: () => _onGoogleSignIn(context),
                   child: const Text('Sign In With Google'),
                 ),
               ],

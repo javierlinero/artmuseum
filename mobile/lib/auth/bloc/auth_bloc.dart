@@ -1,28 +1,48 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'auth_event.dart';
-import 'auth_state.dart';
+import 'package:puam_app/auth/index.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final Auth _authService;
 
-  AuthBloc() : super(AuthStateInitial()) {
-    on<AuthEventEmailSignIn>((event, emit) async {
-      emit(AuthStateLoading());
+  AuthBloc(this._authService) : super(AuthStateInitial()) {
+    on<AuthEventEmailSignUp>((event, emit) async {
       try {
-        await _firebaseAuth.signInWithEmailAndPassword(
+        emit(AuthStateLoading());
+        await _authService.createWithEmailAndPassword(
           email: event.email,
           password: event.password,
         );
-        final User user = _firebaseAuth.currentUser!;
-        emit(AuthStateLoggedIn(user));
+        emit(AuthStateLoggedIn(_authService.currentUser!));
+      } catch (e) {
+        emit(AuthStateFailure(e.toString()));
+      }
+    });
+
+    on<AuthEventEmailSignIn>((event, emit) async {
+      try {
+        emit(AuthStateLoading());
+        await _authService.signInWithEmailAndPassword(
+          email: event.email,
+          password: event.password,
+        );
+        emit(AuthStateLoggedIn(_authService.currentUser!));
+      } catch (e) {
+        emit(AuthStateFailure(e.toString()));
+      }
+    });
+
+    on<AuthEventGoogleSignIn>((event, emit) async {
+      try {
+        emit(AuthStateLoading());
+        await _authService.signInWithGoogle();
+        emit(AuthStateLoggedIn(_authService.currentUser!));
       } catch (e) {
         emit(AuthStateFailure(e.toString()));
       }
     });
 
     on<AuthEventSignOut>((event, emit) async {
-      await _firebaseAuth.signOut();
+      await _authService.signOut();
       emit(AuthStateLoggedOut());
     });
   }
