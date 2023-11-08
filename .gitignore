@@ -2,3 +2,4 @@
 .vscode
 backend/__pycache__
 HASIMAGES
+.env
