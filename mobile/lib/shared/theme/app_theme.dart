@@ -62,4 +62,30 @@ class AppTheme {
     fontSize: 16,
     fontWeight: FontWeight.w400,
   );
+  
+  // Sign up TextStyle
+  static TextStyle signUp = GoogleFonts.lato(
+    color: Colors.white,
+    fontSize: 25,
+    fontWeight: FontWeight.w700,
+    height: 0.09,
+  );
+
+  // Sign up TextStyle
+  static TextStyle username = GoogleFonts.roboto(
+    color: Colors.black,
+    fontSize: 25,
+    fontWeight: FontWeight.w700,
+    height: 0.09,
+  );
+
+    // Category Item TextStyle
+  static TextStyle categoryItem = GoogleFonts.roboto(
+    color: Colors.black,
+    fontSize: 15,
+    fontWeight: FontWeight.w600,
+  );
+
 }
+
+

@@ -1,10 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puam_app/art_of_the_day/index.dart';
+import 'package:puam_app/user_profile/index.dart';
+import 'package:puam_app/firebase_options.dart';
 import 'package:puam_app/tinder_for_art/bloc/index.dart';
 import 'splash_screen/index.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -24,7 +31,8 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(
           create: (context) => ArtworkBloc(),
         ),
-        BlocProvider(create: (context) => ArtBloc(ArtworkRepository()))
+        BlocProvider(create: (context) => ArtBloc(ArtworkRepository())),
+        BlocProvider(create: ((context) => AuthBloc(Auth())))
       ],
       child: MaterialApp(
         color: Colors.black,

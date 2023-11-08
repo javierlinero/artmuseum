@@ -4,7 +4,7 @@ import 'package:puam_app/art_of_the_day/index.dart';
 class ArtworkService {
   final Dio _dio = Dio();
 
-  final String serverUrl = "http://10.0.2.2:8080";
+  final String serverUrl = "http://puamdns.ddns.net";
 
   Future<Artwork> fetchArtOfTheDay() async {
     try {
