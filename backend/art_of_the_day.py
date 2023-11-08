@@ -2,10 +2,16 @@ import json
 import random
 import os
 import flask
+from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, jsonify
 import database as db
 
 app = Flask(__name__)
+
+scheduler = BackgroundScheduler()
+scheduler.start()
+
+current_art = None
 
 def get_random_file():
     while True:
@@ -22,6 +28,14 @@ def get_random_art():
         if artwork is not None:
             return artwork
 
+def change_aotd():
+    global current_art
+    current_art = get_random_art()
+
+#sets up a scheduler in cron expression to change art of the day 
+scheduler.add_job(change_aotd, 'cron', hour=0, minute=0, second=0,
+                  timezone='US/Eastern')
+
 def get_json(file):
     f = open(file)
     data = json.load(f)
@@ -29,8 +43,13 @@ def get_json(file):
 
 @app.route('/art_of_the_day', methods=['GET'])
 def art_of_the_day():
-    file = get_random_art()
-    return jsonify(file)
+    global current_art
+
+    if current_art is None:
+        current_art = get_random_art()
+
+    return jsonify(current_art)
+
 
 @app.route('/tinder_for_art', methods=['GET'])
 def tinder_for_art_get():
