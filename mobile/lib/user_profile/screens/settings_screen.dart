@@ -14,24 +14,7 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: appBar(),
-        body: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
-            if (state is AuthStateLoggedIn) {
-              return _buildSettings(context);
-            } else {
-              // If the user is not logged in, they should not be on this page
-              // Redirect them to the login page or display a message
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => SignUpPage()),
-                );
-              });
-              return SizedBox.shrink();
-            }
-          },
-        ));
+    return Scaffold(appBar: appBar(), body: _buildSettings(context));
   }
 
   SettingsList _buildSettings(BuildContext context) {

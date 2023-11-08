@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puam_app/shared/index.dart';
 import 'package:puam_app/user_profile/index.dart';
-import 'package:puam_app/user_profile/screens/profile_screen.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -34,9 +33,7 @@ class _LoginState extends State<Login> {
             SnackBar(content: Text(state.error)),
           );
         } else if (state is AuthStateLoggedIn) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => Profile()),
-          );
+          Navigator.pop(context);
         }
       }), builder: (context, state) {
         if (state is AuthStateLoading) {
@@ -76,6 +73,8 @@ class _LoginState extends State<Login> {
       ElevatedButton(
         onPressed: () {
           _onSubmit(context);
+          _controllerEmail.clear();
+          _controllerPassword.clear();
         },
         style:
             FilledButton.styleFrom(backgroundColor: AppTheme.princetonOrange),

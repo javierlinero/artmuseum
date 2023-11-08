@@ -33,9 +33,7 @@ class _UserCredentialsState extends State<UserCredentials> {
             SnackBar(content: Text(state.error)),
           );
         } else if (state is AuthStateLoggedIn) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => Profile()),
-          );
+          Navigator.pop(context);
         }
       }), builder: (context, state) {
         if (state is AuthStateLoading) {
@@ -130,6 +128,8 @@ class _UserCredentialsState extends State<UserCredentials> {
       ElevatedButton(
         onPressed: () {
           _onSubmit(context);
+          _controllerEmail.clear();
+          _controllerPassword.clear();
         },
         style:
             FilledButton.styleFrom(backgroundColor: AppTheme.princetonOrange),
