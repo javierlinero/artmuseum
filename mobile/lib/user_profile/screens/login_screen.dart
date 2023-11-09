@@ -23,6 +23,7 @@ void _onSubmit(BuildContext context) {
 }
 
 class _LoginState extends State<Login> {
+   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +45,7 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Column _buildLoginPage(BuildContext context) {
+  Column _buildLoginPage(BuildContext context) { 
     return Column(children: [
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
@@ -54,7 +55,7 @@ class _LoginState extends State<Login> {
             filled: true,
             fillColor: Colors.grey,
             border: UnderlineInputBorder(),
-            labelText: 'Username',
+            labelText: 'Username',           
           ),
         ),
       ),
@@ -62,6 +63,7 @@ class _LoginState extends State<Login> {
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: TextFormField(
           controller: _controllerPassword,
+          obscureText: true,
           decoration: const InputDecoration(
             filled: true,
             fillColor: Colors.grey,

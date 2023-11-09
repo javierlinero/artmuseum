@@ -106,6 +106,7 @@ class _UserCredentialsState extends State<UserCredentials> {
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: TextFormField(
           controller: _controllerPassword,
+          obscureText: true,
           decoration: const InputDecoration(
             filled: true,
             fillColor: Colors.grey,
