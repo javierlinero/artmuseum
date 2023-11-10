@@ -89,13 +89,13 @@ class _SearchState extends State<Search> {
                 CategoryItem(name: 'Medium', imageURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Chinese_-_Flask_-_Walters_491632_%28square%29.jpg/1280px-Chinese_-_Flask_-_Walters_491632_%28square%29.jpg'),
                 CategoryItem(name: 'Time Period', imageURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Wilton_diptych.jpg/1536px-Wilton_diptych.jpg'),
                 CategoryItem(name: 'Artist', imageURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Francesco_Melzi_-_Portrait_of_Leonardo.png/1024px-Francesco_Melzi_-_Portrait_of_Leonardo.png'),
-            ]),
+            ], context), 
             buildSectionTitle('Collections'),
             buildCategoryList([
                 CategoryItem(name: 'African American Prints', imageURL: 'https://puam-loris.aws.princeton.edu/loris/2009-28.jp2/full/full/0/default.jpg'),
                 CategoryItem(name: 'Along the Edge: Leonora Carrington', imageURL: 'https://puam-loris.aws.princeton.edu/loris/INV09529.jp2/full/full/0/default.jpg'),
                 CategoryItem(name: 'Women Artists and Abstraction', imageURL: 'https://puam-loris.aws.princeton.edu/loris/PUAMANX21_43258.jp2/full/full/0/default.jpg'),
-            ]),
+            ], context),
             ],
           ),
         );

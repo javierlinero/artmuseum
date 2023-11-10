@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:puam_app/search/index.dart';
-import 'package:puam_app/search/screens/search_screen.dart';
 import 'package:puam_app/shared/index.dart';
 
-Widget buildCategoryList(List<CategoryItem> items) {
+Widget buildCategoryList(List<CategoryItem> items, BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row( 
@@ -18,6 +17,10 @@ Widget buildCategoryList(List<CategoryItem> items) {
             return GestureDetector(
                   onTap: () { 
                   print("Tapped a Container"); 
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => searchResults(query: item.name,)));
                   },
                   behavior: HitTestBehavior.opaque,
                   child: Column(
