@@ -24,11 +24,11 @@ class _SearchState extends State<Search> {
     'Abstractions',
   ];
 
-   List<String> searchResults = [];
+   List<String> searchSuggestions = [];
 
   void onQueryChanged(String query) {
     setState(() {
-      searchResults = data
+      searchSuggestions = data
           .where((item) => item.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
@@ -51,6 +51,11 @@ class _SearchState extends State<Search> {
             ),
             onTap: () {
               controller.closeView(filteredSearch);
+              print('search');
+              Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => searchResults(query:filteredSearch)));
             },
           ),
         );
