@@ -34,11 +34,7 @@ def tinder_for_art_get():
     file = get_random_file()
     data = get_json(file)
     # still images without url *************************
-    url = None
-    if len(data["primaryimage"]) < 1:
-        url = "https://miro.medium.com/v2/resize:fit:800/1*hFwwQAW45673VGKrMPE2qQ.png"
-    else:
-        url = data["primaryimage"][0]
+    url = data["primaryimage"][0]
 
     return url
 

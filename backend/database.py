@@ -70,6 +70,11 @@ def get_user_pref(user_id):
             pref = read_prefs(cursor, user_id)
             return pref
 
+def insert_pref(pref, new_rating):
+  for i in range(len(pref)):
+     if pref[i][0] > new_rating[0]:
+        pref.insert(i, new_rating)
+
 def set_user_pref(user_id, new_rating):
     with psycopg2.connect(database="init_db", 
                           user="puam", password=os.environ['PUAM_DB_PASSWORD'],
@@ -77,7 +82,7 @@ def set_user_pref(user_id, new_rating):
                           port='5432') as connection:
         with connection.cursor() as cursor:
             pref = read_prefs(cursor, user_id)
-            pref.append(new_rating)
+            insert_pref(pref, new_rating) # preserve sorted by art_id
             write_prefs(cursor, user_id, pref)
 
 
@@ -96,7 +101,6 @@ if __name__ == '__main__':
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
                           port="5432", sslmode="require") as connection:
         with contextlib.closing(connection.cursor()) as cursor:
-            print('SUCCESS')
             #initDB(cursor)
             #write_dummy_pref(cursor)
             print(read_prefs(cursor, 1))
