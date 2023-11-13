@@ -1,6 +1,7 @@
 import codecs
 import contextlib
 import numpy as np
+import os
 import pickle
 import psycopg2
 import sys
@@ -21,36 +22,44 @@ def id_to_feature(artid):
   tensor = pickle.loads(codecs.decode(pickled.encode(), "base64"))
   return tensor
 
+def already_suggested(similarities, art_id):
+	for s in similarities:
+		if s[0] == art_id:
+			return True
+	return False
+
 def get_suggestions(userid, MAX_ART_SAMPLES):
 	MAX_PREF_SAMPLES = 5
-	with psycopg2.connect(database="init_db",
+	'''with psycopg2.connect(database="init_db",
 												user="puam", password=os.environ['PUAM_DB_PASSWORD'],
 												host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
 												port="5432", sslmode="require") as connection:
-		with contextlib.closing(connection.cursor()) as cursor:
+		with contextlib.closing(connection.cursor()) as cursor:'''
 
-			img_features = []
-			full_prefs = read_prefs(cursor, userid)
-			num_pref_samples = min(len(full_prefs), MAX_PREF_SAMPLES)
-			user_ratings = random.sample(full_prefs, num_pref_samples)
-			for rating in user_ratings:
-				img_features.append(id_to_feature(rating[0]))
+	img_features = []
+	#full_prefs = db.read_prefs(cursor, userid)
+  full_prefs = [
+        (279, 0.1),
+        (280, 0.8),
+        (282, 0.4),
+    ]
+	num_pref_samples = min(len(full_prefs), MAX_PREF_SAMPLES)
+	user_ratings = random.sample(full_prefs, num_pref_samples)
+	for rating in user_ratings:
+		img_features.append(id_to_feature(rating[0]))
 
-			similarities = []
-			features_dir = glob.glob('features/*')
-			num_art_samples = min(len(features_dir), MAX_ART_SAMPLES)
-			art_obj_features = random.sample(features_dir, num_art_samples)
+	similarities = []
+	features_dir = glob.glob('features/*')
+	num_art_samples = min(len(features_dir), MAX_ART_SAMPLES)
+	while len(similarities) != num_art_samples:
+		feature_file = random.choice(features_dir)
+		feature_num = int(feature_file[feature_file.rindex('/'):])
 
-			# hardcode to guarantee hits
-			art_obj_features = ['features/279', 'features/280', 'features/281']
+		if not (db.already_rated(userid, feature_num) or already_suggested(similarities, feature_num)):
+			similarities.append((feature_num, similarity(user_ratings, img_features, id_to_feature(feature_num))))
 
-			art_obj_features = [os.path.basename(f) for f in art_obj_features]
-			for f in art_obj_features:  # subset of glob
-				with open('features/' + f) as fp:
-					similarities.append((f, similarity(user_ratings, img_features, id_to_feature(int(f)))))
-
-			similarities = sorted(similarities, key=lambda s : s[1], reverse=True)
-			return similarities
+	similarities = sorted(similarities, key=lambda s : s[1], reverse=True)
+	return similarities
 
 
 if __name__ == '__main__':

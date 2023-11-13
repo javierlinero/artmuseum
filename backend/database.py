@@ -3,7 +3,7 @@ import os
 import codecs
 import pickle
 import psycopg2
-
+import bisect
 
 def get_art_by_id(art_id):
     with psycopg2.connect(database="init_db", 
@@ -70,16 +70,52 @@ def get_user_pref(user_id):
             pref = read_prefs(cursor, user_id)
             return pref
 
+class RatingComparator(object):
+    def __init__(self, val):
+        self.val = val
+    def __lt__(self, other):
+        print(self.val[0], other[0])
+        return self.val[0] < other[0]
+    
+
 def set_user_pref(user_id, new_rating):
-    with psycopg2.connect(database="init_db", 
+    '''with psycopg2.connect(database="init_db", 
                           user="puam", password=os.environ['PUAM_DB_PASSWORD'],
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
                           port='5432') as connection:
         with connection.cursor() as cursor:
             pref = read_prefs(cursor, user_id)
             pref.append(new_rating)
-            write_prefs(cursor, user_id, pref)
+            write_prefs(cursor, user_id, pref)'''
+    pref = [
+        (279, 0.1),
+        (280, 0.8),
+        (282, 0.4),
+    ]
 
+    new_pref = (281, 0.3)
+
+    pref.insert(bisect.bisect_right(pref, RatingComparator(new_pref)), new_pref)
+    print(pref)
+
+def already_rated(user_id, art_id):
+    '''with psycopg2.connect(database="init_db", 
+                        user="puam", password=os.environ['PUAM_DB_PASSWORD'],
+                        host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
+                        port='5432') as connection:
+        with connection.cursor() as cursor:
+            pref = read_prefs(cursor, user_id)
+            if pref[bisect.bisect_right(pref, RatingComparator((art_id, None)))-1][0] == art_id:
+               return True
+            return False'''
+    pref = [
+        (279, 0.1),
+        (280, 0.8),
+        (282, 0.4),
+    ]
+    if pref[bisect.bisect_right(pref, RatingComparator((art_id, None)))-1][0] == art_id:
+        return True
+    return False
 
 def write_dummy_pref(cursor):
     pref = [
@@ -91,7 +127,7 @@ def write_dummy_pref(cursor):
     write_prefs(cursor, 1, pref)
 
 if __name__ == '__main__':
-    with psycopg2.connect(database="init_db", 
+    '''with psycopg2.connect(database="init_db", 
                           user="puam", password=os.environ['PUAM_DB_PASSWORD'],
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
                           port="5432", sslmode="require") as connection:
@@ -100,4 +136,5 @@ if __name__ == '__main__':
             #initDB(cursor)
             #write_dummy_pref(cursor)
             print(read_prefs(cursor, 1))
-            #drop_prefs(cursor)
+            #drop_prefs(cursor)'''
+    set_user_pref(None, None)
