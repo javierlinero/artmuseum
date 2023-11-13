@@ -17,7 +17,7 @@ def similarity(user_ratings, img_features, target_img_features):
     return sim
 
 def id_to_feature(artid):
-    file = open('features/' + str(artid), 'r')
+    file = open('../recommender/features/' + str(artid), 'r')
     pickled = ''
     for line in file:
         pickled += line
@@ -34,29 +34,27 @@ def get_suggestions(userid, MAX_ART_SAMPLES):
     MAX_PREF_SAMPLES = 5
     SAMPLE_POOL_SIZE = 5
     swap_new_img_prob = 0.2
-    '''with psycopg2.connect(database="init_db", user="puam", password=os.environ['PUAM_DB_PASSWORD'], 
+    with psycopg2.connect(database="init_db", user="puam", password=os.environ['PUAM_DB_PASSWORD'], 
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com", port="5432", 
                           sslmode="require") as connection:
-        with contextlib.closing(connection.cursor()) as cursor: '''
-    if 1==1:
-        if 1==1:
+        with contextlib.closing(connection.cursor()) as cursor:
             img_features = []
-            '''full_prefs = db.read_prefs(cursor, userid)
+            full_prefs = db.read_prefs(cursor, userid)
             print('====== Prefs ========')
             print(full_prefs)
-            print('====== Prefs ========')'''
-            full_prefs = [
+            print('====== Prefs ========')
+            '''full_prefs = [
                 (279, 0.1),
                 (280, 0.8),
-                (282, 0.4),
-            ]
+                (281, 0.3),
+            ]'''
             num_pref_samples = min(len(full_prefs), MAX_PREF_SAMPLES)
             user_ratings = random.sample(full_prefs, num_pref_samples)
             for rating in user_ratings:
                 img_features.append(id_to_feature(rating[0]))
 
             similarities = []
-            features_dir = glob.glob('features/*')
+            features_dir = glob.glob('../recommender/features/*')
             num_art_samples = min(len(features_dir), SAMPLE_POOL_SIZE)
             while len(similarities) != num_art_samples:
                 feature_file = random.choice(features_dir)
@@ -67,16 +65,22 @@ def get_suggestions(userid, MAX_ART_SAMPLES):
 
             similarities = sorted(similarities, key=lambda s : s[1], reverse=True)
 
+            print(similarities)
+
             # Swap high similarity image with low similarity with probability swap_new_img_prob
             for i in range(MAX_ART_SAMPLES):
-                if random.random() < swap_new_img_prob:
+                if MAX_ART_SAMPLES < num_art_samples and random.random() < swap_new_img_prob:
                     high_sim_ind = int(random.random() * MAX_ART_SAMPLES)
                     low_sim_ind = int(random.random() * (len(similarities) - MAX_ART_SAMPLES) + MAX_ART_SAMPLES)
                     tmp = similarities[high_sim_ind]
                     similarities[high_sim_ind] = similarities[low_sim_ind]
                     similarities[low_sim_ind] = tmp
+
+            urls = []
+            for i in range(MAX_ART_SAMPLES):
+                urls.append(db.get_art_by_id(similarities[i][0])['imageurl'])
             
-            return similarities[0:MAX_ART_SAMPLES]
+            return urls
 
 
 if __name__ == '__main__':

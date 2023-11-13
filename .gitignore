@@ -3,3 +3,4 @@
 backend/__pycache__
 HASIMAGES
 recommender/features
+recommender/__pycache__

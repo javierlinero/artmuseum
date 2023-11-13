@@ -71,9 +71,7 @@ def get_user_pref(user_id):
             return pref
 
 def insert_pref(pref, new_rating):
-    for i in range(len(pref)):
-        if pref[i][0] > new_rating[0]:
-            pref.insert(i, new_rating)
+    pref.insert(bisect.bisect_right(pref, new_rating), new_rating)
 
 class RatingComparator(object):
     def __init__(self, val):
@@ -91,13 +89,8 @@ def set_user_pref(user_id, new_rating):
             insert_pref(pref, new_rating) # preserve sorted by art_id
             write_prefs(cursor, user_id, pref)
 
-    new_pref = (281, 0.3)
-
-    pref.insert(bisect.bisect_right(pref, RatingComparator(new_pref)), new_pref)
-    print(pref)
-
 def already_rated(user_id, art_id):
-    '''with psycopg2.connect(database="init_db", 
+    with psycopg2.connect(database="init_db", 
                         user="puam", password=os.environ['PUAM_DB_PASSWORD'],
                         host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
                         port='5432') as connection:
@@ -105,15 +98,7 @@ def already_rated(user_id, art_id):
             pref = read_prefs(cursor, user_id)
             if pref[bisect.bisect_right(pref, RatingComparator((art_id, None)))-1][0] == art_id:
                return True
-            return False'''
-    pref = [
-        (279, 0.1),
-        (280, 0.8),
-        (282, 0.4),
-    ]
-    if pref[bisect.bisect_right(pref, RatingComparator((art_id, None)))-1][0] == art_id:
-        return True
-    return False
+            return False
 
 def write_dummy_pref(cursor):
     pref = [
@@ -125,13 +110,11 @@ def write_dummy_pref(cursor):
     write_prefs(cursor, 1, pref)
 
 if __name__ == '__main__':
-    '''with psycopg2.connect(database="init_db", 
+    with psycopg2.connect(database="init_db", 
                           user="puam", password=os.environ['PUAM_DB_PASSWORD'],
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
                           port="5432", sslmode="require") as connection:
         with contextlib.closing(connection.cursor()) as cursor:
             #initDB(cursor)
-            #write_dummy_pref(cursor)
-            print(read_prefs(cursor, 1))
-            #drop_prefs(cursor)'''
-    set_user_pref(None, None)
+            drop_prefs(cursor)
+            write_dummy_pref(cursor)

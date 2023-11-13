@@ -4,6 +4,7 @@ import os
 import flask
 from flask import Flask, jsonify
 import database as db
+import recommender
 
 app = Flask(__name__)
 
@@ -26,29 +27,26 @@ def art_of_the_day():
 
 @app.route('/tinder_for_art', methods=['GET'])
 def tinder_for_art_get():
-    userid = flask.request.args.get('userid')
-    pref = db.get_user_pref(userid)
-    print("Suggesting images based on preferences of userid " + str(userid) + " with preferences:")
-    print(pref)
+    userid = int(flask.request.args.get('userid'))
+    num_suggestions = int(flask.request.args.get('numart'))
+    print("Suggesting " + str(num_suggestions) + " images based on preferences of userid " + str(userid))
 
-    file = get_random_file()
-    data = get_json(file)
     # still images without url *************************
-    url = data["primaryimage"][0]
 
-    return url
+    return recommender.get_suggestions(userid, num_suggestions)
 
 @app.route('/tinder_for_art', methods=['POST'])
 def tinder_for_art_post():
     data = flask.request.form
     userid = int(data["userid"])
-    artobj = data["artobj"]
-    rating = int(data["rating"])
+    artid = int(data["artid"])
+    rating = float(data["rating"])
 
-    print("Updating pref of userid" + str(userid) + " with (" + artobj + "," + str(rating) + ")")
+    print("Updating pref of userid" + str(userid) + " with (" + str(artid) + "," + str(rating) + ")")
 
-    db.set_user_pref(userid, (artobj, int(rating)))
+    db.set_user_pref(userid, (artid, rating))
 
     return "SUCCESS\n"
 
-#curl "http://172.18.65.52:10203/tinder_for_art?userid=1" -F userid=1 -F artobj='artobject_4863.json' -F rating=-1
+#curl "http://172.31.46.224:10203/tinder_for_art?userid=1&numart=3"
+#curl "http://172.31.46.224:10203/tinder_for_art" -F userid=1 -F artid=286 -F rating=-0.5
