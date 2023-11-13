@@ -2,6 +2,7 @@ import codecs
 import contextlib
 import glob
 import numpy as np
+import os
 import pickle
 import psycopg2
 import os
@@ -9,50 +10,73 @@ import random
 import database as db
 
 def similarity(user_ratings, img_features, target_img_features):
-  sim = 0
-  for i, rating in enumerate(user_ratings):
-    if img_features[i] is not None:
-      sim += rating[1] * np.dot(img_features[i], target_img_features)
-  return sim
+    sim = 0
+    for i, rating in enumerate(user_ratings):
+        if img_features[i] is not None:
+            sim += rating[1] * np.dot(img_features[i], target_img_features)
+    return sim
 
 def id_to_feature(artid):
-  file = open('features/' + str(artid), 'r')
-  pickled = ''
-  for line in file:
-    pickled += line
-  tensor = pickle.loads(codecs.decode(pickled.encode(), "base64"))
-  return tensor
+    file = open('features/' + str(artid), 'r')
+    pickled = ''
+    for line in file:
+        pickled += line
+    tensor = pickle.loads(codecs.decode(pickled.encode(), "base64"))
+    return tensor
+
+def already_suggested(similarities, art_id):
+	for s in similarities:
+		if s[0] == art_id:
+			return True
+	return False
 
 def get_suggestions(userid, MAX_ART_SAMPLES):
-	MAX_PREF_SAMPLES = 5
-	with psycopg2.connect(database="init_db",
-												user="puam", password=os.environ['PUAM_DB_PASSWORD'],
-												host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
-												port="5432", sslmode="require") as connection:
-		with contextlib.closing(connection.cursor()) as cursor:
+    MAX_PREF_SAMPLES = 5
+    SAMPLE_POOL_SIZE = 5
+    swap_new_img_prob = 0.2
+    '''with psycopg2.connect(database="init_db", user="puam", password=os.environ['PUAM_DB_PASSWORD'], 
+                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com", port="5432", 
+                          sslmode="require") as connection:
+        with contextlib.closing(connection.cursor()) as cursor: '''
+    if 1==1:
+        if 1==1:
+            img_features = []
+            '''full_prefs = db.read_prefs(cursor, userid)
+            print('====== Prefs ========')
+            print(full_prefs)
+            print('====== Prefs ========')'''
+            full_prefs = [
+                (279, 0.1),
+                (280, 0.8),
+                (282, 0.4),
+            ]
+            num_pref_samples = min(len(full_prefs), MAX_PREF_SAMPLES)
+            user_ratings = random.sample(full_prefs, num_pref_samples)
+            for rating in user_ratings:
+                img_features.append(id_to_feature(rating[0]))
 
-			img_features = []
-			full_prefs = db.read_prefs(cursor, userid)
-			num_pref_samples = min(len(full_prefs), MAX_PREF_SAMPLES)
-			user_ratings = random.sample(full_prefs, num_pref_samples)
-			for rating in user_ratings:
-				img_features.append(id_to_feature(rating[0]))
+            similarities = []
+            features_dir = glob.glob('features/*')
+            num_art_samples = min(len(features_dir), SAMPLE_POOL_SIZE)
+            while len(similarities) != num_art_samples:
+                feature_file = random.choice(features_dir)
+                feature_num = int(feature_file[feature_file.rindex('/')+1:])
 
-			similarities = []
-			features_dir = glob.glob('features/*')
-			num_art_samples = min(len(features_dir), MAX_ART_SAMPLES)
-			art_obj_features = random.sample(features_dir, num_art_samples)
+                if not (db.already_rated(userid, feature_num) or already_suggested(similarities, feature_num)):
+                    similarities.append((feature_num, similarity(user_ratings, img_features, id_to_feature(feature_num))))
 
-			# hardcode to guarantee hits
-			art_obj_features = ['features/279', 'features/280', 'features/281']
+            similarities = sorted(similarities, key=lambda s : s[1], reverse=True)
 
-			art_obj_features = [os.path.basename(f) for f in art_obj_features]
-			for f in art_obj_features:  # subset of glob
-				with open('features/' + f) as fp:
-					similarities.append((f, similarity(user_ratings, img_features, id_to_feature(int(f)))))
-
-			similarities = sorted(similarities, key=lambda s : s[1], reverse=True)
-			return similarities
+            # Swap high similarity image with low similarity with probability swap_new_img_prob
+            for i in range(MAX_ART_SAMPLES):
+                if random.random() < swap_new_img_prob:
+                    high_sim_ind = int(random.random() * MAX_ART_SAMPLES)
+                    low_sim_ind = int(random.random() * (len(similarities) - MAX_ART_SAMPLES) + MAX_ART_SAMPLES)
+                    tmp = similarities[high_sim_ind]
+                    similarities[high_sim_ind] = similarities[low_sim_ind]
+                    similarities[low_sim_ind] = tmp
+            
+            return similarities[0:MAX_ART_SAMPLES]
 
 
 if __name__ == '__main__':

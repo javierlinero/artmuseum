@@ -1,6 +1,6 @@
 import sys
 import argparse
-import art_of_the_day
+import puam_flask_endpoints
 
 def main():
 
@@ -13,7 +13,7 @@ def main():
     port = int(args.port)
 
     try:
-        art_of_the_day.app.run(host='0.0.0.0', port=port, debug=True)
+        puam_flask_endpoints.app.run(host='0.0.0.0', port=port, debug=True)
     except Exception as ex:
         print(ex, file=sys.stderr)
         sys.exit(1)
