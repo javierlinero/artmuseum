@@ -6,6 +6,7 @@ import PIL
 import requests
 import tensorflow as tf
 from keras.preprocessing.image import img_to_array
+import os
 import psycopg2
 
 resnet = tf.keras.applications.resnet50.ResNet50(
@@ -32,7 +33,7 @@ def write_feature_to_file(file, feature):
   file.write(codecs.encode(pickle.dumps(feature), "base64").decode())
 
 def write_features():
-  num_features = 3
+  num_features = 10
   with psycopg2.connect(database="init_db",
                         user="puam", password=os.environ['PUAM_DB_PASSWORD'],
                         host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
