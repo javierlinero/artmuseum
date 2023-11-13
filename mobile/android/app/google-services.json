@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "687518361518",
+    "project_id": "puam-d9006",
+    "storage_bucket": "puam-d9006.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:687518361518:android:352294307c747e3e528a3f",
+        "android_client_info": {
+          "package_name": "com.example.puam_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "687518361518-f00h7ie073jgunblt3nmb99m7u8fr0hg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.puam_app",
+            "certificate_hash": "e1f3a72103e6768323e70c4abbbd2f8e97fb4b73"
+          }
+        },
+        {
+          "client_id": "687518361518-ok3bn5sg3flotqk9ran6tel9e544ekdm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKGZ2wIXSMjj5rHc1wHyrTVtkSQAmCFtE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "687518361518-ok3bn5sg3flotqk9ran6tel9e544ekdm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "687518361518-f2i6di5tinrabl50evjlbfjg89k3e2v8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.puamApp.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

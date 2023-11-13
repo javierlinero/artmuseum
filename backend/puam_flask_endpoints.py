@@ -2,18 +2,40 @@ import json
 import random
 import os
 import flask
+from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, jsonify
 import database as db
 import recommender
 
 app = Flask(__name__)
 
+scheduler = BackgroundScheduler()
+scheduler.start()
+
+current_art = None
+
 def get_random_file():
     while True:
+        file_num = random.randint(166, 141746)  # Generate a random number between 166 and 141746
+        object_name = 'HASIMAGES/artobject_' + str(file_num) + '.json'
+        json_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), object_name)
+        if os.path.exists(json_file):
+            return json_file
+
+def get_random_art():
+    while True:
         art_id = random.randint(279, 44450)  # Generate a random number between 166 and 141746
-        artists = db.get_art_by_id(art_id)
-        if len(artists) != 0:
-            return artists
+        artwork = db.get_art_by_id(art_id)
+        if artwork is not None:
+            return artwork
+
+def change_aotd():
+    global current_art
+    current_art = get_random_art()
+
+#sets up a scheduler in cron expression to change art of the day 
+scheduler.add_job(change_aotd, 'cron', hour=0, minute=0, second=0,
+                  timezone='US/Eastern')
 
 def get_json(file):
     f = open(file)
@@ -22,8 +44,13 @@ def get_json(file):
 
 @app.route('/art_of_the_day', methods=['GET'])
 def art_of_the_day():
-    file = get_random_file()
-    return jsonify(file)
+    global current_art
+
+    if current_art is None:
+        current_art = get_random_art()
+
+    return jsonify(current_art)
+
 
 @app.route('/tinder_for_art', methods=['GET'])
 def tinder_for_art_get():
