@@ -12,6 +12,13 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Dispatching the AuthEventInitialize event
+    context.read<AuthBloc>().add(AuthEventInitialize());
+  }
+
   double deviceHeight(BuildContext context) =>
       MediaQuery.of(context).size.height;
   double deviceWidth(BuildContext context) => MediaQuery.of(context).size.width;
