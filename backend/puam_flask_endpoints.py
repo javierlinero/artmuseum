@@ -6,6 +6,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, jsonify
 import database as db
 import recommender
+from functools import wraps
+import firebase_admin.auth as auth
 
 app = Flask(__name__)
 
@@ -13,6 +15,24 @@ scheduler = BackgroundScheduler()
 scheduler.start()
 
 current_art = None
+
+# Decorator to require authentication in order to use
+def require_auth(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        token = request.headers.get('Authorization')
+        if not token:
+            return jsonify({"error": "Authorization token is missing"}), 401
+
+        try:
+            # Strip the "Bearer " word from the header to get the token
+            token = token.split(" ")[1]
+            decoded_token = auth.verify_id_token(token)
+            request.user = decoded_token  # Add token data to request context
+            return f(*args, **kwargs)
+        except Exception as e:
+            return jsonify({"error": str(e)}), 403
+    return decorated_function
 
 def get_random_file():
     while True:
@@ -53,16 +73,18 @@ def art_of_the_day():
 
 
 @app.route('/tinder_for_art', methods=['GET'])
+@require_auth
 def tinder_for_art_get():
     userid = int(flask.request.args.get('userid'))
     num_suggestions = int(flask.request.args.get('numart'))
     print("Suggesting " + str(num_suggestions) + " images based on preferences of userid " + str(userid))
 
     # still images without url *************************
-
-    return recommender.get_suggestions(userid, num_suggestions)
+    suggestions = recommender.get_suggestions(userid, num_suggestions)
+    return jsonify(suggestions), 200
 
 @app.route('/tinder_for_art', methods=['POST'])
+@require_auth
 def tinder_for_art_post():
     data = flask.request.form
     userid = int(data["userid"])
@@ -73,7 +95,7 @@ def tinder_for_art_post():
 
     db.set_user_pref(userid, (artid, rating))
 
-    return "SUCCESS\n"
+    return jsonify({"message": "Preference updated successfully"}), 200
 
 #curl "http://172.31.46.224:10203/tinder_for_art?userid=1&numart=3"
 #curl "http://172.31.46.224:10203/tinder_for_art" -F userid=1 -F artid=286 -F rating=-0.5
