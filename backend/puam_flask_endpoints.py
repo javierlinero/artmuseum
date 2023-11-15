@@ -8,11 +8,16 @@ import database as db
 import recommender
 from functools import wraps
 import firebase_admin.auth as auth
+from firebase_admin import credentials
+import firebase_admin
 
 app = Flask(__name__)
 
 scheduler = BackgroundScheduler()
 scheduler.start()
+
+cred = credentials.Certificate("./firebase.json")
+firebase_admin.initialize_app(cred)
 
 current_art = None
 
