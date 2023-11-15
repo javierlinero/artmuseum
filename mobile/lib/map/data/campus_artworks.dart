@@ -125,8 +125,8 @@ List<CampusArtwork> campusArtworks = [
     artist: 'Win Knowlton',
     imageUrl:
         'https://puam-loris.aws.princeton.edu/loris/STU00209.jp2/full/pct:25/0/default.jpg',
-    lat: 40.3488,
-    long: -74.6585,
+    lat: 40.3487621,
+    long: -74.6584571,
   ),
   CampusArtwork(
     name: 'Remembrance',
@@ -220,6 +220,25 @@ List<CampusArtwork> campusArtworks = [
   //   long: -74.6572,
   // ),
 
+  CampusArtwork(
+    name: 'Places of Remembrance',
+    year: '2003',
+    artist: 'Stih and Schnock',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/STU00275.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3488042,
+    long: -74.6584373,
+  ),
+
+  CampusArtwork(
+    name: 'Places of Remembrance',
+    year: '2003',
+    artist: 'Stih and Schnock',
+    imageUrl:
+        'https://puam-loris.aws.princeton.edu/loris/STU00276.jp2/full/pct:25/0/default.jpg',
+    lat: 40.3487817,
+    long: -74.6585185,
+  ),
   CampusArtwork(
     name: 'Moses',
     year: '1967-68; fabricated 1969',
