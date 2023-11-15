@@ -12,12 +12,14 @@ class UserCredentials extends StatefulWidget {
 
 final TextEditingController _controllerEmail = TextEditingController();
 final TextEditingController _controllerPassword = TextEditingController();
+final TextEditingController _controllerDisplayName = TextEditingController();
 
 void _onSubmit(BuildContext context) {
   BlocProvider.of<AuthBloc>(context).add(
     AuthEventEmailSignUp(
       _controllerEmail.text,
       _controllerPassword.text,
+      _controllerDisplayName.text,
     ),
   );
 }
@@ -91,17 +93,18 @@ class _UserCredentialsState extends State<UserCredentials> {
           ),
         ),
       ),
-      // Padding(
-      //   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-      //   child: TextFormField(
-      //     decoration: const InputDecoration(
-      //       filled: true,
-      //       fillColor: Colors.grey,
-      //       border: UnderlineInputBorder(),
-      //       labelText: 'User Name',
-      //     ),
-      //   ),
-      // ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+        child: TextFormField(
+          controller: _controllerDisplayName,
+          decoration: const InputDecoration(
+            filled: true,
+            fillColor: Colors.grey,
+            border: UnderlineInputBorder(),
+            labelText: 'Display Name',
+          ),
+        ),
+      ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: TextFormField(
