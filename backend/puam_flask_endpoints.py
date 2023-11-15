@@ -154,6 +154,10 @@ def create_user():
 
         db.create_user(uid, email, display_name)
 
+        update_data = {'display_name': display_name}
+
+        auth.update_user(uid, **update_data)
+
         return jsonify({'message': 'User created successfully'}), 201
 
     except Exception as e:
