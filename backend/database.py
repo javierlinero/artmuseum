@@ -4,6 +4,70 @@ import codecs
 import pickle
 import psycopg2
 
+def get_art_by_date(query):
+   query_str = 'SELECT * FROM artworks WHERE artworks.daterange LIKE ?'
+   cursor.execute(query_str, [query])
+   date_table = cursor.fetchall()
+   return date_table
+
+def get_art_by_search(query):
+    with psycopg2.connect(database="init_db", 
+                          user="puam", password=os.environ['PUAM_DB_PASSWORD'],
+                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
+                          port="5432", sslmode="require") as connection:
+        with contextlib.closing(connection.cursor()) as cursor:
+            query_results = []
+            # title + year + materials
+            query_str = 'SELECT artworks.artwork_id FROM artworks WHERE artworks.title LIKE %?% OR artworks.year LIKE %?% OR artworks.materials LIKE %?%'
+            cursor.execute(query_str, [query, query, query])
+            artwork_table = cursor.fetchall()
+            query_result = query_result.append(query_result, artist_table)
+
+            # artists
+            query_str = 'SELECT link.artwork_id FROM artists, link WHERE artists.artist_id=link.artist_id AND (artists.displayname LIKE %?% OR artists.displaydate LIKE %?% OR artists.datebegin LIKE %?% OR artists.dateend LIKE %?% OR artists.prefix LIKE %?% OR artists.suffix LIKE %?% OR artists.role LIKE %?%)'
+            cursor.execute(query_str, [query])
+            artist_table = cursor.fetchall()
+            query_result = query_result.append(query_result, artist_table)
+
+            # cultures
+            query_str = '''SELECT artworks.artwork_id
+                          FROM artworks
+                          WHERE EXISTS (
+                              SELECT 1
+                              FROM unnest(cultures) as culture
+                              WHERE culture LIKE %?%
+                          )'''
+            cursor.execute(query_str, [query])
+            culture_table = cursor.fetchall()
+            query_result = query_result.append(query_result, culture_table)
+
+            # periods
+            query_str = '''SELECT artworks.artwork_id
+                          FROM artworks
+                          WHERE EXISTS (
+                              SELECT 1
+                              FROM unnest(periods) as period
+                              WHERE period LIKE %?%
+                          )'''
+            cursor.execute(query_str, [query])
+            period_table = cursor.fetchall()
+            query_result = query_result.append(query_result, period_table)
+
+
+            # types
+            query_str = '''SELECT artworks.artwork_id
+                          FROM artworks
+                          WHERE EXISTS (
+                              SELECT 1
+                              FROM unnest(types) as type
+                              WHERE type LIKE %?%
+                          )'''
+            cursor.execute(query_str, [query])
+            type_table = cursor.fetchall()
+            query_result = query_result.append(query_result, type_table)
+
+            return query_result   
+
 
 def get_art_by_id(art_id):
     with psycopg2.connect(database="init_db", 
