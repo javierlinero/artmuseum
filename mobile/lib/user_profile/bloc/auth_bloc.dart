@@ -15,6 +15,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await _authService.createWithEmailAndPassword(
           email: event.email,
           password: event.password,
+          displayName: event.displayName,
         );
         emit(AuthStateLoggedIn(_authService.currentUser!));
       } catch (e) {

@@ -3,7 +3,7 @@ import random
 import os
 import flask
 from apscheduler.schedulers.background import BackgroundScheduler
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import database as db
 import recommender
 from functools import wraps
@@ -44,7 +44,7 @@ def get_random_file():
 
 def get_random_art():
     while True:
-        art_id = random.randint(279, 44450)  # Generate a random number between 166 and 141746
+        art_id = random.randint(166, 141746)  # Generate a random number between 166 and 141746
         artwork = db.get_art_by_id(art_id)
         if artwork is not None:
             return artwork
@@ -96,6 +96,63 @@ def tinder_for_art_post():
     db.set_user_pref(userid, (artid, rating))
 
     return jsonify({"message": "Preference updated successfully"}), 200
+
+@app.route('/user_profile', methods=['GET'])
+@require_auth
+def user_profile_get():
+    try:
+        user_info = request.user
+        uid = user_info['uid']
+
+        user_record = auth.get_user(uid)
+
+        email = user_record.email
+        display_name = user_record.display_name
+
+        return jsonify({'email': email, 'displayName': display_name}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/user_profile', methods=['POST'])
+@require_auth
+def user_profile_post():
+    try:
+        data = request.json
+
+        user_info = request.user_agent
+        uid = user_info['uid']
+
+        update_data = {}
+        if 'email' in data:
+            update_data['email'] = data['email']
+        if 'display_name' in data:
+            update_data['display_name'] = data['display_name']
+        
+        auth.update_user(uid, **update_data)
+
+        db.update_user(uid, data.get('email'), data.get('display_name'))
+
+        return jsonify({"message": "User profile updated successfully"}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/create_user', methods=['POST'])
+@require_auth
+def create_user():
+    try:
+        uid = request.user['uid']
+        email = request.json.get('email')
+        display_name = request.json.get('display_name')
+
+        if not email or not display_name:
+            return jsonify({'error': 'Email or display name is missing in the request'}), 400
+
+        db.create_user(uid, email, display_name)
+
+        return jsonify({'message': 'User created successfully'}), 201
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 #curl "http://172.31.46.224:10203/tinder_for_art?userid=1&numart=3"
 #curl "http://172.31.46.224:10203/tinder_for_art" -F userid=1 -F artid=286 -F rating=-0.5

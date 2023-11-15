@@ -48,7 +48,7 @@ class _ProfileState extends State<Profile> {
           margin: EdgeInsets.all(15),
           child: Center(
               child: Text(
-            state.user.email ?? "",
+            state.user.displayName ?? state.user.email ?? "",
             style: AppTheme.username,
           ))),
       Container(
