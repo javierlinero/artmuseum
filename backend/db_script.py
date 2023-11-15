@@ -31,7 +31,8 @@ def create_table():
         cultures TEXT[],
         subjects TEXT[],
         periods TEXT[],
-        daterange TEXT
+        daterange TEXT,
+        other_terms VARCHAR[]
     );
     CREATE TABLE link (
         artwork_id INTEGER,
