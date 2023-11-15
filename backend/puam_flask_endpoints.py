@@ -163,5 +163,22 @@ def create_user():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/user_favorites', methods=['GET'])
+@require_auth
+def user_favorites_endpoint():
+    try:
+        user_info = request.user
+        uid = user_info['uid']
+
+        # Get the limit from query parameters (optional)
+        limit = request.args.get('limit', default=50, type=int)
+
+        # Call the function with the user ID and limit
+        favorites = db.get_user_favorites(uid, limit)
+
+        return jsonify(favorites), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 #curl "http://172.31.46.224:10203/tinder_for_art?userid=1&numart=3"
 #curl "http://172.31.46.224:10203/tinder_for_art" -F userid=1 -F artid=286 -F rating=-0.5

@@ -126,7 +126,7 @@ def update_user(uid, email=None, display_name=None):
                 raise e
 
 
-def get_user_favorites(cursor, userid, limit=50):
+def get_user_favorites(userid, limit=50):
     with psycopg2.connect(database="init_db",
                           user="puam", password=os.environ['PUAM_DB_PASSWORD'],
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
