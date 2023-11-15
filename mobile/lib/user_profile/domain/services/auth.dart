@@ -54,7 +54,7 @@ class Auth {
       Dio dio = Dio();
 
       // Endpoint URL
-      String endpointUrl = 'puamdns.ddns.net/create_user';
+      String endpointUrl = 'http://puamdns.ddns.net/create_user';
 
       // Prepare headers
       Map<String, dynamic> headers = {
