@@ -22,6 +22,7 @@ void _onSubmit(BuildContext context) {
       _controllerDisplayName.text,
     ),
   );
+  Navigator.pop(context);
 }
 
 class _UserCredentialsState extends State<UserCredentials> {
@@ -34,8 +35,6 @@ class _UserCredentialsState extends State<UserCredentials> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.error)),
           );
-        } else if (state is AuthStateLoggedIn) {
-          Navigator.pop(context);
         }
       }), builder: (context, state) {
         if (state is AuthStateLoading) {
