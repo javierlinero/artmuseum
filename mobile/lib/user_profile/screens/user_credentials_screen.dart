@@ -25,6 +25,11 @@ void _onSubmit(BuildContext context) {
   Navigator.pop(context);
 }
 
+void _googleClick(BuildContext context) {
+  BlocProvider.of<AuthBloc>(context).add(AuthEventGoogleSignIn());
+  Navigator.pop(context);
+}
+
 class _UserCredentialsState extends State<UserCredentials> {
   @override
   Widget build(BuildContext context) {
@@ -63,7 +68,9 @@ class _UserCredentialsState extends State<UserCredentials> {
         ),
       ),
       ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          _googleClick(context);
+        },
         style:
             FilledButton.styleFrom(backgroundColor: AppTheme.princetonOrange),
         child: Text(('Continue with Google'), style: AppTheme.signUp),
