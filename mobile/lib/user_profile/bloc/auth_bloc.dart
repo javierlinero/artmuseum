@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puam_app/user_profile/index.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final Auth _authService;
+  final AuthService _authService;
 
   AuthBloc(this._authService) : super(AuthStateInitial()) {
     on<AuthEventInitialize>(_onInitialize);

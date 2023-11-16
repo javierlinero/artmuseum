@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
           create: (context) => ArtworkBloc(),
         ),
         BlocProvider(create: (context) => ArtBloc(ArtworkRepository())),
-        BlocProvider(create: ((context) => AuthBloc(Auth())))
+        BlocProvider(create: ((context) => AuthBloc(AuthService())))
       ],
       child: MaterialApp(
         color: Colors.black,
