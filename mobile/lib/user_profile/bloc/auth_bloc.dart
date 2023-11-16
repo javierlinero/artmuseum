@@ -17,7 +17,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           password: event.password,
           displayName: event.displayName,
         );
-        emit(AuthStateLoggedIn(_authService.currentUser!));
+        emit(AuthStateLoggedIn(
+            _authService.currentUser!, await _authService.getUserToken()));
       } catch (e) {
         emit(AuthStateFailure(e.toString()));
       }
@@ -30,7 +31,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           email: event.email,
           password: event.password,
         );
-        emit(AuthStateLoggedIn(_authService.currentUser!));
+        emit(AuthStateLoggedIn(
+            _authService.currentUser!, await _authService.getUserToken()));
       } catch (e) {
         emit(AuthStateFailure(e.toString()));
       }
@@ -40,7 +42,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         emit(AuthStateLoading());
         await _authService.signInWithGoogle();
-        emit(AuthStateLoggedIn(_authService.currentUser!));
+        emit(AuthStateLoggedIn(
+            _authService.currentUser!, await _authService.getUserToken()));
       } catch (e) {
         emit(AuthStateFailure(e.toString()));
       }
@@ -61,8 +64,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
   }
 
-  void _onUserChanged(AuthEventUserChanged event, Emitter<AuthState> emit) {
-    emit(AuthStateLoggedIn(event.user));
+  void _onUserChanged(
+      AuthEventUserChanged event, Emitter<AuthState> emit) async {
+    emit(AuthStateLoggedIn(event.user, await _authService.getUserToken()));
   }
 
   // Event handler for user not found
@@ -70,10 +74,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthStateLoggedOut());
   }
 
-  void _onInitialize(AuthEventInitialize event, Emitter<AuthState> emit) {
+  void _onInitialize(AuthEventInitialize event, Emitter<AuthState> emit) async {
     final currentUser = _authService.currentUser;
     if (currentUser != null) {
-      emit(AuthStateLoggedIn(currentUser));
+      emit(AuthStateLoggedIn(currentUser, await _authService.getUserToken()));
     } else {
       emit(AuthStateLoggedOut());
     }

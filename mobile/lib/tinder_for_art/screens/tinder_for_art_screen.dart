@@ -5,6 +5,7 @@ import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puam_app/shared/index.dart';
 import 'package:puam_app/tinder_for_art/index.dart';
+import 'package:puam_app/user_profile/index.dart';
 
 class TinderForArtPage extends StatefulWidget {
   @override
@@ -15,11 +16,11 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
   double deviceWidth(BuildContext context) => MediaQuery.of(context).size.width;
 
   final List<String> artCards = [
-    "https://puam-loris.aws.princeton.edu/loris/STU1350.jp2/full/pct:50/0/default.jpg",
-    "https://puam-loris.aws.princeton.edu/loris/1997-549.jp2/full/pct:50/0/default.jpg",
-    "https://puam-loris.aws.princeton.edu/loris/L1988-62-23.jp2/full/pct:50/0/default.jpg",
-    "https://puam-loris.aws.princeton.edu/loris/y1992-21.jp2/full/pct:50/0/default.jpg",
-    "https://puam-loris.aws.princeton.edu/loris/L1988-62-26.jp2/full/pct:50/0/default.jpg"
+    "https://puam-loris.aws.princeton.edu/loris/STU1350.jp2/full/pct:25/0/default.jpg",
+    "https://puam-loris.aws.princeton.edu/loris/1997-549.jp2/full/pct:25/0/default.jpg",
+    "https://puam-loris.aws.princeton.edu/loris/L1988-62-23.jp2/full/pct:25/0/default.jpg",
+    "https://puam-loris.aws.princeton.edu/loris/y1992-21.jp2/full/pct:25/0/default.jpg",
+    "https://puam-loris.aws.princeton.edu/loris/L1988-62-26.jp2/full/pct:25/0/default.jpg"
   ];
   AppinioSwiperController _swiperController = AppinioSwiperController();
 
@@ -30,7 +31,21 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
       context: context,
       swiperController: _swiperController,
     );
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        if (state is AuthStateLoggedIn) {
+          return _buildTFAPage(appinioController);
+        } else if (state is AuthStateLoggedOut) {
+          return SignUpPage();
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
 
+  BlocBuilder<ArtworkBloc, ArtworkState> _buildTFAPage(
+      AppinioController appinioController) {
     return BlocBuilder<ArtworkBloc, ArtworkState>(
       builder: (context, state) {
         return Scaffold(

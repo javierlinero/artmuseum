@@ -8,8 +8,9 @@ class AuthStateLoading extends AuthState {}
 
 class AuthStateLoggedIn extends AuthState {
   final User user;
+  final String? token;
 
-  AuthStateLoggedIn(this.user);
+  AuthStateLoggedIn(this.user, this.token);
 }
 
 class AuthStateLoggedOut extends AuthState {}
