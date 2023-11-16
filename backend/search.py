@@ -6,8 +6,7 @@ app = Flask(__name__)
 
 @app.route('/search', method=['GET'])
 def search(query):
-    arts_id = db.get_art_by_id(query)
-    arts = []
+    arts_id = db.get_art_by_search(query)
     if query.isdigit():
         date = int(query)
         if date <= 500:
@@ -33,6 +32,7 @@ def search(query):
         if date >= 2000:
             arts_id = arts_id.append(arts_id, db.get_art_by_date('15000-2000 B.C.'))
 
+    arts = []
     for id in arts_id:
         arts = arts.append(db.get_art_by_id(id))
     return arts
