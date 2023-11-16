@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:puam_app/user_profile/index.dart';
 
 class FavoritesService {
@@ -12,19 +13,17 @@ class FavoritesService {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       };
-
-      Response response = await dio.post(
-        serverUrl,
+      Response response = await dio.get(
+        '$serverUrl/user_favorites',
         options: Options(headers: headers),
       );
 
-      List<Favorite> favorites = (response.data as List)
-          .map((item) => Favorite.fromJson(item))
-          .toList();
+      List<Favorite> favorites = parseJson(response.data);
 
       return favorites;
     } catch (error) {
-      throw Exception('Failed to fetch artwork: $error');
+      debugPrint('$error');
+      return [];
     }
   }
 }

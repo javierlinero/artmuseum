@@ -11,37 +11,32 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  List<Favorite> _favorites = [];
   late ProfileRepo _repo;
+  late AuthStateLoggedIn _currentState;
 
   @override
   void initState() {
     super.initState();
-    _repo = ProfileRepo(favoritesService: FavoritesService());
-    _loadFavorites();
-  }
-
-  Future<void> _loadFavorites() async {
-    try {
-      List<Favorite> favorites = await _repo.fetchFavorites();
-      setState(() {
-        _favorites = favorites;
-      });
-    } catch (e) {
-      // Handle any errors here
-    }
+    _repo = ProfileRepo(
+      getToken: () => _currentState.user.getIdToken(),
+      favoritesService: FavoritesService(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        if (state is AuthStateLoggedIn) {
-          return _buildProfilePage(context, state);
-        } else
-          return SizedBox.shrink();
-      },
-    ));
+    return Scaffold(
+      body: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          if (state is AuthStateLoggedIn) {
+            _currentState = state; // Update the current state
+            return _buildProfilePage(context, state);
+          } else {
+            return SizedBox.shrink();
+          }
+        },
+      ),
+    );
   }
 
   Column _buildProfilePage(BuildContext context, AuthStateLoggedIn state) {
@@ -106,14 +101,14 @@ class _ProfileState extends State<Profile> {
                     'No favorites yet!'); // Show message if list is empty
               }
               return GridView.count(
-                crossAxisCount: 4,
+                crossAxisCount: 3,
                 children: List.generate(
                   favorites.length,
                   (index) {
                     return Center(
                       child: Image.network(
-                        '${favorites[index].imageURL}/full/pct:10/0/default.jpg',
-                        fit: BoxFit.cover,
+                        '${favorites[index].imageURL}/full/pct:5/0/default.jpg',
+                        fit: BoxFit.fill,
                       ),
                     );
                   },

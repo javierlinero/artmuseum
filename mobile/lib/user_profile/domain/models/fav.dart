@@ -7,7 +7,14 @@ class Favorite {
     required this.artWorkID,
   });
 
-  factory Favorite.fromJson(Map<String, dynamic> json) {
-    return Favorite(imageURL: json['imageUrl'], artWorkID: json['artworkId']);
+  factory Favorite.fromJson(List<dynamic> json) {
+    return Favorite(
+      imageURL: json[1] as String,
+      artWorkID: json[0].toString(),
+    );
   }
+}
+
+List<Favorite> parseJson(List<dynamic> jsonList) {
+  return jsonList.map((json) => Favorite.fromJson(json)).toList();
 }

@@ -14,7 +14,7 @@ final TextEditingController _controllerEmail = TextEditingController();
 final TextEditingController _controllerPassword = TextEditingController();
 
 void _onSubmit(BuildContext context) {
-  BlocProvider.of<AuthBloc>(context).(
+  BlocProvider.of<AuthBloc>(context).add(
     AuthEventEmailSignIn(
       _controllerEmail.text,
       _controllerPassword.text,
