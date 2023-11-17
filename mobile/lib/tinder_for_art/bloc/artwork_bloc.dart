@@ -7,7 +7,10 @@ class TinderArtBloc extends Bloc<ArtworkEvent, ArtworkState> {
       : super(ArtworkState(currentIndex: 0)) {
     on<FetchArtworkRecommendations>(_onFetchArtworkRecommendations);
     on<UpdateArtworkIndex>((event, emit) {
-      emit(ArtworkState(currentIndex: event.index, canUndo: true));
+      emit(state.copyWith(
+        currentIndex: event.index,
+        canUndo: true,
+      ));
     });
 
     on<ToggleUndo>((event, emit) {
