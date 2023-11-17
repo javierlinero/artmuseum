@@ -84,5 +84,5 @@ def get_suggestions(userid, MAX_ART_SAMPLES):
 
 
 if __name__ == '__main__':
-	for s in get_suggestions(1, 3):
+	for s in get_suggestions("asdf", 3):
 		print(s)

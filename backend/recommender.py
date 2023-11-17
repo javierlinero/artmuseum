@@ -17,7 +17,7 @@ def similarity(user_ratings, img_features, target_img_features):
     return sim
 
 def id_to_feature(artid):
-    file = open('../recommender/features/' + str(artid), 'r')
+    file = open('features/' + str(artid), 'r')
     pickled = ''
     for line in file:
         pickled += line
@@ -32,8 +32,8 @@ def already_suggested(similarities, art_id):
 
 def get_suggestions(userid, MAX_ART_SAMPLES):
     MAX_PREF_SAMPLES = 5
-    SAMPLE_POOL_SIZE = 5
-    swap_new_img_prob = 0.2
+    SAMPLE_POOL_SIZE = 100
+    swap_new_img_prob = 0
     with psycopg2.connect(database="init_db", user="puam", password=os.environ['PUAM_DB_PASSWORD'], 
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com", port="5432", 
                           sslmode="require") as connection:
@@ -54,7 +54,7 @@ def get_suggestions(userid, MAX_ART_SAMPLES):
                 img_features.append(id_to_feature(rating[0]))
 
             similarities = []
-            features_dir = glob.glob('../recommender/features/*')
+            features_dir = glob.glob('features/*')
             num_art_samples = min(len(features_dir), SAMPLE_POOL_SIZE)
             while len(similarities) != num_art_samples:
                 feature_file = random.choice(features_dir)
@@ -78,11 +78,11 @@ def get_suggestions(userid, MAX_ART_SAMPLES):
 
             urls = []
             for i in range(MAX_ART_SAMPLES):
-                urls.append(db.get_art_by_id(similarities[i][0])['imageurl'])
+                urls.append((similarities[i][0], db.get_art_by_id(similarities[i][0])['imageurl']))
             
             return urls
 
 
 if __name__ == '__main__':
-	for s in get_suggestions(1, 3):
+	for s in get_suggestions("asdf", 3):
 		print(s)

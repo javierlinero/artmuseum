@@ -153,13 +153,13 @@ def write_prefs(cursor, user_id, user_ratings):
         cursor.execute(query_str, (user_id, codecs.encode(
             pickle.dumps(user_ratings), "base64").decode()))
     else:
-        query_str = 'UPDATE user_preferences SET pref_str=%s WHERE user_id=%s'
+        query_str = "UPDATE user_preferences SET pref_str=%s WHERE user_id=%s"
         cursor.execute(query_str, (codecs.encode(
             pickle.dumps(user_ratings), "base64").decode(), user_id))
 
 
 def read_prefs(cursor, user_id):
-    query_str = 'SELECT pref_str FROM user_preferences WHERE user_id=%s' % (
+    query_str = "SELECT pref_str FROM user_preferences WHERE user_id='%s'" % (
         user_id)
     cursor.execute(query_str, [])
     table = cursor.fetchall()
@@ -215,7 +215,7 @@ def already_rated(user_id, art_id):
                           port='5432') as connection:
         with connection.cursor() as cursor:
             pref = read_prefs(cursor, user_id)
-            if pref[bisect.bisect_right(pref, RatingComparator((art_id, None)))-1][0] == art_id:
+            if len(pref) != 0 and pref[bisect.bisect_right(pref, RatingComparator((art_id, None)))-1][0] == art_id:
                 return True
             return False
 
