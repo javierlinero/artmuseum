@@ -16,6 +16,7 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
   double deviceWidth(BuildContext context) => MediaQuery.of(context).size.width;
   final List<TinderArt> artCards = [];
   AppinioSwiperController _swiperController = AppinioSwiperController();
+  bool recommendationsFetched = false;
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +28,12 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
                 repository: TinderForArtRepository(token: authState.token)),
             child: BlocBuilder<TinderArtBloc, ArtworkState>(
               builder: (context, artState) {
-                context
-                    .read<TinderArtBloc>()
-                    .add(FetchArtworkRecommendations(10, authState.token));
+                if (!recommendationsFetched) {
+                  context
+                      .read<TinderArtBloc>()
+                      .add(FetchArtworkRecommendations(10, authState.token));
+                  recommendationsFetched = true;
+                }
                 return _buildTFAPage(context, artState);
               },
             ),
