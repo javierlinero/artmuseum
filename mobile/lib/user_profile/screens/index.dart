@@ -5,3 +5,4 @@ export 'settings_screen.dart';
 export 'profile_screen.dart';
 export 'edit_profile_screen.dart';
 export 'logged_out_screen.dart';
+export 'favorites_details.dart';
