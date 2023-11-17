@@ -17,6 +17,15 @@ class FavoritesDetails extends StatelessWidget {
         child: Image.network(
           '$imageURL/full/full/0/default.jpg', 
           fit: BoxFit.cover,
+          loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Center(
+                                child: CircularProgressIndicator (
+                                  color: AppTheme.princetonOrange,
+                                  value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,),
+                              );
+                            }
         ),
       ),
     );

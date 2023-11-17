@@ -41,27 +41,24 @@ class _ProfileState extends State<Profile> {
 
   Column _buildProfilePage(BuildContext context, AuthStateLoggedIn state) {
     return Column(children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          IconButton(
-            icon: Icon(Icons.settings),
-            iconSize: 40,
-            onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Settings()));
-            },
-          )
-        ],
+      Align(
+        alignment: Alignment.topRight,
+        child: IconButton(
+          icon: Icon(Icons.settings),
+          iconSize: 40,
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Settings()));
+          },
+        ),
       ),
       Center(
-          child: Icon(
+      child: Icon(
         Icons.account_circle,
         size: 100,
       )),
       Container(
-          padding: EdgeInsets.all(15),
-          margin: EdgeInsets.all(15),
+          padding: EdgeInsets.only(top:15, bottom: 20),
           child: Center(
               child: Text(
             state.user.displayName ?? state.user.email ?? "",
@@ -124,6 +121,7 @@ class _ProfileState extends State<Profile> {
                               if (loadingProgress == null) return child;
                               return Center(
                                 child: CircularProgressIndicator (
+                                  color: AppTheme.princetonOrange,
                                   value: loadingProgress.expectedTotalBytes != null
                                   ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,),
                               );
