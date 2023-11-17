@@ -11,7 +11,7 @@ class TinderSwiper extends StatelessWidget {
   }) : _swiperController = swiperController;
 
   final AppinioSwiperController _swiperController;
-  final List<String> imageCards;
+  final List<TinderArt> imageCards;
   final AppinioController appinioController;
 
   @override
@@ -30,7 +30,7 @@ class TinderSwiper extends StatelessWidget {
         return Center(
           child: Stack(children: [
             Image.network(
-              imageCards[index],
+              imageCards[index].imageUrl,
               fit: BoxFit.fill,
             )
           ]),
