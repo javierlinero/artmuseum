@@ -41,7 +41,7 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
                 if (!recommendationsFetched) {
                   context
                       .read<TinderArtBloc>()
-                      .add(FetchArtworkRecommendations(5, authState.token));
+                      .add(FetchArtworkRecommendations(10, authState.token));
                   recommendationsFetched = true;
                 }
                 return _buildTFAPage(context, artState);
@@ -64,13 +64,17 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
       swiperController: _swiperController,
     );
 
-    // Populate artCards only once when recommendations are fetched
+    // // Populate artCards only once when recommendations are fetched
+    // if (artState.recommendations.isNotEmpty && artCards.isEmpty) {
+    //   preloadImages(artState.recommendations, context).then((_) {
+    //     setState(() {
+    //       artCards.addAll(artState.recommendations);
+    //     });
+    //   });
+    // }
+
     if (artState.recommendations.isNotEmpty && artCards.isEmpty) {
-      preloadImages(artState.recommendations, context).then((_) {
-        setState(() {
-          artCards.addAll(artState.recommendations);
-        });
-      });
+      artCards.addAll(artState.recommendations);
     }
 
     if (artState.isLoading) {

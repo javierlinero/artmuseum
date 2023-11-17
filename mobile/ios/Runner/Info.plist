@@ -64,20 +64,20 @@
 		<key>UIStatusBarHidden</key>
 		<false/>
 		<!-- Put me in the [my_project]/ios/Runner/Info.plist file -->
-<!-- Google Sign-in Section -->
-<key>CFBundleURLTypes</key>
-<array>
-	<dict>
-		<key>CFBundleTypeRole</key>
-		<string>Editor</string>
-		<key>CFBundleURLSchemes</key>
+		<!-- Google Sign-in Section -->
+		<key>CFBundleURLTypes</key>
 		<array>
-			<!-- TODO Replace this value: -->
-			<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
-			<string>com.googleusercontent.apps.861823949799-vc35cprkp249096uujjn0vvnmcvjppkn</string>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<!-- TODO Replace this value: -->
+					<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
+					<string>com.googleusercontent.apps.861823949799-vc35cprkp249096uujjn0vvnmcvjppkn</string>
+				</array>
+			</dict>
 		</array>
-	</dict>
-</array>
-<!-- End of the Google Sign-in Section -->
+		<!-- End of the Google Sign-in Section -->
 	</dict>
 </plist>
