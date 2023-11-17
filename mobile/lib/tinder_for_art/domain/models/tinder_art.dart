@@ -1,5 +1,5 @@
 class TinderArt {
-  final String artworkId;
+  final int artworkId;
   final String imageUrl;
 
   TinderArt({

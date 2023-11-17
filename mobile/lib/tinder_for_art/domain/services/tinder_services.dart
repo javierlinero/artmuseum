@@ -17,7 +17,7 @@ class TinderService {
       List<dynamic> data = response.data;
       return data
           .map((item) => TinderArt(
-                artworkId: item[0].toString(),
+                artworkId: item[0],
                 imageUrl: item[1].toString(),
               ))
           .toList();
@@ -33,10 +33,14 @@ class TinderService {
       Response response = await dio.post(
         '$baseUrl/tinder_for_art',
         data: {'artid': artId, 'rating': rating},
-        options: Options(headers: {'Authorization': 'Bearer $token'}),
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }),
       );
       return response.data;
     } on DioException catch (e) {
+      debugPrint('$e');
       return e;
     }
   }
