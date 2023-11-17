@@ -7,10 +7,10 @@ import 'package:puam_app/shared/index.dart';
 class TinderButtonActionRow extends StatelessWidget {
   const TinderButtonActionRow({
     super.key,
-    required AppinioSwiperController swiperController,
+    required AppinoSwiperContorller swiperController,
   }) : _swiperController = swiperController;
 
-  final AppinioSwiperController _swiperController;
+  final AppinoSwiperContorller _swiperController;
 
   @override
   Widget build(BuildContext context) {

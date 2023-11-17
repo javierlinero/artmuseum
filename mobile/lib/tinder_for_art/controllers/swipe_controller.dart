@@ -6,7 +6,7 @@ import 'package:puam_app/tinder_for_art/index.dart';
 
 class AppinioController {
   final BuildContext context;
-  final AppinioSwiperController swiperController;
+  final AppinoSwiperContorller swiperController;
   final int totalArtworks;
 
   final Queue<int> _swipedIndexes = Queue<int>();
