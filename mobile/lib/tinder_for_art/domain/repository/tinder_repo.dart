@@ -6,7 +6,8 @@ class TinderForArtRepository {
 
   TinderForArtRepository({required this.token});
 
-  Future<dynamic> getArtSuggestions(int numSuggestions, String? token) async {
+  Future<List<TinderArt>> getArtSuggestions(
+      int numSuggestions, String? token) async {
     return await _tinderService.tinderForArtGet(numSuggestions, token);
   }
 
