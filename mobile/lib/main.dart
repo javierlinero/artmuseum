@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => ArtBloc(ArtworkRepository())),
-        BlocProvider(create: ((context) => AuthBloc(AuthService())))
+        BlocProvider(create: ((context) => AuthBloc(AuthService()))),
       ],
       child: MaterialApp(
         color: Colors.black,

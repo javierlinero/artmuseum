@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puam_app/tinder_for_art/index.dart';
 
-class ArtworkBloc extends Bloc<ArtworkEvent, ArtworkState> {
+class TinderArtBloc extends Bloc<ArtworkEvent, ArtworkState> {
   final TinderForArtRepository repository;
-  ArtworkBloc({required this.repository})
+  TinderArtBloc({required this.repository})
       : super(ArtworkState(currentIndex: 0)) {
     on<FetchArtworkRecommendations>(_onFetchArtworkRecommendations);
     on<UpdateArtworkIndex>((event, emit) {

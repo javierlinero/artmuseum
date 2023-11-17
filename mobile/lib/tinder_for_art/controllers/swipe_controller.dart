@@ -18,8 +18,8 @@ class AppinioController {
 
   int get currentIndex {
     debugPrint(
-        'Current Index accessed: ${context.read<ArtworkBloc>().state.currentIndex}');
-    return context.read<ArtworkBloc>().state.currentIndex;
+        'Current Index accessed: ${context.read<TinderArtBloc>().state.currentIndex}');
+    return context.read<TinderArtBloc>().state.currentIndex;
   }
 
   void handleSwipe(int index, AppinioSwiperDirection direction) {
@@ -37,7 +37,7 @@ class AppinioController {
 
   void updateIndex(int newIndex) {
     debugPrint('Updating Index to: $newIndex');
-    context.read<ArtworkBloc>().add(UpdateArtworkIndex(newIndex));
+    context.read<TinderArtBloc>().add(UpdateArtworkIndex(newIndex));
   }
 
   void swipeLeft() {
@@ -63,10 +63,10 @@ class AppinioController {
       debugPrint('Removed last index from queue: $lastIndex');
       updateIndex(lastIndex);
       swiperController.unswipe();
-      context.read<ArtworkBloc>().add(ToggleUndo(false));
+      context.read<TinderArtBloc>().add(ToggleUndo(false));
 
       Future.delayed(Duration(milliseconds: 500), () {
-        context.read<ArtworkBloc>().add(ToggleUndo(true));
+        context.read<TinderArtBloc>().add(ToggleUndo(true));
       });
     } else {
       debugPrint('No swiped indexes to undo.');

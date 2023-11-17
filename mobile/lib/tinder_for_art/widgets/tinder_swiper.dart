@@ -30,7 +30,7 @@ class TinderSwiper extends StatelessWidget {
         return Center(
           child: Stack(children: [
             Image.network(
-              imageCards[index].imageUrl,
+              '${imageCards[index].imageUrl}/full/pct:25/0/default.jpg',
               fit: BoxFit.fill,
             )
           ]),

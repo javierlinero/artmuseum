@@ -14,24 +14,27 @@ class TinderForArtPage extends StatefulWidget {
 
 class _TinderForArtPageState extends State<TinderForArtPage> {
   double deviceWidth(BuildContext context) => MediaQuery.of(context).size.width;
-  late TinderForArtRepository _tfarepo;
-  final List<String> artCards = [];
+  final List<TinderArt> artCards = [];
   AppinioSwiperController _swiperController = AppinioSwiperController();
 
   @override
   Widget build(BuildContext context) {
-    final appinioController = AppinioController(
-      totalArtworks: artCards.length,
-      context: context,
-      swiperController: _swiperController,
-    );
     return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        if (state is AuthStateLoggedIn) {
-          _tfarepo = TinderForArtRepository(token: state.token);
-          debugPrint(state.token);
-          return _buildTFAPage(appinioController);
-        } else if (state is AuthStateLoggedOut) {
+      builder: (context, authState) {
+        if (authState is AuthStateLoggedIn) {
+          return BlocProvider(
+            create: (context) => TinderArtBloc(
+                repository: TinderForArtRepository(token: authState.token)),
+            child: BlocBuilder<TinderArtBloc, ArtworkState>(
+              builder: (context, artState) {
+                context
+                    .read<TinderArtBloc>()
+                    .add(FetchArtworkRecommendations(10, authState.token));
+                return _buildTFAPage(context, artState);
+              },
+            ),
+          );
+        } else if (authState is AuthStateLoggedOut) {
           return SignUpPage();
         } else {
           return Center(child: CircularProgressIndicator());
@@ -40,17 +43,29 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
     );
   }
 
-  BlocBuilder<ArtworkBloc, ArtworkState> _buildTFAPage(
-      AppinioController appinioController) {
-    return BlocBuilder<ArtworkBloc, ArtworkState>(
-      builder: (context, state) {
-        return Scaffold(
-          appBar: appBar(),
-          body: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
+  Widget _buildTFAPage(BuildContext context, ArtworkState artState) {
+    final appinioController = AppinioController(
+      totalArtworks: artCards.length,
+      context: context,
+      swiperController: _swiperController,
+    );
+
+    if (artState.isLoading) {
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
+    } else if (artState.error != null) {
+      return Scaffold(body: Center(child: Text('Error: ${artState.error}')));
+    } else {
+      artCards.clear();
+      artCards.addAll(artState.recommendations);
+
+      return Scaffold(
+        appBar: appBar(),
+        body: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
             double swiperHeight = constraints.maxHeight * 0.7;
             double buttonsHeight = constraints.maxHeight * 0.25;
             double undoHeight = constraints.maxHeight * 0.05;
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -58,28 +73,30 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
                   padding: EdgeInsets.symmetric(
                       horizontal: deviceWidth(context) * 0.05),
                   child: SizedBox(
-                      height: undoHeight,
-                      child: TinderUndoButton(
-                          appinioController: appinioController, state: state)),
+                    height: undoHeight,
+                    child: TinderUndoButton(
+                        appinioController: appinioController, state: artState),
+                  ),
                 ),
                 Container(
                   height: swiperHeight,
                   alignment: Alignment.center,
                   child: TinderSwiper(
-                      swiperController: _swiperController,
-                      imageCards: artCards,
-                      appinioController: appinioController),
+                    swiperController: _swiperController,
+                    imageCards: artCards,
+                    appinioController: appinioController,
+                  ),
                 ),
                 SizedBox(
                   height: buttonsHeight,
                   child: TinderButtonActionRow(
                       swiperController: _swiperController),
-                )
+                ),
               ],
             );
-          }),
-        );
-      },
-    );
+          },
+        ),
+      );
+    }
   }
 }

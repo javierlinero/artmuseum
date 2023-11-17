@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:puam_app/tinder_for_art/index.dart';
 
 class TinderService {
@@ -21,7 +22,7 @@ class TinderService {
               ))
           .toList();
     } on DioException catch (e) {
-      // Handle exception or return an empty list
+      debugPrint('$e');
       return [];
     }
   }
