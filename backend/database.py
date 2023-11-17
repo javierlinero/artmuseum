@@ -1,9 +1,10 @@
 import contextlib
 import os
 import codecs
+import numpy as np
 import pickle
 import psycopg2
-import bisect
+import recommender
 
 def get_art_by_id(art_id):
     with psycopg2.connect(database="init_db", 
@@ -38,26 +39,45 @@ def get_art_by_id(art_id):
                return None
 
 def initDB(cursor):
-  query_str = 'CREATE TABLE user_preferences2(user_id int PRIMARY KEY, pref_str VARCHAR(1000))'
+  query_str = 'CREATE TABLE user_preferences2(user_id int PRIMARY KEY, pref_str VARCHAR(20000), rated_str VARCHAR(62000))'
   cursor.execute(query_str, [])
 
-def write_prefs(cursor, user_id, user_ratings):
-  if len(read_prefs(cursor, user_id)) == 0:
-    query_str = 'INSERT INTO user_preferences2 VALUES (%s, %s)'
-    cursor.execute(query_str, (user_id, codecs.encode(pickle.dumps(user_ratings), "base64").decode()))
+def write_prefs(cursor, user_id, user_ratings, rated):
+  # Adjust when change to int hashtable for rated 
+  if len(read_rated(cursor, user_id).keys()) == 0:
+    query_str = 'INSERT INTO user_preferences2 VALUES (%s, %s, %s)'
+    cursor.execute(query_str,
+        (user_id,
+        codecs.encode(pickle.dumps(user_ratings), "base64").decode(),
+        codecs.encode(pickle.dumps(rated), "base64").decode()))
   else:
     query_str = 'UPDATE user_preferences2 SET pref_str=%s WHERE user_id=%s'
     cursor.execute(query_str, (codecs.encode(pickle.dumps(user_ratings), "base64").decode(), user_id))
+    query_str = 'UPDATE user_preferences2 SET rated_str=%s WHERE user_id=%s'
+    cursor.execute(query_str, (codecs.encode(pickle.dumps(rated), "base64").decode(), user_id))
 
 def read_prefs(cursor, user_id):
   query_str = 'SELECT pref_str FROM user_preferences2 WHERE user_id=%s' % (user_id)
   cursor.execute(query_str, [])
   table = cursor.fetchall()
   if len(table) == 0:
-    return table
+    uniform_v = ([0.0] * 1000)
+    return uniform_v
   else:
     pref = table[0][0].encode()
     return pickle.loads(codecs.decode(pref, "base64"))
+
+def read_rated(cursor, user_id):
+  query_str = 'SELECT rated_str FROM user_preferences2 WHERE user_id=%s' % (user_id)
+  cursor.execute(query_str, [])
+  table = cursor.fetchall()
+  if len(table) == 0:
+    # change to int hashtable instead of dict =====================
+    empty_dict = {}
+    return empty_dict
+  else:
+    rated = table[0][0].encode()
+    return pickle.loads(codecs.decode(rated, "base64"))
 
 def drop_prefs(cursor):
   query_str = 'DELETE FROM user_preferences2'
@@ -72,15 +92,6 @@ def get_user_pref(user_id):
             pref = read_prefs(cursor, user_id)
             return pref
 
-def insert_pref(pref, new_rating):
-    pref.insert(bisect.bisect_right(pref, new_rating), new_rating)
-
-class RatingComparator(object):
-    def __init__(self, val):
-        self.val = val
-    def __lt__(self, other):
-        return self.val[0] < other[0]
-
 def set_user_pref(user_id, new_rating):
     with psycopg2.connect(database="init_db", 
                           user="puam", password=os.environ['PUAM_DB_PASSWORD'],
@@ -88,8 +99,17 @@ def set_user_pref(user_id, new_rating):
                           port='5432') as connection:
         with connection.cursor() as cursor:
             pref = read_prefs(cursor, user_id)
-            insert_pref(pref, new_rating) # preserve sorted by art_id
-            write_prefs(cursor, user_id, pref)
+            pref += new_rating[1] * recommender.id_to_feature(new_rating[0])
+            print()
+            print("===================")
+            print()
+            print("Feature: " + str(recommender.id_to_feature(new_rating[0])[0:10]))
+            print("New pref: " + str(pref[0:10]))
+
+            rated = read_rated(cursor, user_id)
+            rated[new_rating[0]] = True
+            print("New rated: " + str(rated))
+            write_prefs(cursor, user_id, pref, rated)
 
 def already_rated(user_id, art_id):
     with psycopg2.connect(database="init_db", 
@@ -97,19 +117,13 @@ def already_rated(user_id, art_id):
                         host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
                         port='5432') as connection:
         with connection.cursor() as cursor:
-            pref = read_prefs(cursor, user_id)
-            if pref[bisect.bisect_right(pref, RatingComparator((art_id, None)))-1][0] == art_id:
-               return True
-            return False
+            rated = read_rated(cursor, user_id)
+            return rated.get(art_id, False)
 
 def write_dummy_pref(cursor):
-    pref = [
-        (279, 0.1),
-        (280, 0.8),
-        (281, 0.3),
-    ]
-
-    write_prefs(cursor, 1, pref)
+    set_user_pref(1, (279, 0.1))
+    set_user_pref(1, (280, 0.8))
+    set_user_pref(1, (281, 0.3))
 
 if __name__ == '__main__':
     with psycopg2.connect(database="init_db", 
@@ -118,5 +132,24 @@ if __name__ == '__main__':
                           port="5432", sslmode="require") as connection:
         with contextlib.closing(connection.cursor()) as cursor:
             #initDB(cursor)
-            drop_prefs(cursor)
-            write_dummy_pref(cursor)
+            #write_dummy_pref(cursor)
+
+            #drop_prefs(cursor)
+
+            pref = read_prefs(cursor, 1)
+            rated = read_rated(cursor, 1)
+
+            print("Pref: " + str(pref[0:10]) + " ...")
+            print("Rated: " + str(rated))
+
+            set_user_pref(1, (2770, 0.8))
+            set_user_pref(1, (2771, -0.1))
+            '''pref = read_prefs(cursor, 1)
+            rated = read_rated(cursor, 1)
+
+            print()
+            print("===================")
+            print()
+
+            print("Pref: " + str(pref[0:10]) + " ...")
+            print("Rated: " + str(rated))'''

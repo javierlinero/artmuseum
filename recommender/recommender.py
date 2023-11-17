@@ -9,12 +9,8 @@ import os
 import random
 import database as db
 
-def similarity(user_ratings, img_features, target_img_features):
-    sim = 0
-    for i, rating in enumerate(user_ratings):
-        if img_features[i] is not None:
-            sim += rating[1] * np.dot(img_features[i], target_img_features)
-    return sim
+def similarity(prefs, target_img_features):
+    return np.dot(prefs, target_img_features)
 
 def id_to_feature(artid):
     file = open('../recommender/features/' + str(artid), 'r')
@@ -31,27 +27,13 @@ def already_suggested(similarities, art_id):
 	return False
 
 def get_suggestions(userid, MAX_ART_SAMPLES):
-    MAX_PREF_SAMPLES = 5
-    SAMPLE_POOL_SIZE = 5
+    SAMPLE_POOL_SIZE = 3
     swap_new_img_prob = 0.2
     with psycopg2.connect(database="init_db", user="puam", password=os.environ['PUAM_DB_PASSWORD'], 
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com", port="5432", 
                           sslmode="require") as connection:
         with contextlib.closing(connection.cursor()) as cursor:
-            img_features = []
-            full_prefs = db.read_prefs(cursor, userid)
-            print('====== Prefs ========')
-            print(full_prefs)
-            print('====== Prefs ========')
-            '''full_prefs = [
-                (279, 0.1),
-                (280, 0.8),
-                (281, 0.3),
-            ]'''
-            num_pref_samples = min(len(full_prefs), MAX_PREF_SAMPLES)
-            user_ratings = random.sample(full_prefs, num_pref_samples)
-            for rating in user_ratings:
-                img_features.append(id_to_feature(rating[0]))
+            prefs = db.read_prefs(cursor, userid)
 
             similarities = []
             features_dir = glob.glob('../recommender/features/*')
@@ -61,11 +43,9 @@ def get_suggestions(userid, MAX_ART_SAMPLES):
                 feature_num = int(feature_file[feature_file.rindex('/')+1:])
 
                 if not (db.already_rated(userid, feature_num) or already_suggested(similarities, feature_num)):
-                    similarities.append((feature_num, similarity(user_ratings, img_features, id_to_feature(feature_num))))
+                    similarities.append((feature_num, similarity(prefs, id_to_feature(feature_num))))
 
             similarities = sorted(similarities, key=lambda s : s[1], reverse=True)
-
-            print(similarities)
 
             # Swap high similarity image with low similarity with probability swap_new_img_prob
             for i in range(MAX_ART_SAMPLES):
@@ -84,5 +64,5 @@ def get_suggestions(userid, MAX_ART_SAMPLES):
 
 
 if __name__ == '__main__':
-	for s in get_suggestions(1, 3):
+	for s in get_suggestions(1, 2):
 		print(s)
