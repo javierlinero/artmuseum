@@ -6,12 +6,12 @@ import 'package:puam_app/tinder_for_art/index.dart';
 class TinderSwiper extends StatelessWidget {
   const TinderSwiper({
     super.key,
-    required AppinoSwiperContorller swiperController,
+    required AppinioSwiperController swiperController,
     required this.imageCards,
     required this.appinioController,
   }) : _swiperController = swiperController;
 
-  final AppinoSwiperContorller _swiperController;
+  final AppinioSwiperController _swiperController;
   final List<TinderArt> imageCards;
   final AppinioController appinioController;
 

@@ -16,7 +16,7 @@ class TinderForArtPage extends StatefulWidget {
 class _TinderForArtPageState extends State<TinderForArtPage> {
   double deviceWidth(BuildContext context) => MediaQuery.of(context).size.width;
   final List<TinderArt> artCards = [];
-  AppinoSwiperContorller _swiperController = AppinoSwiperContorller();
+  AppinioSwiperController _swiperController = AppinioSwiperController();
   bool recommendationsFetched = false;
 
   Future<void> preloadImages(
