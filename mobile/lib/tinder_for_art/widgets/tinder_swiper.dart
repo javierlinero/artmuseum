@@ -17,6 +17,7 @@ class TinderSwiper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppinioSwiper(
+      backgroundCardsCount: 0,
       swipeOptions: const AppinioSwipeOptions.only(
         left: true,
         right: true,

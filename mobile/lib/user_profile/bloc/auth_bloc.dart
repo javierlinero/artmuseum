@@ -1,18 +1,24 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puam_app/user_profile/index.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final Auth _authService;
+  final AuthService _authService;
 
   AuthBloc(this._authService) : super(AuthStateInitial()) {
+    on<AuthEventInitialize>(_onInitialize);
+    on<AuthEventUserChanged>(_onUserChanged);
+    on<AuthEventUserNotFound>(_onUserNotFound);
     on<AuthEventEmailSignUp>((event, emit) async {
       try {
         emit(AuthStateLoading());
         await _authService.createWithEmailAndPassword(
           email: event.email,
           password: event.password,
+          displayName: event.displayName,
         );
-        emit(AuthStateLoggedIn(_authService.currentUser!));
+        emit(AuthStateLoggedIn(
+            _authService.currentUser!, await _authService.getUserToken()));
       } catch (e) {
         emit(AuthStateFailure(e.toString()));
       }
@@ -25,7 +31,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           email: event.email,
           password: event.password,
         );
-        emit(AuthStateLoggedIn(_authService.currentUser!));
+        emit(AuthStateLoggedIn(
+            _authService.currentUser!, await _authService.getUserToken()));
       } catch (e) {
         emit(AuthStateFailure(e.toString()));
       }
@@ -35,7 +42,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         emit(AuthStateLoading());
         await _authService.signInWithGoogle();
-        emit(AuthStateLoggedIn(_authService.currentUser!));
+        emit(AuthStateLoggedIn(
+            _authService.currentUser!, await _authService.getUserToken()));
       } catch (e) {
         emit(AuthStateFailure(e.toString()));
       }
@@ -45,5 +53,33 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _authService.signOut();
       emit(AuthStateLoggedOut());
     });
+
+    // Listen to the auth state changes
+    _authService.authStateChanges.listen((User? user) {
+      if (user == null) {
+        add(AuthEventUserNotFound());
+      } else {
+        add(AuthEventUserChanged(user));
+      }
+    });
+  }
+
+  void _onUserChanged(
+      AuthEventUserChanged event, Emitter<AuthState> emit) async {
+    emit(AuthStateLoggedIn(event.user, await _authService.getUserToken()));
+  }
+
+  // Event handler for user not found
+  void _onUserNotFound(AuthEventUserNotFound event, Emitter<AuthState> emit) {
+    emit(AuthStateLoggedOut());
+  }
+
+  void _onInitialize(AuthEventInitialize event, Emitter<AuthState> emit) async {
+    final currentUser = _authService.currentUser;
+    if (currentUser != null) {
+      emit(AuthStateLoggedIn(currentUser, await _authService.getUserToken()));
+    } else {
+      emit(AuthStateLoggedOut());
+    }
   }
 }

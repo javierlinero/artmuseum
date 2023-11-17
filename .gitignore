@@ -2,4 +2,9 @@
 .vscode
 backend/__pycache__
 HASIMAGES
+recommender/features
+recommender/__pycache__
 .env
+backend/features
+backend/features.zip
+backend/firebase.json

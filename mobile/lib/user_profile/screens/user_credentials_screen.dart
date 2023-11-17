@@ -12,14 +12,22 @@ class UserCredentials extends StatefulWidget {
 
 final TextEditingController _controllerEmail = TextEditingController();
 final TextEditingController _controllerPassword = TextEditingController();
+final TextEditingController _controllerDisplayName = TextEditingController();
 
 void _onSubmit(BuildContext context) {
   BlocProvider.of<AuthBloc>(context).add(
     AuthEventEmailSignUp(
       _controllerEmail.text,
       _controllerPassword.text,
+      _controllerDisplayName.text,
     ),
   );
+  Navigator.pop(context);
+}
+
+void _googleClick(BuildContext context) {
+  BlocProvider.of<AuthBloc>(context).add(AuthEventGoogleSignIn());
+  Navigator.pop(context);
 }
 
 class _UserCredentialsState extends State<UserCredentials> {
@@ -32,8 +40,6 @@ class _UserCredentialsState extends State<UserCredentials> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.error)),
           );
-        } else if (state is AuthStateLoggedIn) {
-          Navigator.pop(context);
         }
       }), builder: (context, state) {
         if (state is AuthStateLoading) {
@@ -62,7 +68,9 @@ class _UserCredentialsState extends State<UserCredentials> {
         ),
       ),
       ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          _googleClick(context);
+        },
         style:
             FilledButton.styleFrom(backgroundColor: AppTheme.princetonOrange),
         child: Text(('Continue with Google'), style: AppTheme.signUp),
@@ -91,17 +99,18 @@ class _UserCredentialsState extends State<UserCredentials> {
           ),
         ),
       ),
-      // Padding(
-      //   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-      //   child: TextFormField(
-      //     decoration: const InputDecoration(
-      //       filled: true,
-      //       fillColor: Colors.grey,
-      //       border: UnderlineInputBorder(),
-      //       labelText: 'User Name',
-      //     ),
-      //   ),
-      // ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+        child: TextFormField(
+          controller: _controllerDisplayName,
+          decoration: const InputDecoration(
+            filled: true,
+            fillColor: Colors.grey,
+            border: UnderlineInputBorder(),
+            labelText: 'Display Name',
+          ),
+        ),
+      ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: TextFormField(
