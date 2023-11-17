@@ -54,14 +54,16 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
       swiperController: _swiperController,
     );
 
+    // Populate artCards only once when recommendations are fetched
+    if (artState.recommendations.isNotEmpty && artCards.isEmpty) {
+      artCards.addAll(artState.recommendations);
+    }
+
     if (artState.isLoading) {
       return Scaffold(body: Center(child: CircularProgressIndicator()));
     } else if (artState.error != null) {
       return Scaffold(body: Center(child: Text('Error: ${artState.error}')));
     } else {
-      artCards.clear();
-      artCards.addAll(artState.recommendations);
-
       return Scaffold(
         appBar: appBar(),
         body: LayoutBuilder(
