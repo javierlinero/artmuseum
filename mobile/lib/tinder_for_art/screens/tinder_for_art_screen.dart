@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +19,15 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
   AppinioSwiperController _swiperController = AppinioSwiperController();
   bool recommendationsFetched = false;
 
+  Future<void> preloadImages(
+      List<TinderArt> imageCards, BuildContext context) async {
+    for (var art in imageCards) {
+      final imageUrl = '${art.imageUrl}/full/pct:15/0/default.jpg';
+      final imageProvider = CachedNetworkImageProvider(imageUrl);
+      await precacheImage(imageProvider, context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
@@ -31,7 +41,7 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
                 if (!recommendationsFetched) {
                   context
                       .read<TinderArtBloc>()
-                      .add(FetchArtworkRecommendations(10, authState.token));
+                      .add(FetchArtworkRecommendations(5, authState.token));
                   recommendationsFetched = true;
                 }
                 return _buildTFAPage(context, artState);
@@ -56,11 +66,24 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
 
     // Populate artCards only once when recommendations are fetched
     if (artState.recommendations.isNotEmpty && artCards.isEmpty) {
-      artCards.addAll(artState.recommendations);
+      preloadImages(artState.recommendations, context).then((_) {
+        setState(() {
+          artCards.addAll(artState.recommendations);
+        });
+      });
     }
 
     if (artState.isLoading) {
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
+      return Scaffold(
+          appBar: appBar(),
+          body: Center(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Loading your recommendations!'),
+              CircularProgressIndicator(),
+            ],
+          )));
     } else if (artState.error != null) {
       return Scaffold(body: Center(child: Text('Error: ${artState.error}')));
     } else {
