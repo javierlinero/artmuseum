@@ -11,3 +11,10 @@ class ToggleUndo extends ArtworkEvent {
 
   ToggleUndo(this.canUndo);
 }
+
+class FetchArtworkRecommendations extends ArtworkEvent {
+  final int numSuggestions;
+  final String? token;
+
+  FetchArtworkRecommendations(this.numSuggestions, this.token);
+}
