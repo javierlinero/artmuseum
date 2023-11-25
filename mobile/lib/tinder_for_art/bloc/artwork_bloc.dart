@@ -14,7 +14,9 @@ class TinderArtBloc extends Bloc<ArtworkEvent, ArtworkState> {
     });
 
     on<SaveArtworks>((event, emit) async {
-      await LocalStorageHelper.saveArtworks(event.artworks);
+      int startIndex = state.currentIndex;
+      List<TinderArt> artworksToSave = event.artworks.sublist(startIndex);
+      await LocalStorageHelper.saveArtworks(artworksToSave);
       emit(state.copyWith(isLoading: false));
     });
 
@@ -43,8 +45,12 @@ class TinderArtBloc extends Bloc<ArtworkEvent, ArtworkState> {
     try {
       List<TinderArt>? savedArtworks = await LocalStorageHelper.loadArtworks();
       if (savedArtworks != null && savedArtworks.isNotEmpty) {
-        emit(state.copyWith(recommendations: savedArtworks, isLoading: false));
-      } else {}
+        emit(state.copyWith(
+            recommendations: savedArtworks, currentIndex: 0, isLoading: false));
+      } else {
+        // Handle the case where no saved artworks are available
+        emit(state.copyWith(isLoading: false));
+      }
     } catch (e) {
       emit(state.copyWith(isLoading: false, error: e.toString()));
     }
