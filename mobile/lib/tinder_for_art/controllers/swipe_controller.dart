@@ -23,6 +23,12 @@ class AppinioController {
     return context.read<TinderArtBloc>().state.currentIndex;
   }
 
+  void saveCurrentArtworks(List<TinderArt> artCards) {
+    if (_swipedIndexes.isNotEmpty && artCards.isNotEmpty) {
+      context.read<TinderArtBloc>().add(SaveArtworks(artCards));
+    }
+  }
+
   void handleSwipe(int index, AppinioSwiperDirection direction) {
     debugPrint('Handling Swipe: index = $index, direction = $direction');
 
@@ -64,6 +70,8 @@ class AppinioController {
       debugPrint('All artworks have been swiped!');
     }
     updateIndex(newIndex);
+
+    saveCurrentArtworks(context.read<TinderArtBloc>().state.recommendations);
   }
 
   void updateIndex(int newIndex) {
