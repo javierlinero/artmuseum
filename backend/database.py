@@ -1,3 +1,4 @@
+import bisect
 import contextlib
 import os
 import codecs
@@ -39,22 +40,22 @@ def get_art_by_id(art_id):
                return None
 
 def initDB(cursor):
-  query_str = 'CREATE TABLE user_preferences2(user_id int PRIMARY KEY, pref_str VARCHAR(20000), rated_str VARCHAR(62000))'
+  query_str = 'CREATE TABLE user_preferences2(user_id int PRIMARY KEY, pref_str VARCHAR(20000), rated_str VARCHAR(63000))'
   cursor.execute(query_str, [])
 
 def write_prefs(cursor, user_id, user_ratings, rated):
-  # Adjust when change to int hashtable for rated 
-  if len(read_rated(cursor, user_id).keys()) == 0:
+  query_str = 'SELECT user_id FROM user_preferences2 WHERE user_id=%s'
+  cursor.execute(query_str, [user_id])
+  table = cursor.fetchall()
+  if len(table) == 0:
     query_str = 'INSERT INTO user_preferences2 VALUES (%s, %s, %s)'
     cursor.execute(query_str,
-        (user_id,
-        codecs.encode(pickle.dumps(user_ratings), "base64").decode(),
-        codecs.encode(pickle.dumps(rated), "base64").decode()))
+        (user_id, codecs.encode(pickle.dumps(user_ratings), "base64").decode(),
+                  codecs.encode(pickle.dumps(rated), "base64").decode()))
   else:
-    query_str = 'UPDATE user_preferences2 SET pref_str=%s WHERE user_id=%s'
-    cursor.execute(query_str, (codecs.encode(pickle.dumps(user_ratings), "base64").decode(), user_id))
-    query_str = 'UPDATE user_preferences2 SET rated_str=%s WHERE user_id=%s'
-    cursor.execute(query_str, (codecs.encode(pickle.dumps(rated), "base64").decode(), user_id))
+    query_str = 'UPDATE user_preferences2 SET pref_str=%s, rated_str=%s WHERE user_id=%s'
+    cursor.execute(query_str, (codecs.encode(pickle.dumps(user_ratings), "base64").decode(),
+                               codecs.encode(pickle.dumps(rated), "base64").decode(), user_id))
 
 def read_prefs(cursor, user_id):
   query_str = 'SELECT pref_str FROM user_preferences2 WHERE user_id=%s' % (user_id)
@@ -72,9 +73,7 @@ def read_rated(cursor, user_id):
   cursor.execute(query_str, [])
   table = cursor.fetchall()
   if len(table) == 0:
-    # change to int hashtable instead of dict =====================
-    empty_dict = {}
-    return empty_dict
+    return [False] * 46000
   else:
     rated = table[0][0].encode()
     return pickle.loads(codecs.decode(rated, "base64"))
@@ -100,6 +99,7 @@ def set_user_pref(user_id, new_rating):
         with connection.cursor() as cursor:
             pref = read_prefs(cursor, user_id)
             pref += new_rating[1] * recommender.id_to_feature(new_rating[0])
+            pref /= np.linalg.norm(pref)
             print()
             print("===================")
             print()
@@ -107,18 +107,9 @@ def set_user_pref(user_id, new_rating):
             print("New pref: " + str(pref[0:10]))
 
             rated = read_rated(cursor, user_id)
-            rated[new_rating[0]] = True
-            print("New rated: " + str(rated))
+            rated[bisect.bisect_left(recommender.features_dir, new_rating[0])] = True
+            print("Set rated[" + str(bisect.bisect_left(recommender.features_dir, new_rating[0])) + "]=True for artid " + str(new_rating[0]))
             write_prefs(cursor, user_id, pref, rated)
-
-def already_rated(user_id, art_id):
-    with psycopg2.connect(database="init_db", 
-                        user="puam", password=os.environ['PUAM_DB_PASSWORD'],
-                        host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
-                        port='5432') as connection:
-        with connection.cursor() as cursor:
-            rated = read_rated(cursor, user_id)
-            return rated.get(art_id, False)
 
 def write_dummy_pref(cursor):
     set_user_pref(1, (279, 0.1))
@@ -136,15 +127,15 @@ if __name__ == '__main__':
 
             #drop_prefs(cursor)
 
-            pref = read_prefs(cursor, 1)
-            rated = read_rated(cursor, 1)
+            '''pref = read_prefs(cursor, 2)
+            rated = read_rated(cursor, 2)
 
             print("Pref: " + str(pref[0:10]) + " ...")
-            print("Rated: " + str(rated))
+            print("Rated: " + str(rated[0:10]))
 
-            set_user_pref(1, (2770, 0.8))
-            set_user_pref(1, (2771, -0.1))
-            '''pref = read_prefs(cursor, 1)
+            set_user_pref(2, (2770, 0.8))
+            set_user_pref(2, (2771, -0.1))
+            pref = read_prefs(cursor, 1)
             rated = read_rated(cursor, 1)
 
             print()
