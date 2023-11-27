@@ -7,8 +7,26 @@ import pickle
 import psycopg2
 import recommender
 
+# import queue
+
+# _connection_pool = queue.Queue()
+
+# connection pool for efficiency with DB
+# def _get_conn():
+#    try:
+#        conn = _connection_pool.get(block=False)
+#    except queue.Empty:
+#        conn = psycopg2.connect(database="init_db",
+#                                user="puam", password=os.environ['PUAM_DB_PASSWORD'],
+#                                host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
+#                                port="5432", sslmode="require")
+#    return conn
+#
+# def _put_conn(conn):
+#    _connection_pool.put(conn)
+
 def get_art_by_id(art_id):
-    with psycopg2.connect(database="init_db", 
+    with psycopg2.connect(database="init_db",
                           user="puam", password=os.environ['PUAM_DB_PASSWORD'],
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
                           port="5432", sslmode="require") as connection:
@@ -27,21 +45,109 @@ def get_art_by_id(art_id):
                     artists.append(row[0])
 
             if len(artwork_table) != 0:
-               return {
-                  "title": artwork_table[0][0],
-                  "imageurl": artwork_table[0][1],
-                  "year": artwork_table[0][2],
-                  "materials": artwork_table[0][3],
-                  "size": artwork_table[0][4],
-                  "description": artwork_table[0][5],
-                  "artists": artists
-               }
+                return {
+                    "title": artwork_table[0][0],
+                    "imageurl": artwork_table[0][1],
+                    "year": artwork_table[0][2],
+                    "materials": artwork_table[0][3],
+                    "size": artwork_table[0][4],
+                    "description": artwork_table[0][5],
+                    "artists": artists
+                }
             else:
-               return None
+                return None
+
 
 def initDB(cursor):
-  query_str = 'CREATE TABLE user_preferences2(user_id int PRIMARY KEY, pref_str VARCHAR(20000), rated_str VARCHAR(63000))'
-  cursor.execute(query_str, [])
+    drop_str = 'DROP TABLE IF EXISTS users'
+    cursor.execute(drop_str, [])
+    query_str = '''
+    CREATE TABLE users2 (
+        UserID VARCHAR(255) PRIMARY KEY,
+        Email VARCHAR(255) UNIQUE NOT NULL,
+        DisplayName VARCHAR(255)
+    )
+    '''
+    cursor.execute(query_str, [])
+
+    drop_str = 'DROP TABLE IF EXISTS user_preferences2'
+    cursor.execute(drop_str, [])
+    query_str = '''
+    CREATE TABLE user_preferences2 (
+        user_id VARCHAR(255) PRIMARY KEY,
+        pref_str VARCHAR(20000),
+        rated_str VARCHAR(63000),
+        FOREIGN KEY (user_id) REFERENCES users(UserID) ON DELETE CASCADE
+    )
+    '''
+    cursor.execute(query_str, [])
+
+    drop_str = 'DROP TABLE IF EXISTS favorites'
+    cursor.execute(drop_str, [])
+    query_str = '''
+    CREATE TABLE favorites (
+        user_id VARCHAR(255),
+        artwork_id INTEGER,
+        PRIMARY KEY (user_id, artwork_id),
+        FOREIGN KEY (user_id) REFERENCES users(UserID) ON DELETE CASCADE,
+        FOREIGN KEY (artwork_id) REFERENCES artworks(artwork_id) ON DELETE CASCADE
+    )
+    '''
+    cursor.execute(query_str, [])
+
+def create_user(uid, email, display_name):
+    insert_query = 'INSERT INTO users (userid, email, displayname) VALUES (%s, %s, %s);'
+    with psycopg2.connect(database="init_db",
+                          user="puam", password=os.environ['PUAM_DB_PASSWORD'],
+                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
+                          port='5432') as connection:
+        with connection.cursor() as cursor:
+            try:
+                cursor.execute(insert_query, (uid, email, display_name))
+                connection.commit()
+            except Exception as e:
+                connection.rollback()
+                raise e
+
+def update_user(uid, email=None, display_name=None):
+    update_query = """
+    UPDATE users 
+    SET email = COALESCE(%s, email), 
+        displayname = COALESCE(%s, displayname)
+    WHERE userid = %s;
+    """
+    with psycopg2.connect(database="init_db",
+                          user="puam", password=os.environ['PUAM_DB_PASSWORD'],
+                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
+                          port='5432') as connection:
+        with connection.cursor() as cursor:
+            try:
+                cursor.execute(update_query, (email, display_name, uid))
+                connection.commit()
+            except Exception as e:
+                connection.rollback()
+                raise e
+
+
+def get_user_favorites(userid, limit=50):
+    with psycopg2.connect(database="init_db",
+                          user="puam", password=os.environ['PUAM_DB_PASSWORD'],
+                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
+                          port='5432') as connection:
+        with contextlib.closing(connection.cursor()) as cursor:
+            try:
+                query_str = '''
+                SELECT a.artwork_id, a.imageurl FROM artworks a
+                JOIN favorites uf ON a.artwork_id = uf.artwork_id
+                WHERE uf.user_id= %s
+                LIMIT %s
+                '''
+                cursor.execute(query_str, (userid, limit))
+                table = cursor.fetchall()
+
+                return table
+            except Exception as ex:
+                print(ex)
 
 def write_prefs(cursor, user_id, user_ratings, rated):
   query_str = 'SELECT user_id FROM user_preferences2 WHERE user_id=%s'
@@ -79,11 +185,11 @@ def read_rated(cursor, user_id):
     return pickle.loads(codecs.decode(rated, "base64"))
 
 def drop_prefs(cursor):
-  query_str = 'DELETE FROM user_preferences2'
-  cursor.execute(query_str, [])
+    query_str = 'DELETE FROM user_preferences2'
+    cursor.execute(query_str, [])
 
 def get_user_pref(user_id):
-    with psycopg2.connect(database="init_db", 
+    with psycopg2.connect(database="init_db",
                           user="puam", password=os.environ['PUAM_DB_PASSWORD'],
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
                           port="5432") as connection:
@@ -92,7 +198,7 @@ def get_user_pref(user_id):
             return pref
 
 def set_user_pref(user_id, new_rating):
-    with psycopg2.connect(database="init_db", 
+    with psycopg2.connect(database="init_db",
                           user="puam", password=os.environ['PUAM_DB_PASSWORD'],
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
                           port='5432') as connection:
@@ -111,13 +217,9 @@ def set_user_pref(user_id, new_rating):
             print("Set rated[" + str(bisect.bisect_left(recommender.features_dir, new_rating[0])) + "]=True for artid " + str(new_rating[0]))
             write_prefs(cursor, user_id, pref, rated)
 
-def write_dummy_pref(cursor):
-    set_user_pref(1, (279, 0.1))
-    set_user_pref(1, (280, 0.8))
-    set_user_pref(1, (281, 0.3))
 
 if __name__ == '__main__':
-    with psycopg2.connect(database="init_db", 
+    with psycopg2.connect(database="init_db",
                           user="puam", password=os.environ['PUAM_DB_PASSWORD'],
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
                           port="5432", sslmode="require") as connection:

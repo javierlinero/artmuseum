@@ -60,7 +60,7 @@ class _MapPageState extends State<MapPage> {
             mapController: _mapController,
             options: MapOptions(
               initialCenter: state.location,
-              maxZoom: 20,
+              maxZoom: 21,
               minZoom: 15,
               initialZoom: 18,
               onTap: (_, __) => _popupController
@@ -69,7 +69,7 @@ class _MapPageState extends State<MapPage> {
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                maxZoom: 20,
+                maxZoom: 21,
                 userAgentPackageName: 'com.puam.app',
               ),
               CurrentLocationLayer(
@@ -80,7 +80,7 @@ class _MapPageState extends State<MapPage> {
                 options: MarkerClusterLayerOptions(
                   maxClusterRadius: 80,
                   rotate: false,
-                  disableClusteringAtZoom: 18,
+                  disableClusteringAtZoom: 20,
                   zoomToBoundsOnClick: false,
                   markers: artMarkers,
                   onMarkersClustered: (p0) => _popupController.hideAllPopups(),

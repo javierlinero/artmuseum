@@ -11,16 +11,32 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  late ProfileRepo _repo;
+  late AuthStateLoggedIn _currentState;
+
+  @override
+  void initState() {
+    super.initState();
+    _repo = ProfileRepo(
+      getToken: () => _currentState.user.getIdToken(),
+      favoritesService: FavoritesService(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        if (state is AuthStateLoggedIn) {
-          return _buildProfilePage(context, state);
-        } else
-          return SizedBox.shrink();
-      },
-    ));
+    return Scaffold(
+      body: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          if (state is AuthStateLoggedIn) {
+            _currentState = state; // Update the current state
+            return _buildProfilePage(context, state);
+          } else {
+            return SizedBox.shrink();
+          }
+        },
+      ),
+    );
   }
 
   Column _buildProfilePage(BuildContext context, AuthStateLoggedIn state) {
@@ -48,7 +64,7 @@ class _ProfileState extends State<Profile> {
           margin: EdgeInsets.all(15),
           child: Center(
               child: Text(
-            state.user.email ?? "",
+            state.user.displayName ?? state.user.email ?? "",
             style: AppTheme.username,
           ))),
       Container(
@@ -69,9 +85,41 @@ class _ProfileState extends State<Profile> {
         endIndent: 20,
         color: Colors.black,
       ),
-      Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-        Text('Liked art will appear here!'),
-      ])
+      Text('Liked art will appear here!'), //message appears if no favorites
+      Expanded(
+        child: FutureBuilder<List<Favorite>>(
+          future: _repo.fetchFavorites(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator(); // Show a loader
+            } else if (snapshot.hasError) {
+              return Text("Error: ${snapshot.error}"); // Handle error
+            } else if (snapshot.hasData) {
+              List<Favorite> favorites = snapshot.data ?? [];
+              if (favorites.isEmpty) {
+                return Text(
+                    'No favorites yet!'); // Show message if list is empty
+              }
+              return GridView.count(
+                crossAxisCount: 3,
+                children: List.generate(
+                  favorites.length,
+                  (index) {
+                    return Center(
+                      child: Image.network(
+                        '${favorites[index].imageURL}/full/pct:5/0/default.jpg',
+                        fit: BoxFit.fill,
+                      ),
+                    );
+                  },
+                ),
+              );
+            } else {
+              return Text('No data'); // Handle no data case
+            }
+          },
+        ),
+      ),
     ]);
   }
 }
