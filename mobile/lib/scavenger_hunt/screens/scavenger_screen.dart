@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puam_app/scavenger_hunt/index.dart';
+import 'package:puam_app/shared/index.dart';
 
 class ScavengerHuntScreen extends StatelessWidget {
   double calculateBlurLevel(double distance) {
@@ -35,7 +36,7 @@ class ScavengerHuntScreen extends StatelessWidget {
             state.message == "No current target set.") {
           return _buildInitialScreen(context);
         } else {
-          return Placeholder();
+          return Text('Oops... you\'re not supposed to see this.');
         }
       },
     );
@@ -46,9 +47,15 @@ class ScavengerHuntScreen extends StatelessWidget {
       appBar: AppBar(title: Text('Start Scavenger Hunt')),
       body: Center(
         child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppTheme.princetonOrange,
+          ),
           onPressed: () => BlocProvider.of<ArtworkScavengerHuntBloc>(context)
-              .add(StartScavengerHunt(5)), // Assuming 5 artworks for example
-          child: Text('Start Scavenger Hunt'),
+              .add(StartScavengerHunt(5)),
+          child: Text(
+            'Start Scavenger Hunt',
+            style: TextStyle(color: Colors.black),
+          ),
         ),
       ),
     );
@@ -66,10 +73,16 @@ class ScavengerHuntScreen extends StatelessWidget {
                 '${state.proximityHint}: ${state.distance.toStringAsFixed(0)} meters away.'),
             _buildBlurredImage(state),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.princetonOrange,
+              ),
               onPressed: () =>
                   BlocProvider.of<ArtworkScavengerHuntBloc>(context)
                       .add(ArtworkFound()),
-              child: Text('Found'),
+              child: Text(
+                'Found',
+                style: TextStyle(color: Colors.black),
+              ),
             ),
           ],
         ),
