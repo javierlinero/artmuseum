@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:puam_app/map/index.dart';
@@ -11,6 +13,7 @@ class ArtworkScavengerHuntBloc
   final Random _random = Random();
   List<CampusArtwork> _remainingArtworks;
   CampusArtwork? currentTarget;
+  StreamSubscription<Position>? _positionStreamSubscription;
 
   ArtworkScavengerHuntBloc({required this.artworks})
       : _remainingArtworks = List.from(artworks),
@@ -19,6 +22,27 @@ class ArtworkScavengerHuntBloc
     on<UpdateUserLocation>(_onUpdateUserLocation);
     on<ArtworkFound>(_onArtworkFound);
     on<EndScavengerHunt>((event, emit) => emit(ScavengerHuntInitial()));
+    _startListeningToLocation();
+  }
+
+  void _startListeningToLocation() {
+    const locationSettings = LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 5,
+    );
+
+    _positionStreamSubscription =
+        Geolocator.getPositionStream(locationSettings: locationSettings).listen(
+      (Position position) {
+        add(UpdateUserLocation(position));
+      },
+    );
+  }
+
+  @override
+  Future<void> close() {
+    _positionStreamSubscription?.cancel();
+    return super.close();
   }
 
   void _onStartScavengerHunt(
@@ -32,6 +56,7 @@ class ArtworkScavengerHuntBloc
 
     _selectNextTarget();
     if (currentTarget != null) {
+      debugPrint(currentTarget!.name);
       emit(ScavengerHuntInProgress(currentTarget!, 'Starting'));
     } else {
       emit(ScavengerHuntError('No artworks available for the scavenger hunt'));
@@ -59,25 +84,30 @@ class ArtworkScavengerHuntBloc
   }
 
   String _getProximityHint(double distance) {
+    String roundedDistance = distance.toStringAsFixed(0);
     // Define distance thresholds for different hints
     const double hotThreshold = 20;
     const double warmThreshold = 100;
     const double coldThreshold = 250;
+    const double farAwayThreshold = 500;
 
     if (distance <= hotThreshold) {
-      return 'Hot';
+      return 'Hot: $roundedDistance meters away.';
     } else if (distance <= warmThreshold) {
-      return 'Warm';
+      return 'Warm: $roundedDistance meters away.';
     } else if (distance <= coldThreshold) {
-      return 'Cold';
+      return 'Cold: $roundedDistance meters away.';
+    } else if (distance <= farAwayThreshold) {
+      return 'Colder: $roundedDistance meters away.';
     } else {
-      return 'Colder';
+      return 'Far Away: $roundedDistance meters away.';
     }
   }
 
   void _onArtworkFound(ArtworkFound event, Emitter<ScavengerHuntState> emit) {
     _selectNextTarget();
     if (currentTarget != null) {
+      debugPrint('Next: ${currentTarget!.name}');
       emit(ScavengerHuntInProgress(
           currentTarget!, 'Artwork Found! Searching next...'));
     } else {
