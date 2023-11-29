@@ -92,9 +92,9 @@ class ArtworkScavengerHuntBloc
 
   String _getProximityHint(double distance) {
     // Define distance thresholds for different hints
-    const double hotThreshold = 20;
-    const double warmThreshold = 100;
-    const double coldThreshold = 250;
+    const double hotThreshold = 50;
+    const double warmThreshold = 150;
+    const double coldThreshold = 300;
     const double farAwayThreshold = 500;
 
     if (distance <= hotThreshold) {

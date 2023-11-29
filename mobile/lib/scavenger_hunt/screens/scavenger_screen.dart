@@ -11,14 +11,14 @@ class ScavengerHuntScreen extends StatelessWidget {
     const minBlur = 0.0; // No blur when the target is reached
     const maxBlur = 10.0; // Maximum blur
 
-    if (distance <= 0) {
+    if (distance <= 50) {
       return minBlur;
     }
 
-    double blurRatio = (distance / maxDistance).clamp(0.0, 1.0);
-    double blur = maxBlur * (1 - blurRatio);
-    debugPrint(blur.toString());
-    return blur;
+    double blurRatio = distance / maxDistance;
+
+    double blur = maxBlur * (blurRatio);
+    return blur.clamp(minBlur, maxBlur);
   }
 
   @override
@@ -64,28 +64,7 @@ class ScavengerHuntScreen extends StatelessWidget {
           children: <Widget>[
             Text(
                 '${state.proximityHint}: ${state.distance.toStringAsFixed(0)} meters away.'),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ImageFiltered(
-                imageFilter: ImageFilter.blur(
-                    sigmaX: calculateBlurLevel(state.distance.floorToDouble()),
-                    sigmaY: calculateBlurLevel(
-                      state.distance.floorToDouble(),
-                    )),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: 300,
-                  ),
-                  child: CachedNetworkImage(
-                    imageUrl:
-                        '${state.currentTarget.imageUrl}/full/full/0/default.jpg',
-                    fit: BoxFit.contain,
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
-                ),
-              ),
-            ),
+            _buildBlurredImage(state),
             ElevatedButton(
               onPressed: () =>
                   BlocProvider.of<ArtworkScavengerHuntBloc>(context)
@@ -96,6 +75,28 @@ class ScavengerHuntScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildBlurredImage(ScavengerHuntInProgress state) {
+    if (state.distance < 0) {
+      return CircularProgressIndicator();
+    } else {
+      return ClipRect(
+        // Clip the image to its bounds
+        child: ImageFiltered(
+          imageFilter: ImageFilter.blur(
+            sigmaX: calculateBlurLevel(state.distance),
+            sigmaY: calculateBlurLevel(state.distance),
+          ),
+          child: CachedNetworkImage(
+            imageUrl: '${state.currentTarget.imageUrl}/full/full/0/default.jpg',
+            fit: BoxFit.contain,
+            placeholder: (context, url) => CircularProgressIndicator(),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          ),
+        ),
+      );
+    }
   }
 
   Widget _buildCompletedScreen() {
