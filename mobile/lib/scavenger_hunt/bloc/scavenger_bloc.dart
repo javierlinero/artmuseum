@@ -39,6 +39,12 @@ class ArtworkScavengerHuntBloc
     );
   }
 
+  void getLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
+    add(UpdateUserLocation(position));
+  }
+
   @override
   Future<void> close() {
     _positionStreamSubscription?.cancel();
@@ -58,6 +64,7 @@ class ArtworkScavengerHuntBloc
     if (currentTarget != null) {
       debugPrint(currentTarget!.name);
       emit(ScavengerHuntInProgress(currentTarget!, 'Starting'));
+      getLocation();
     } else {
       emit(ScavengerHuntError('No artworks available for the scavenger hunt'));
     }
@@ -110,6 +117,7 @@ class ArtworkScavengerHuntBloc
       debugPrint('Next: ${currentTarget!.name}');
       emit(ScavengerHuntInProgress(
           currentTarget!, 'Artwork Found! Searching next...'));
+      getLocation();
     } else {
       emit(ScavengerHuntCompleted());
     }
