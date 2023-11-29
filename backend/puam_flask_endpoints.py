@@ -1,7 +1,6 @@
 import json
 import random
 import os
-import flask
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, jsonify, request
 import database as db
@@ -82,7 +81,7 @@ def art_of_the_day():
 def tinder_for_art_get():
     user_info = request.user
     userid = user_info['uid']
-    num_suggestions = int(flask.request.args.get('numart'))
+    num_suggestions = int(request.args.get('numart'))
     print("Suggesting " + str(num_suggestions) + " images based on preferences of userid " + str(userid))
 
     # still images without url *************************
@@ -92,7 +91,7 @@ def tinder_for_art_get():
 @app.route('/tinder_for_art', methods=['POST'])
 @require_auth
 def tinder_for_art_post():
-    data = flask.request.form
+    data = request.form
     user_info = request.user
     userid = user_info['uid']
     artid = int(data["artid"])
@@ -179,6 +178,37 @@ def user_favorites_endpoint():
         favorites = db.get_user_favorites(uid, limit)
 
         return jsonify(favorites), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/search', methods=['GET'])
+def search():
+    try:
+        year = request.json.get('year')
+        query = request.json.get('query')
+        limit = request.json.get('limit')
+        if query is None:
+            query= ''
+        if year is None and query is not None:
+            if limit is None:
+                result = db.get_art_by_search(query)
+            else:
+                result = db.get_art_by_search(query, limit)
+        else:
+            if limit is None:
+                result = db.get_art_by_date(year)
+            else:
+                result = db.get_art_by_date(year, limit)
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/art_info', methods=['GET'])
+def art_information():
+    try:
+        data = request.args.get('artid')
+        artwork = db.get_art_by_id(data)
+        return jsonify(artwork)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

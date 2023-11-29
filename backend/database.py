@@ -53,7 +53,7 @@ def get_art_by_id(art_id):
                     "artists": artists
                 }
             else:
-                return None
+                return "art_id: %s, does not exist." % str(art_id)
 
 
 def initDB(cursor):
@@ -92,6 +92,7 @@ def initDB(cursor):
     '''
     cursor.execute(query_str, [])
 
+
 def create_user(uid, email, display_name):
     insert_query = 'INSERT INTO users (userid, email, displayname) VALUES (%s, %s, %s);'
     with psycopg2.connect(database="init_db",
@@ -105,6 +106,7 @@ def create_user(uid, email, display_name):
             except Exception as e:
                 connection.rollback()
                 raise e
+
 
 def update_user(uid, email=None, display_name=None):
     update_query = """
@@ -229,6 +231,73 @@ def write_dummy_pref(cursor):
 
     write_prefs(cursor, 1, pref)
 
+
+def get_art_by_date(query, limit=100):
+    with psycopg2.connect(database="init_db",
+                          user="puam", password=os.environ['PUAM_DB_PASSWORD'],
+                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
+                          port="5432", sslmode="require") as connection:
+        with contextlib.closing(connection.cursor()) as cursor:
+            query_str = 'SELECT artwork_id FROM artworks WHERE artworks.daterange ILIKE %s LIMIT %s'
+            cursor.execute(query_str, ('%' + query + '%', limit))
+            date_table = cursor.fetchall()
+            return date_table
+
+
+def get_art_by_search(query, limit=100):
+    q = '%' + query + '%'
+    query_str = '''
+        SELECT artwork_id
+        FROM (
+            SELECT artworks.artwork_id
+            FROM artworks
+            WHERE artworks.title ILIKE %s OR
+            artworks.year ILIKE %s OR
+            artworks.materials ILIKE %s
+            UNION
+            SELECT link.artwork_id
+            FROM artists
+            JOIN link ON artists.artist_id=link.artist_id 
+            WHERE artists.displayname ILIKE %s
+            UNION
+            SELECT artworks.artwork_id
+            FROM artworks
+            WHERE EXISTS (
+                SELECT 1
+                FROM unnest(cultures) as culture
+                WHERE culture ILIKE %s
+            )
+            UNION
+            SELECT artworks.artwork_id
+            FROM artworks
+            WHERE EXISTS (
+                SELECT 1
+                FROM unnest(periods) as period
+                WHERE period ILIKE %s
+            )
+            UNION
+            SELECT artworks.artwork_id
+            FROM artworks
+            WHERE EXISTS (
+                SELECT 1
+                FROM unnest(types) as type
+                WHERE type ILIKE %s
+            )
+        ) AS combined_results
+        LIMIT %s
+    '''
+    with psycopg2.connect(database="init_db",
+                          user="puam", password=os.environ['PUAM_DB_PASSWORD'],
+                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
+                          port="5432", sslmode="require") as connection:
+        with contextlib.closing(connection.cursor()) as cursor:
+            try:
+                cursor.execute(query_str, (q, q,
+                                          q, q, q, q, q, limit))
+                query_result = cursor.fetchall()
+                return [artwork_id[0] for artwork_id in query_result]
+            except Exception as ex:
+                print(ex)
 
 if __name__ == '__main__':
     with psycopg2.connect(database="init_db",
