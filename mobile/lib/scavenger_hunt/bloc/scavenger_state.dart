@@ -7,8 +7,10 @@ class ScavengerHuntInitial extends ScavengerHuntState {}
 class ScavengerHuntInProgress extends ScavengerHuntState {
   final CampusArtwork currentTarget;
   final String proximityHint;
+  final double distance;
 
-  ScavengerHuntInProgress(this.currentTarget, this.proximityHint);
+  ScavengerHuntInProgress(
+      this.currentTarget, this.proximityHint, this.distance);
 }
 
 class ScavengerHuntCompleted extends ScavengerHuntState {}

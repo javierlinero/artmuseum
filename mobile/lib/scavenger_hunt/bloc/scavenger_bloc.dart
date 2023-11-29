@@ -63,7 +63,7 @@ class ArtworkScavengerHuntBloc
     _selectNextTarget();
     if (currentTarget != null) {
       debugPrint(currentTarget!.name);
-      emit(ScavengerHuntInProgress(currentTarget!, 'Starting'));
+      emit(ScavengerHuntInProgress(currentTarget!, 'Starting', -1));
       getLocation();
     } else {
       emit(ScavengerHuntError('No artworks available for the scavenger hunt'));
@@ -87,11 +87,10 @@ class ArtworkScavengerHuntBloc
     // Convert distance to a human-readable format and determine proximity
     String proximityHint = _getProximityHint(distance);
 
-    emit(ScavengerHuntInProgress(currentTarget!, proximityHint));
+    emit(ScavengerHuntInProgress(currentTarget!, proximityHint, distance));
   }
 
   String _getProximityHint(double distance) {
-    String roundedDistance = distance.toStringAsFixed(0);
     // Define distance thresholds for different hints
     const double hotThreshold = 20;
     const double warmThreshold = 100;
@@ -99,15 +98,15 @@ class ArtworkScavengerHuntBloc
     const double farAwayThreshold = 500;
 
     if (distance <= hotThreshold) {
-      return 'Hot: $roundedDistance meters away.';
+      return 'Hot';
     } else if (distance <= warmThreshold) {
-      return 'Warm: $roundedDistance meters away.';
+      return 'Warm';
     } else if (distance <= coldThreshold) {
-      return 'Cold: $roundedDistance meters away.';
+      return 'Cold';
     } else if (distance <= farAwayThreshold) {
-      return 'Colder: $roundedDistance meters away.';
+      return 'Colder';
     } else {
-      return 'Far Away: $roundedDistance meters away.';
+      return 'Far Away';
     }
   }
 
@@ -116,7 +115,7 @@ class ArtworkScavengerHuntBloc
     if (currentTarget != null) {
       debugPrint('Next: ${currentTarget!.name}');
       emit(ScavengerHuntInProgress(
-          currentTarget!, 'Artwork Found! Searching next...'));
+          currentTarget!, 'Artwork Found! Searching next...', -1));
       getLocation();
     } else {
       emit(ScavengerHuntCompleted());

@@ -1,8 +1,26 @@
+import 'dart:ui';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puam_app/scavenger_hunt/index.dart';
 
 class ScavengerHuntScreen extends StatelessWidget {
+  double calculateBlurLevel(double distance) {
+    const maxDistance = 500.0; // Max distance for max blur
+    const minBlur = 0.0; // No blur when the target is reached
+    const maxBlur = 10.0; // Maximum blur
+
+    if (distance <= 0) {
+      return minBlur;
+    }
+
+    double blurRatio = (distance / maxDistance).clamp(0.0, 1.0);
+    double blur = maxBlur * (1 - blurRatio);
+    debugPrint(blur.toString());
+    return blur;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ArtworkScavengerHuntBloc, ScavengerHuntState>(
@@ -42,9 +60,32 @@ class ScavengerHuntScreen extends StatelessWidget {
       appBar: AppBar(title: Text('Scavenger Hunt In Progress')),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text('Hint: ${state.proximityHint}'),
+            Text(
+                '${state.proximityHint}: ${state.distance.toStringAsFixed(0)} meters away.'),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ImageFiltered(
+                imageFilter: ImageFilter.blur(
+                    sigmaX: calculateBlurLevel(state.distance.floorToDouble()),
+                    sigmaY: calculateBlurLevel(
+                      state.distance.floorToDouble(),
+                    )),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: 300,
+                  ),
+                  child: CachedNetworkImage(
+                    imageUrl:
+                        '${state.currentTarget.imageUrl}/full/full/0/default.jpg',
+                    fit: BoxFit.contain,
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+                ),
+              ),
+            ),
             ElevatedButton(
               onPressed: () =>
                   BlocProvider.of<ArtworkScavengerHuntBloc>(context)
