@@ -15,7 +15,7 @@ class ScavengerHuntScreen extends StatefulWidget {
 }
 
 class _ScavengerHuntScreenState extends State<ScavengerHuntScreen> {
-  double artworks = 1;
+  num artworks = 1;
 
   double calculateBlurLevel(double distance) {
     const maxDistance = 500.0; // Max distance for max blur
@@ -58,13 +58,7 @@ class _ScavengerHuntScreenState extends State<ScavengerHuntScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SfSlider(
-              value: artworks,
-              onChanged: ((value) {
-                setState(() {
-                  artworks = value;
-                });
-              })),
+          _buildSlider(),
           Center(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -72,7 +66,7 @@ class _ScavengerHuntScreenState extends State<ScavengerHuntScreen> {
               ),
               onPressed: () =>
                   BlocProvider.of<ArtworkScavengerHuntBloc>(context)
-                      .add(StartScavengerHunt(5)),
+                      .add(StartScavengerHunt(artworks.toInt())),
               child: Text(
                 'Start Scavenger Hunt',
                 style: TextStyle(color: Colors.black),
@@ -82,6 +76,26 @@ class _ScavengerHuntScreenState extends State<ScavengerHuntScreen> {
         ],
       ),
     );
+  }
+
+  Widget _buildSlider() {
+    return SfSlider(
+        activeColor: AppTheme.princetonOrange,
+        value: artworks,
+        min: 1,
+        max: 20,
+        thumbIcon: Text(
+          '${artworks.toInt()}',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black,
+          ),
+        ),
+        onChanged: ((value) {
+          setState(() {
+            artworks = value;
+          });
+        }));
   }
 
   Widget _buildInProgressScreen(
