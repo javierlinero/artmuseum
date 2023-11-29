@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -5,8 +7,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puam_app/scavenger_hunt/index.dart';
 import 'package:puam_app/shared/index.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
-class ScavengerHuntScreen extends StatelessWidget {
+class ScavengerHuntScreen extends StatefulWidget {
+  @override
+  State<ScavengerHuntScreen> createState() => _ScavengerHuntScreenState();
+}
+
+class _ScavengerHuntScreenState extends State<ScavengerHuntScreen> {
+  double artworks = 1;
+
   double calculateBlurLevel(double distance) {
     const maxDistance = 500.0; // Max distance for max blur
     const minBlur = 0.0; // No blur when the target is reached
@@ -45,18 +55,31 @@ class ScavengerHuntScreen extends StatelessWidget {
   Widget _buildInitialScreen(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Start Scavenger Hunt')),
-      body: Center(
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppTheme.princetonOrange,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SfSlider(
+              value: artworks,
+              onChanged: ((value) {
+                setState(() {
+                  artworks = value;
+                });
+              })),
+          Center(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.princetonOrange,
+              ),
+              onPressed: () =>
+                  BlocProvider.of<ArtworkScavengerHuntBloc>(context)
+                      .add(StartScavengerHunt(5)),
+              child: Text(
+                'Start Scavenger Hunt',
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
           ),
-          onPressed: () => BlocProvider.of<ArtworkScavengerHuntBloc>(context)
-              .add(StartScavengerHunt(5)),
-          child: Text(
-            'Start Scavenger Hunt',
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
+        ],
       ),
     );
   }
