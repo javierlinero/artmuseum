@@ -2,6 +2,7 @@ import json
 import random
 import os
 from apscheduler.schedulers.background import BackgroundScheduler
+import flask
 from flask import Flask, jsonify, request
 import database as db
 import recommender
@@ -47,11 +48,13 @@ def get_random_file():
             return json_file
 
 def get_random_art():
-    while True:
+    '''while True:
         art_id = random.randint(166, 141746)  # Generate a random number between 166 and 141746
         artwork = db.get_art_by_id(art_id)
+        print(artwork)
         if artwork is not None:
-            return artwork
+            return artwork'''
+    return db.get_art_by_id(random.choice(recommender.features_dir))
 
 def change_aotd():
     global current_art
@@ -69,34 +72,38 @@ def get_json(file):
 @app.route('/art_of_the_day', methods=['GET'])
 def art_of_the_day():
     global current_art
+    user_info = request.user
+    userid = user_info['uid']
+    #userid = flask.request.args.get('uid')
 
-    if current_art is None:
-        current_art = get_random_art()
-
-    return jsonify(current_art)
+    if userid != "-1":
+        return jsonify(db.get_art_of_the_day(userid))
+    else:
+        print("random")
+        if current_art is None:
+            current_art = get_random_art()
+        return jsonify(current_art)
 
 
 @app.route('/tinder_for_art', methods=['GET'])
 #@require_auth
 def tinder_for_art_get():
-    print('AAAAAAAA')
-    '''user_info = request.user
-    userid = user_info['uid']'''
-    userid = flask.request.args.get('uid')
+    user_info = request.user
+    userid = user_info['uid']
+    #userid = flask.request.args.get('uid')
     num_suggestions = int(flask.request.args.get('numart'))
     print("Suggesting " + str(num_suggestions) + " images based on preferences of userid " + str(userid))
 
-    # still images without url *************************
-    suggestions = recommender.get_suggestions(userid, num_suggestions)
+    suggestions = recommender.get_suggestions(userid, num_suggestions, True)
     return jsonify(suggestions), 200
 
 @app.route('/tinder_for_art', methods=['POST'])
 #@require_auth
 def tinder_for_art_post():
     data = request.form
-    '''user_info = request.user
-    userid = user_info['uid']'''
-    userid = flask.request.args.get('userid')
+    user_info = request.user
+    userid = user_info['uid']
+    #userid = data["userid"]
     artid = int(data["artid"])
     rating = float(data["rating"])
 

@@ -11,7 +11,7 @@ import random
 import time
 import database as db
 
-#features_dir = glob.glob('../recommender/features/*')
+#features_dir = glob.glob('features/*')
 features_dir = glob.glob('/home/ubuntu/artmuseum/backend/features/*')
 features_dir.sort()
 for i in range(len(features_dir)):
@@ -22,6 +22,7 @@ def similarity(prefs, target_img_features):
     return np.dot(prefs, target_img_features)
 
 def id_to_feature(artid):
+    #file = open('features/' + str(artid), 'r')
     file = open('/home/ubuntu/artmuseum/backend/features/' + str(artid), 'r')
     pickled = ''
     for line in file:
@@ -31,12 +32,6 @@ def id_to_feature(artid):
 
 def already_rated(rated, art_id):
     return rated[bisect.bisect_left(features_dir, art_id)]
-
-'''def already_suggested(similarities, art_id):
-	for s in similarities:
-		if s[0] == art_id:
-			return True
-	return False'''
 
 class KeyWrapper:
     def __init__(self, iterable, key):
@@ -62,8 +57,8 @@ def already_suggested(similarities, art_id):
         return False
     return similarities[bisect.bisect_left(KeyWrapper(similarities, key=lambda c: c[0]), art_id)][0] == art_id
 
-def get_suggestions(userid, MAX_ART_SAMPLES):
-    SAMPLE_POOL_SIZE = 10000
+def get_suggestions(userid, MAX_ART_SAMPLES, urls):
+    SAMPLE_POOL_SIZE = 5000
     swap_new_img_prob = 0.2
     with psycopg2.connect(database="init_db", user="puam", password=os.environ['PUAM_DB_PASSWORD'], 
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com", port="5432", 
@@ -98,11 +93,11 @@ def get_suggestions(userid, MAX_ART_SAMPLES):
                     #similarities.append((feature_num, s))
                     time_app = time.time()
                     total_time = time_app - time_init
-                    print("feature num: " + str(feature_num) + \
+                    '''print("feature num: " + str(feature_num) + \
                             "\talready_rated: " + str("{:.2f}".format((time_a - time_init) / total_time)) + \
                             "\talready_suggested: " + str("{:.2f}".format((time_b - time_a) / total_time)) + \
                             "\tsimilarity: " + str("{:.2f}".format((time_s - time_b)  / total_time)) + \
-                            "\tappend: " + str("{:.2f}".format((time_app - time_s) / total_time)))
+                            "\tappend: " + str("{:.2f}".format((time_app - time_s) / total_time)))'''
                     
 
             print("sorting art")
@@ -120,13 +115,16 @@ def get_suggestions(userid, MAX_ART_SAMPLES):
                     similarities[low_sim_ind] = tmp
             print("end random sampling")
 
-            urls = []
+            ret = []
             for i in range(MAX_ART_SAMPLES):
-                urls.append(db.get_art_by_id(similarities[i][0])['imageurl'])
+                if urls:
+                    ret.append(db.get_art_by_id(similarities[i][0])['imageurl'])
+                else:
+                    ret.append(similarities[i][0])
             
-            return urls
+            return ret 
 
 
 if __name__ == '__main__':
-	for s in get_suggestions("asdf", 3):
+	for s in get_suggestions("asdf", 3, True):
 		print(s)

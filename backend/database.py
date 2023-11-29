@@ -1,5 +1,6 @@
 import bisect
 import contextlib
+from datetime import date
 import os
 import codecs
 import numpy as np
@@ -62,7 +63,7 @@ def initDB(cursor):
     drop_str = 'DROP TABLE IF EXISTS users'
     #cursor.execute(drop_str, [])
     query_str = '''
-    CREATE TABLE users2 (
+    CREATE TABLE users (
         UserID VARCHAR(255) PRIMARY KEY,
         Email VARCHAR(255) UNIQUE NOT NULL,
         DisplayName VARCHAR(255)
@@ -71,7 +72,7 @@ def initDB(cursor):
     #cursor.execute(query_str, [])
 
     drop_str = 'DROP TABLE IF EXISTS user_preferences2'
-    cursor.execute(drop_str, [])
+    #cursor.execute(drop_str, [])
     query_str = '''
     CREATE TABLE user_preferences2 (
         user_id VARCHAR(255) PRIMARY KEY,
@@ -80,7 +81,7 @@ def initDB(cursor):
         FOREIGN KEY (user_id) REFERENCES users(UserID) ON DELETE CASCADE
     )
     '''
-    cursor.execute(query_str, [])
+    #cursor.execute(query_str, [])
 
     drop_str = 'DROP TABLE IF EXISTS favorites'
     #cursor.execute(drop_str, [])
@@ -95,6 +96,41 @@ def initDB(cursor):
     '''
     #cursor.execute(query_str, [])
 
+    drop_str = 'DROP TABLE IF EXISTS aotd'
+    cursor.execute(drop_str, [])
+    query_str = '''
+    CREATE TABLE aotd (
+        user_id VARCHAR(255),
+        artwork_id INTEGER,
+        date VARCHAR(12),
+        PRIMARY KEY (user_id),
+        FOREIGN KEY (user_id) REFERENCES users(UserID) ON DELETE CASCADE
+    )
+    '''
+    cursor.execute(query_str, [])
+
+def get_art_of_the_day(user_id):
+    with psycopg2.connect(database="init_db",
+                          user="puam", password=os.environ['PUAM_DB_PASSWORD'],
+                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
+                          port='5432') as connection:
+        with connection.cursor() as cursor:
+            query_str = "SELECT * FROM aotd WHERE user_id=%s"
+            cursor.execute(query_str, [user_id])
+            table = cursor.fetchall()
+
+            if len(table) == 0:
+                artid = recommender.get_suggestions(user_id, 1, False)[0]
+                query_str = "INSERT INTO aotd VALUES (%s, %s, %s)"
+                cursor.execute(query_str, (user_id, str(artid), str(date.today())))
+                return get_art_by_id(artid)
+            elif table[0][2] != str(date.today()):
+                artid = recommender.get_suggestions(user_id, 1, False)[0]
+                query_str = "UPDATE aotd SET artwork_id=%s, date=%s WHERE user_id=%s"
+                cursor.execute(query_str, (str(artid), str(date.today()), user_id))
+                return get_art_by_id(artid)
+            else:
+                return get_art_by_id(table[0][1])
 
 def create_user(uid, email, display_name):
     insert_query = 'INSERT INTO users (userid, email, displayname) VALUES (%s, %s, %s);'
@@ -293,13 +329,14 @@ if __name__ == '__main__':
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
                           port="5432", sslmode="require") as connection:
         with contextlib.closing(connection.cursor()) as cursor:
-            initDB(cursor)
+            #initDB(cursor)
             #write_dummy_pref(cursor)
 
             #drop_prefs(cursor)
 
-            '''pref = read_prefs(cursor, 2)
-            rated = read_rated(cursor, 2)
+            #set_user_pref('smqtTzmJ1rRW7PAMYW6Gabgc15z1', (10000, 0.1))
+            '''pref = read_prefs(cursor, 'smqtTzmJ1rRW7PAMYW6Gabgc15z1')
+            rated = read_rated(cursor, 'smqtTzmJ1rRW7PAMYW6Gabgc15z1')
 
             print("Pref: " + str(pref[0:10]) + " ...")
             print("Rated: " + str(rated[0:10]))
