@@ -60,7 +60,7 @@ def get_art_by_id(art_id):
 
 def initDB(cursor):
     drop_str = 'DROP TABLE IF EXISTS users'
-    cursor.execute(drop_str, [])
+    #cursor.execute(drop_str, [])
     query_str = '''
     CREATE TABLE users2 (
         UserID VARCHAR(255) PRIMARY KEY,
@@ -68,7 +68,7 @@ def initDB(cursor):
         DisplayName VARCHAR(255)
     )
     '''
-    cursor.execute(query_str, [])
+    #cursor.execute(query_str, [])
 
     drop_str = 'DROP TABLE IF EXISTS user_preferences2'
     cursor.execute(drop_str, [])
@@ -83,7 +83,7 @@ def initDB(cursor):
     cursor.execute(query_str, [])
 
     drop_str = 'DROP TABLE IF EXISTS favorites'
-    cursor.execute(drop_str, [])
+    #cursor.execute(drop_str, [])
     query_str = '''
     CREATE TABLE favorites (
         user_id VARCHAR(255),
@@ -93,7 +93,7 @@ def initDB(cursor):
         FOREIGN KEY (artwork_id) REFERENCES artworks(artwork_id) ON DELETE CASCADE
     )
     '''
-    cursor.execute(query_str, [])
+    #cursor.execute(query_str, [])
 
 def create_user(uid, email, display_name):
     insert_query = 'INSERT INTO users (userid, email, displayname) VALUES (%s, %s, %s);'
@@ -164,7 +164,7 @@ def write_prefs(cursor, user_id, user_ratings, rated):
                                codecs.encode(pickle.dumps(rated), "base64").decode(), user_id))
 
 def read_prefs(cursor, user_id):
-  query_str = 'SELECT pref_str FROM user_preferences2 WHERE user_id=%s' % (user_id)
+  query_str = "SELECT pref_str FROM user_preferences2 WHERE user_id='%s'" % (user_id)
   cursor.execute(query_str, [])
   table = cursor.fetchall()
   if len(table) == 0:
@@ -175,7 +175,7 @@ def read_prefs(cursor, user_id):
     return pickle.loads(codecs.decode(pref, "base64"))
 
 def read_rated(cursor, user_id):
-  query_str = 'SELECT rated_str FROM user_preferences2 WHERE user_id=%s' % (user_id)
+  query_str = "SELECT rated_str FROM user_preferences2 WHERE user_id='%s'" % (user_id)
   cursor.execute(query_str, [])
   table = cursor.fetchall()
   if len(table) == 0:
@@ -224,7 +224,7 @@ if __name__ == '__main__':
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
                           port="5432", sslmode="require") as connection:
         with contextlib.closing(connection.cursor()) as cursor:
-            #initDB(cursor)
+            initDB(cursor)
             #write_dummy_pref(cursor)
 
             #drop_prefs(cursor)

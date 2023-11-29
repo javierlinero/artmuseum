@@ -8,6 +8,7 @@ import pickle
 import psycopg2
 import os
 import random
+import time
 import database as db
 
 #features_dir = glob.glob('../recommender/features/*')

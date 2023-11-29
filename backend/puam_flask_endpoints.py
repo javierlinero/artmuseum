@@ -78,10 +78,12 @@ def art_of_the_day():
 
 
 @app.route('/tinder_for_art', methods=['GET'])
-@require_auth
+#@require_auth
 def tinder_for_art_get():
-    user_info = request.user
-    userid = user_info['uid']
+    print('AAAAAAAA')
+    '''user_info = request.user
+    userid = user_info['uid']'''
+    userid = flask.request.args.get('uid')
     num_suggestions = int(flask.request.args.get('numart'))
     print("Suggesting " + str(num_suggestions) + " images based on preferences of userid " + str(userid))
 
@@ -90,11 +92,12 @@ def tinder_for_art_get():
     return jsonify(suggestions), 200
 
 @app.route('/tinder_for_art', methods=['POST'])
-@require_auth
+#@require_auth
 def tinder_for_art_post():
     data = flask.request.form
-    user_info = request.user
-    userid = user_info['uid']
+    '''user_info = request.user
+    userid = user_info['uid']'''
+    userid = flask.request.args.get('userid')
     artid = int(data["artid"])
     rating = float(data["rating"])
 
