@@ -157,9 +157,25 @@ class _ScavengerHuntScreenState extends State<ScavengerHuntScreen> {
   Widget _buildCompletedScreen() {
     return Scaffold(
       appBar: appBar(),
-      body: Center(
-          child:
-              Text('Congratulations! You have completed the scavenger hunt.')),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+              child: Text(
+                  'Congratulations! You have completed the scavenger hunt.')),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.princetonOrange,
+            ),
+            onPressed: () => BlocProvider.of<ArtworkScavengerHuntBloc>(context)
+                .add(EndScavengerHunt()),
+            child: Text(
+              'Play Again!',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
