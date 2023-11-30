@@ -160,7 +160,7 @@ class _MapPageState extends State<MapPage> {
                   maxHeight: 200,
                 ),
                 child: Image.network(
-                  marker.campusArtwork.imageUrl,
+                  '${marker.campusArtwork.imageUrl}/full/pct:25/0/default.jpg',
                   fit: BoxFit.contain,
                 ),
               ),

@@ -1,3 +1,5 @@
+import 'package:puam_app/tinder_for_art/index.dart';
+
 abstract class ArtworkEvent {}
 
 class UpdateArtworkIndex extends ArtworkEvent {
@@ -17,4 +19,15 @@ class FetchArtworkRecommendations extends ArtworkEvent {
   final String? token;
 
   FetchArtworkRecommendations(this.numSuggestions, this.token);
+}
+
+class SaveArtworks extends ArtworkEvent {
+  final List<TinderArt> artworks;
+
+  SaveArtworks(this.artworks);
+}
+
+class LoadSavedArtworks extends ArtworkEvent {
+  final List<TinderArt> localArtworks;
+  LoadSavedArtworks(this.localArtworks);
 }
