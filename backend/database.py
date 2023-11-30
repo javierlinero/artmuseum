@@ -294,6 +294,8 @@ def set_user_pref(user_id, new_rating):
             rated[bisect.bisect_left(recommender.features_dir, new_rating[0])] = True
             print("Set rated[" + str(bisect.bisect_left(recommender.features_dir, new_rating[0])) + "]=True for artid " + str(new_rating[0]))
             write_prefs(cursor, user_id, pref, rated)
+    except Exception as ex:
+        print(f"Exception: {ex}")
 
 def get_art_by_date(query, limit=100):
     connection = get_db_conn()
