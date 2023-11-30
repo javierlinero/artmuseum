@@ -5,6 +5,53 @@ import os
 import codecs
 import numpy as np
 import pickle
+from psycopg2 import pool
+import bisect
+import boto3
+import json
+from botocore.exceptions import ClientError
+
+def get_secret():
+    client = boto3.client('secretsmanager')
+    try:
+        response = client.get_secret_value(SecretId=os.environ['SEC_KEY'])
+    except ClientError as e:
+        raise e
+    
+    secret = json.loads(response['SecretString'])
+    
+    dbname = secret['dbname']
+    user = secret['username']
+    password = secret['password']
+    host = secret['host']
+    port = secret['port']
+    ssl = "require"
+    return dbname, user, password, host, port, ssl
+
+_connection_pool = None
+
+def create_connection_pool():
+    global _connection_pool
+    if _connection_pool is None:
+        dbname, user, password, host, port, ssl = get_secret()
+        _connection_pool = pool.ThreadedConnectionPool(
+            minconn=1,
+            maxconn=10,
+            database=dbname,
+            user=user,
+            password=password,
+            host=host,
+            port=port,
+            sslmode=ssl
+        )
+
+def get_db_conn():
+    if _connection_pool is None:
+        create_connection_pool()
+    return _connection_pool.getconn()
+
+def return_db_conn(conn):
+    _connection_pool.putconn(conn)
 import psycopg2
 import recommender
 
@@ -27,12 +74,9 @@ import recommender
 #    _connection_pool.put(conn)
 
 def get_art_by_id(art_id):
-    with psycopg2.connect(database="init_db",
-                          user="puam", password=os.environ['PUAM_DB_PASSWORD'],
-                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
-                          port="5432", sslmode="require") as connection:
-        with contextlib.closing(connection.cursor()) as cursor:
-
+    connection = get_db_conn()
+    try:
+        with connection.cursor() as cursor:
             query_str = 'SELECT artworks.title, artworks.imageurl, artworks.year, artworks.materials, artworks.size, artworks.description FROM artworks WHERE artwork_id=%s'
             cursor.execute(query_str, (str(art_id),))
             artwork_table = cursor.fetchall()
@@ -56,7 +100,9 @@ def get_art_by_id(art_id):
                     "artists": artists
                 }
             else:
-                return "art_id: %s, does not exist." % str(art_id)
+                return None
+    finally:
+        return_db_conn(connection)
 
 
 def initDB(cursor):
@@ -134,18 +180,16 @@ def get_art_of_the_day(user_id):
 
 def create_user(uid, email, display_name):
     insert_query = 'INSERT INTO users (userid, email, displayname) VALUES (%s, %s, %s);'
-    with psycopg2.connect(database="init_db",
-                          user="puam", password=os.environ['PUAM_DB_PASSWORD'],
-                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
-                          port='5432') as connection:
+    connection = get_db_conn()
+    try:
         with connection.cursor() as cursor:
-            try:
-                cursor.execute(insert_query, (uid, email, display_name))
-                connection.commit()
-            except Exception as e:
-                connection.rollback()
-                raise e
-
+            cursor.execute(insert_query, (uid, email, display_name))
+            connection.commit()
+    except Exception as e:
+        connection.rollback()
+        raise e
+    finally:
+        return_db_conn(connection)
 
 def update_user(uid, email=None, display_name=None):
     update_query = """
@@ -154,38 +198,36 @@ def update_user(uid, email=None, display_name=None):
         displayname = COALESCE(%s, displayname)
     WHERE userid = %s;
     """
-    with psycopg2.connect(database="init_db",
-                          user="puam", password=os.environ['PUAM_DB_PASSWORD'],
-                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
-                          port='5432') as connection:
+    connection = get_db_conn()
+    try:
         with connection.cursor() as cursor:
-            try:
-                cursor.execute(update_query, (email, display_name, uid))
-                connection.commit()
-            except Exception as e:
-                connection.rollback()
-                raise e
+            cursor.execute(update_query, (email, display_name, uid))
+            connection.commit()
+    except Exception as e:
+        connection.rollback()
+        raise e
+    finally:
+        return_db_conn(connection)
 
 
 def get_user_favorites(userid, limit=50):
-    with psycopg2.connect(database="init_db",
-                          user="puam", password=os.environ['PUAM_DB_PASSWORD'],
-                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
-                          port='5432') as connection:
-        with contextlib.closing(connection.cursor()) as cursor:
-            try:
-                query_str = '''
-                SELECT a.artwork_id, a.imageurl FROM artworks a
-                JOIN favorites uf ON a.artwork_id = uf.artwork_id
-                WHERE uf.user_id= %s
-                LIMIT %s
-                '''
-                cursor.execute(query_str, (userid, limit))
-                table = cursor.fetchall()
+    connection = get_db_conn()
+    try:
+        with connection.cursor() as cursor:
+            query_str = '''
+            SELECT a.artwork_id, a.imageurl FROM artworks a
+            JOIN favorites uf ON a.artwork_id = uf.artwork_id
+            WHERE uf.user_id= %s
+            LIMIT %s
+            '''
+            cursor.execute(query_str, (userid, limit))
+            table = cursor.fetchall()
 
-                return table
-            except Exception as ex:
-                print(ex)
+            return table
+    except Exception as ex:
+        print(ex)
+    finally:
+        return_db_conn(connection)
 
 def write_prefs(cursor, user_id, user_ratings, rated):
   query_str = 'SELECT user_id FROM user_preferences2 WHERE user_id=%s'
@@ -227,19 +269,17 @@ def drop_prefs(cursor):
     cursor.execute(query_str, [])
 
 def get_user_pref(user_id):
-    with psycopg2.connect(database="init_db",
-                          user="puam", password=os.environ['PUAM_DB_PASSWORD'],
-                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
-                          port="5432") as connection:
-        with contextlib.closing(connection.cursor()) as cursor:
+    connection = get_db_conn()
+    try:
+        with connection.cursor() as cursor:
             pref = read_prefs(cursor, user_id)
             return pref
+    finally:
+        return_db_conn(connection)
 
 def set_user_pref(user_id, new_rating):
-    with psycopg2.connect(database="init_db",
-                          user="puam", password=os.environ['PUAM_DB_PASSWORD'],
-                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
-                          port='5432') as connection:
+    connection = get_db_conn()
+    try:
         with connection.cursor() as cursor:
             pref = read_prefs(cursor, user_id)
             pref += new_rating[1] * recommender.id_to_feature(new_rating[0])
@@ -255,17 +295,16 @@ def set_user_pref(user_id, new_rating):
             print("Set rated[" + str(bisect.bisect_left(recommender.features_dir, new_rating[0])) + "]=True for artid " + str(new_rating[0]))
             write_prefs(cursor, user_id, pref, rated)
 
-
 def get_art_by_date(query, limit=100):
-    with psycopg2.connect(database="init_db",
-                          user="puam", password=os.environ['PUAM_DB_PASSWORD'],
-                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
-                          port="5432", sslmode="require") as connection:
-        with contextlib.closing(connection.cursor()) as cursor:
+    connection = get_db_conn()
+    try:
+        with connection.cursor() as cursor:
             query_str = 'SELECT artwork_id FROM artworks WHERE artworks.daterange ILIKE %s LIMIT %s'
             cursor.execute(query_str, ('%' + query + '%', limit))
             date_table = cursor.fetchall()
             return date_table
+    finally:
+        return_db_conn(connection)
 
 
 def get_art_by_search(query, limit=100):
@@ -310,45 +349,23 @@ def get_art_by_search(query, limit=100):
         ) AS combined_results
         LIMIT %s
     '''
-    with psycopg2.connect(database="init_db",
-                          user="puam", password=os.environ['PUAM_DB_PASSWORD'],
-                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
-                          port="5432", sslmode="require") as connection:
-        with contextlib.closing(connection.cursor()) as cursor:
-            try:
-                cursor.execute(query_str, (q, q,
-                                          q, q, q, q, q, limit))
-                query_result = cursor.fetchall()
-                return [artwork_id[0] for artwork_id in query_result]
-            except Exception as ex:
-                print(ex)
+    connection = get_db_conn()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(query_str, (q, q, q, q, q, q, q, limit))
+            query_result = cursor.fetchall()
+            return [artwork_id[0] for artwork_id in query_result]
+    except Exception as ex:
+        print(ex)
+    finally:
+        return_db_conn(connection)
+
 
 if __name__ == '__main__':
-    with psycopg2.connect(database="init_db",
-                          user="puam", password=os.environ['PUAM_DB_PASSWORD'],
-                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
-                          port="5432", sslmode="require") as connection:
-        with contextlib.closing(connection.cursor()) as cursor:
-            #initDB(cursor)
-            #write_dummy_pref(cursor)
-
-            #drop_prefs(cursor)
-
-            #set_user_pref('smqtTzmJ1rRW7PAMYW6Gabgc15z1', (10000, 0.1))
-            '''pref = read_prefs(cursor, 'smqtTzmJ1rRW7PAMYW6Gabgc15z1')
-            rated = read_rated(cursor, 'smqtTzmJ1rRW7PAMYW6Gabgc15z1')
-
-            print("Pref: " + str(pref[0:10]) + " ...")
-            print("Rated: " + str(rated[0:10]))
-
-            set_user_pref(2, (2770, 0.8))
-            set_user_pref(2, (2771, -0.1))
-            pref = read_prefs(cursor, 1)
-            rated = read_rated(cursor, 1)
-
-            print()
-            print("===================")
-            print()
-
-            print("Pref: " + str(pref[0:10]) + " ...")
-            print("Rated: " + str(rated))'''
+    connection = get_db_conn()
+    try:
+        with connection.cursor() as cursor:
+            drop_prefs(cursor)
+            write_dummy_pref(cursor)
+    finally:
+        return_db_conn(connection)
