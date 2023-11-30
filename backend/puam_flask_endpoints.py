@@ -72,9 +72,18 @@ def get_json(file):
 @app.route('/art_of_the_day', methods=['GET'])
 def art_of_the_day():
     global current_art
-    user_info = request.user
-    userid = user_info['uid']
-    #userid = flask.request.args.get('uid')
+    token = request.headers.get('Authorization')
+    if not token:
+        userid = "-1"
+    else:
+        try:
+            token = token.split(" ")[1]
+            decoded_token = auth.verify_id_token(token)
+            request.user = decoded_token
+            user_info = request.user
+            userid = user_info['uid']
+        except Exception as e:
+            return jsonify({"error": str(e)}), 403
 
     if userid != "-1":
         return jsonify(db.get_art_of_the_day(userid))
