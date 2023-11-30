@@ -95,7 +95,7 @@ def art_of_the_day():
 
 
 @app.route('/tinder_for_art', methods=['GET'])
-#@require_auth
+@require_auth
 def tinder_for_art_get():
     user_info = request.user
     userid = user_info['uid']
@@ -107,7 +107,7 @@ def tinder_for_art_get():
     return jsonify(suggestions), 200
 
 @app.route('/tinder_for_art', methods=['POST'])
-#@require_auth
+@require_auth
 def tinder_for_art_post():
     data = request.form
     user_info = request.user
