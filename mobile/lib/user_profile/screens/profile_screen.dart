@@ -110,7 +110,7 @@ class _ProfileState extends State<Profile> {
                         onTap: () {
                           print("Tapped a Container");
                           Navigator.push(
-                            context,MaterialPageRoute(builder: (context) => FavoritesDetails(favorites[index].imageURL)),);
+                            context,MaterialPageRoute(builder: (context) => FavoritesDetailsPage(favorites[index].artWorkID)),);
                         },
                         behavior: HitTestBehavior.opaque,
                         child: ClipRect(
