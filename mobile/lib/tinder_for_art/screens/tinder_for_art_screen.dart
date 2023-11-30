@@ -17,7 +17,7 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
   double deviceWidth(BuildContext context) => MediaQuery.of(context).size.width;
   final List<TinderArt> artCards = [];
   AppinioSwiperController _swiperController = AppinioSwiperController();
-  bool recommendationsFetched = false;
+  bool isInitialized = false;
 
   Future<void> preloadImages(
       List<TinderArt> imageCards, BuildContext context) async {
@@ -32,29 +32,49 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, authState) {
-        if (authState is AuthStateLoggedIn) {
-          return BlocProvider(
-            create: (context) => TinderArtBloc(
-                repository: TinderForArtRepository(token: authState.token)),
-            child: BlocBuilder<TinderArtBloc, ArtworkState>(
-              builder: (context, artState) {
-                if (!recommendationsFetched) {
-                  context
-                      .read<TinderArtBloc>()
-                      .add(FetchArtworkRecommendations(10, authState.token));
-                  recommendationsFetched = true;
+        // Ensure TinderArtBloc is available above where it's needed
+        return BlocProvider(
+          create: (context) => TinderArtBloc(
+            repository: TinderForArtRepository(
+                token: authState is AuthStateLoggedIn ? authState.token : ''),
+          ),
+          child: BlocBuilder<TinderArtBloc, ArtworkState>(
+            builder: (context, artState) {
+              if (authState is AuthStateLoggedIn) {
+                // Initialize only once
+                if (!isInitialized) {
+                  loadArtworks(context, authState);
+                  isInitialized = true;
                 }
+
+                // Building UI when user is logged in
                 return _buildTFAPage(context, artState);
-              },
-            ),
-          );
-        } else if (authState is AuthStateLoggedOut) {
-          return SignUpPage();
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
+              } else if (authState is AuthStateLoggedOut) {
+                // UI for logged out state
+                return SignUpPage();
+              } else {
+                // UI for other states (e.g., loading)
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+        );
       },
     );
+  }
+
+  void loadArtworks(BuildContext context, AuthState authState) async {
+    List<TinderArt>? savedArtworks = await LocalStorageHelper.loadArtworks();
+    if (savedArtworks != null && savedArtworks.isNotEmpty) {
+      context.read<TinderArtBloc>().add(LoadSavedArtworks(savedArtworks));
+      setState(() {
+        artCards.addAll(savedArtworks);
+      });
+    } else if (authState is AuthStateLoggedIn) {
+      context
+          .read<TinderArtBloc>()
+          .add(FetchArtworkRecommendations(10, authState.token));
+    }
   }
 
   Widget _buildTFAPage(BuildContext context, ArtworkState artState) {
