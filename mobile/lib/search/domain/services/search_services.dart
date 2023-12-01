@@ -3,7 +3,7 @@ import 'package:puam_app/search/index.dart';
 
 class SearchService {
   Dio dio = Dio();
-  final String baseurl = 'http://puamdns.ddns.net:8080';
+  final String baseurl = 'http://puamdns.ddns.net';
 
   Future<List<SearchArtwork>> fetchArtworks(
       {String? query, int? year, int? limit, int? offset}) async {
