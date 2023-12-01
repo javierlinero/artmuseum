@@ -39,13 +39,9 @@ class _ArtOfTheDayContentState extends State<ArtOfTheDayContent> {
   @override
   void didUpdateWidget(ArtOfTheDayContent oldWidget) {
     super.didUpdateWidget(oldWidget);
+    // Trigger the fetch event whenever the token changes
     if (widget.token != oldWidget.token) {
-      // Token has changed, update the state
-      if (widget.token != null) {
-        _artBloc.add(FetchArtOfTheDayEvent(token: widget.token));
-      } else {
-        _artBloc.add(FetchArtOfTheDayEvent());
-      }
+      _artBloc.add(FetchArtOfTheDayEvent(token: widget.token));
     }
   }
 

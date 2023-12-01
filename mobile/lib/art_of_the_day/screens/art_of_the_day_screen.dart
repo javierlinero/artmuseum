@@ -20,12 +20,9 @@ class ArtOfTheDayPage extends StatelessWidget {
           if (authState is AuthStateLoggedIn) {
             // User is logged in
             return ArtOfTheDayContent(authState.token);
-          } else if (authState is AuthStateInitial ||
-              authState is AuthStateLoading) {
-            return CircularProgressIndicator();
           } else {
-            // User not logged in or logged out
-            return ArtOfTheDayContent(null);
+            // User is not logged in or has logged out
+            return ArtOfTheDayDefault();
           }
         },
       ),
