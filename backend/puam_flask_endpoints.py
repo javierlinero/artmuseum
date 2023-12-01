@@ -209,7 +209,7 @@ def search():
         year = request.json.get('year')
         query = request.json.get('query')
         limit = request.json.get('limit')
-        offset = reques.json.get('offset')
+        offset = request.json.get('offset')
         if query is None:
             query= ''
         if year is None and query is not None:
