@@ -55,23 +55,23 @@ def return_db_conn(conn):
 import psycopg2
 import recommender
 
-# import queue
+import queue
 
-# _connection_pool = queue.Queue()
+_connection_pool = queue.Queue()
 
-# connection pool for efficiency with DB
-# def _get_conn():
-#    try:
-#        conn = _connection_pool.get(block=False)
-#    except queue.Empty:
-#        conn = psycopg2.connect(database="init_db",
-#                                user="puam", password=os.environ['PUAM_DB_PASSWORD'],
-#                                host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
-#                                port="5432", sslmode="require")
-#    return conn
-#
-# def _put_conn(conn):
-#    _connection_pool.put(conn)
+connection pool for efficiency with DB
+def _get_conn():
+   try:
+       conn = _connection_pool.get(block=False)
+   except queue.Empty:
+       conn = psycopg2.connect(database="init_db",
+                               user="puam", password=os.environ['PUAM_DB_PASSWORD'],
+                               host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
+                               port="5432", sslmode="require")
+   return conn
+
+def _put_conn(conn):
+   _connection_pool.put(conn)
 
 def get_art_by_id(art_id):
     connection = get_db_conn()
@@ -107,7 +107,7 @@ def get_art_by_id(art_id):
 
 def initDB(cursor):
     drop_str = 'DROP TABLE IF EXISTS users'
-    #cursor.execute(drop_str, [])
+    cursor.execute(drop_str, [])
     query_str = '''
     CREATE TABLE users (
         UserID VARCHAR(255) PRIMARY KEY,
@@ -115,22 +115,22 @@ def initDB(cursor):
         DisplayName VARCHAR(255)
     )
     '''
-    #cursor.execute(query_str, [])
+    cursor.execute(query_str, [])
 
-    drop_str = 'DROP TABLE IF EXISTS user_preferences2'
-    #cursor.execute(drop_str, [])
+    drop_str = 'DROP TABLE IF EXISTS user_preferences'
+    cursor.execute(drop_str, [])
     query_str = '''
-    CREATE TABLE user_preferences2 (
+    CREATE TABLE user_preferences (
         user_id VARCHAR(255) PRIMARY KEY,
         pref_str VARCHAR(20000),
         rated_str VARCHAR(63000),
         FOREIGN KEY (user_id) REFERENCES users(UserID) ON DELETE CASCADE
     )
     '''
-    #cursor.execute(query_str, [])
+    cursor.execute(query_str, [])
 
     drop_str = 'DROP TABLE IF EXISTS favorites'
-    #cursor.execute(drop_str, [])
+    cursor.execute(drop_str, [])
     query_str = '''
     CREATE TABLE favorites (
         user_id VARCHAR(255),
@@ -140,7 +140,7 @@ def initDB(cursor):
         FOREIGN KEY (artwork_id) REFERENCES artworks(artwork_id) ON DELETE CASCADE
     )
     '''
-    #cursor.execute(query_str, [])
+    cursor.execute(query_str, [])
 
     drop_str = 'DROP TABLE IF EXISTS aotd'
     cursor.execute(drop_str, [])
@@ -230,21 +230,21 @@ def get_user_favorites(userid, limit=50):
         return_db_conn(connection)
 
 def write_prefs(cursor, user_id, user_ratings, rated):
-  query_str = 'SELECT user_id FROM user_preferences2 WHERE user_id=%s'
+  query_str = 'SELECT user_id FROM user_preferences WHERE user_id=%s'
   cursor.execute(query_str, [user_id])
   table = cursor.fetchall()
   if len(table) == 0:
-    query_str = 'INSERT INTO user_preferences2 VALUES (%s, %s, %s)'
+    query_str = 'INSERT INTO user_preferences VALUES (%s, %s, %s)'
     cursor.execute(query_str,
         (user_id, codecs.encode(pickle.dumps(user_ratings), "base64").decode(),
                   codecs.encode(pickle.dumps(rated), "base64").decode()))
   else:
-    query_str = 'UPDATE user_preferences2 SET pref_str=%s, rated_str=%s WHERE user_id=%s'
+    query_str = 'UPDATE user_preferences SET pref_str=%s, rated_str=%s WHERE user_id=%s'
     cursor.execute(query_str, (codecs.encode(pickle.dumps(user_ratings), "base64").decode(),
                                codecs.encode(pickle.dumps(rated), "base64").decode(), user_id))
 
 def read_prefs(cursor, user_id):
-  query_str = "SELECT pref_str FROM user_preferences2 WHERE user_id='%s'" % (user_id)
+  query_str = "SELECT pref_str FROM user_preferences WHERE user_id='%s'" % (user_id)
   cursor.execute(query_str, [])
   table = cursor.fetchall()
   if len(table) == 0:
@@ -255,7 +255,7 @@ def read_prefs(cursor, user_id):
     return pickle.loads(codecs.decode(pref, "base64"))
 
 def read_rated(cursor, user_id):
-  query_str = "SELECT rated_str FROM user_preferences2 WHERE user_id='%s'" % (user_id)
+  query_str = "SELECT rated_str FROM user_preferences WHERE user_id='%s'" % (user_id)
   cursor.execute(query_str, [])
   table = cursor.fetchall()
   if len(table) == 0:
@@ -265,7 +265,7 @@ def read_rated(cursor, user_id):
     return pickle.loads(codecs.decode(rated, "base64"))
 
 def drop_prefs(cursor):
-    query_str = 'DELETE FROM user_preferences2'
+    query_str = 'DELETE FROM user_preferences'
     cursor.execute(query_str, [])
 
 def get_user_pref(user_id):
