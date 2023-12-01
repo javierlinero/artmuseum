@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:puam_app/map/screens/markers.dart';
+import 'package:puam_app/scavenger_hunt/screens/scavenger_screen.dart';
 import 'package:puam_app/shared/index.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:puam_app/map/index.dart';
 
@@ -18,14 +20,33 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   final PopupController _popupController = PopupController();
-
+  late bool locationEnabled = false;
   late final MapController _mapController;
 
   @override
   void initState() {
     super.initState();
     _mapController = MapController();
+    _locationSettings();
   }
+
+  Future<void> _locationSettings() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.whileInUse ||
+        permission == LocationPermission.always) {
+      setState(() {
+        locationEnabled = true;
+      });
+    } else {
+      await Geolocator.requestPermission();
+    }
+  }
+
+  // void _fetchLocation() {
+  //   if (mounted) {
+  //     BlocProvider.of<LocationBloc>(context).add(FetchCurrentLocation());
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +155,11 @@ class _MapPageState extends State<MapPage> {
                   child: _locationButton(context),
                 ),
               ),
+              Positioned(
+                right: 20,
+                bottom: 100,
+                child: _startScavengerHuntButton(context),
+              ),
             ],
           )
         ],
@@ -196,6 +222,28 @@ class _MapPageState extends State<MapPage> {
         Icons.near_me_outlined,
         color: AppTheme.princetonOrange,
       ),
+    );
+  }
+
+  Widget _startScavengerHuntButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        // Navigate to ScavengerHuntScreen
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ScavengerHuntScreen()),
+        );
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppTheme.princetonOrange,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        elevation: 4,
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      ),
+      child: Text('Start Scavenger Hunt'),
     );
   }
 }
