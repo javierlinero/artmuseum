@@ -422,7 +422,7 @@ def get_art_by_search(query, limit=100, offset=0):
     connection = get_db_conn()
     try:
         with connection.cursor() as cursor:
-            cursor.execute(query_str, (q, q, q, q, q, q, q, limit))
+            cursor.execute(query_str, (q, q, q, q, q, q, q, limit, offset))
             query_result = cursor.fetchall()
             return [(artwork_id, image_url) for artwork_id, image_url in query_result]
     except Exception as ex:
