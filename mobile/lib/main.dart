@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puam_app/art_of_the_day/index.dart';
 import 'package:puam_app/map/index.dart';
 import 'package:puam_app/scavenger_hunt/index.dart';
+import 'package:puam_app/search/index.dart';
 import 'package:puam_app/user_profile/index.dart';
 import 'package:puam_app/firebase_options.dart';
 import 'splash_screen/index.dart';
@@ -34,6 +35,9 @@ class _MyAppState extends State<MyApp> {
                 ArtworkScavengerHuntBloc(artworks: campusArtworks)),
         BlocProvider(create: (context) => ArtBloc(ArtworkRepository())),
         BlocProvider(create: ((context) => AuthBloc(AuthService()))),
+        BlocProvider(
+            create: (context) =>
+                SearchBloc(searchRepo: SearchRepo(SearchService())))
       ],
       child: MaterialApp(
         color: Colors.black,

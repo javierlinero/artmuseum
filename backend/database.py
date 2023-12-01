@@ -354,8 +354,11 @@ def set_user_pref(user_id, new_rating):
             rated[bisect.bisect_left(recommender.features_dir, new_rating[0])] = True
             print("Set rated[" + str(bisect.bisect_left(recommender.features_dir, new_rating[0])) + "]=True for artid " + str(new_rating[0]))
             write_prefs(cursor, user_id, pref, rated)
+            connection.commit()
     except Exception as ex:
         print(f"Exception: {ex}")
+    finally:
+        return_db_conn(connection)
 
 def get_art_by_date(query, limit=100):
     connection = get_db_conn()
@@ -369,23 +372,24 @@ def get_art_by_date(query, limit=100):
         return_db_conn(connection)
 
 
-def get_art_by_search(query, limit=100):
+def get_art_by_search(query, limit=100, offset=0):
     q = '%' + query + '%'
     query_str = '''
-        SELECT artwork_id
+        SELECT artwork_id, imageurl
         FROM (
-            SELECT artworks.artwork_id
+            SELECT artworks.artwork_id, artworks.imageurl
             FROM artworks
             WHERE artworks.title ILIKE %s OR
             artworks.year ILIKE %s OR
             artworks.materials ILIKE %s
             UNION
-            SELECT link.artwork_id
+            SELECT link.artwork_id, artworks.imageurl
             FROM artists
-            JOIN link ON artists.artist_id=link.artist_id 
+            JOIN link ON artists.artist_id=link.artist_id
+            JOIN artworks ON link.artwork_id = artworks.artwork_id
             WHERE artists.displayname ILIKE %s
             UNION
-            SELECT artworks.artwork_id
+            SELECT artworks.artwork_id, artworks.imageurl
             FROM artworks
             WHERE EXISTS (
                 SELECT 1
@@ -393,7 +397,7 @@ def get_art_by_search(query, limit=100):
                 WHERE culture ILIKE %s
             )
             UNION
-            SELECT artworks.artwork_id
+            SELECT artworks.artwork_id, artworks.imageurl
             FROM artworks
             WHERE EXISTS (
                 SELECT 1
@@ -401,7 +405,7 @@ def get_art_by_search(query, limit=100):
                 WHERE period ILIKE %s
             )
             UNION
-            SELECT artworks.artwork_id
+            SELECT artworks.artwork_id, artworks.imageurl
             FROM artworks
             WHERE EXISTS (
                 SELECT 1
@@ -409,14 +413,14 @@ def get_art_by_search(query, limit=100):
                 WHERE type ILIKE %s
             )
         ) AS combined_results
-        LIMIT %s
+        LIMIT %s OFFSET %s
     '''
     connection = get_db_conn()
     try:
         with connection.cursor() as cursor:
-            cursor.execute(query_str, (q, q, q, q, q, q, q, limit))
+            cursor.execute(query_str, (q, q, q, q, q, q, q, limit, offset))
             query_result = cursor.fetchall()
-            return [artwork_id[0] for artwork_id in query_result]
+            return [(artwork_id, image_url) for artwork_id, image_url in query_result]
     except Exception as ex:
         print(ex)
     finally:
