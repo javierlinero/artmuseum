@@ -19,7 +19,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   final _featureScreens = [
     ArtOfTheDayPage(),
     TinderForArtPage(),
-    const Search(),
+    Search(),
     MapPage(),
     SignUpPage(),
   ];

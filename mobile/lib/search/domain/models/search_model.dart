@@ -4,10 +4,10 @@ class SearchArtwork {
 
   SearchArtwork({required this.artworkId, required this.imageUrl});
 
-  factory SearchArtwork.fromJson(Map<String, dynamic> json) {
+  factory SearchArtwork.fromList(List<dynamic> list) {
     return SearchArtwork(
-      artworkId: json['artworkId'],
-      imageUrl: json['imageUrl'],
+      artworkId: list[0].toString(),
+      imageUrl: list[1].toString(),
     );
   }
 }

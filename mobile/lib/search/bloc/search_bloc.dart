@@ -12,8 +12,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       SearchArtworksEvent event, Emitter<SearchState> emit) async {
     emit(SearchLoading());
     try {
-      final artworks =
-          await searchRepo.searchArtworks(event.query, limit: event.limit);
+      final artworks = await searchRepo.searchArtworks(event.query,
+          limit: event.limit, offset: event.offset);
       emit(SearchLoaded(artworks: artworks));
     } catch (e) {
       emit(SearchError(message: e.toString()));
