@@ -56,8 +56,18 @@ class _SearchState extends State<Search> {
               controller: _searchController,
               decoration: InputDecoration(
                 labelText: 'Search',
+                fillColor: Colors.white,
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  borderSide: BorderSide(color: AppTheme.princetonOrange),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  borderSide: BorderSide(color: AppTheme.princetonOrange),
+                ),
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.search),
+                  icon: Icon(Icons.search, color: AppTheme.princetonOrange),
                   onPressed: () => _pagingController.refresh(),
                 ),
               ),
