@@ -117,12 +117,14 @@ def get_suggestions(userid, MAX_ART_SAMPLES, urls):
 
             ret = []
             for i in range(MAX_ART_SAMPLES):
+                artwork_id = similarities[i][0]
                 if urls:
-                    ret.append(db.get_art_by_id(similarities[i][0])['imageurl'])
+                    image_url = db.get_art_by_id(artwork_id)['imageurl']
+                    ret.append((artwork_id, image_url))
                 else:
-                    ret.append(similarities[i][0])
-            
-            return ret 
+                    ret.append(artwork_id)
+
+            return ret
 
 
 if __name__ == '__main__':
