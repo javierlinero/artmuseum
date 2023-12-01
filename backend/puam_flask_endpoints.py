@@ -100,6 +100,9 @@ def tinder_for_art_post():
     print("Updating pref of userid" + str(userid) + " with (" + str(artid) + "," + str(rating) + ")")
 
     db.set_user_pref(userid, (artid, rating))
+    
+    if rating == 1:
+        db.insert_user_favorites(str(userid), artid)
 
     return jsonify({"message": "Preference updated successfully"}), 200
 
