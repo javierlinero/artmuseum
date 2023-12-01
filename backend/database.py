@@ -424,7 +424,7 @@ def get_art_by_search(query, limit=100):
         with connection.cursor() as cursor:
             cursor.execute(query_str, (q, q, q, q, q, q, q, limit))
             query_result = cursor.fetchall()
-            return [artwork_id[0] for artwork_id in query_result]
+            return [(artwork_id, image_url) for artwork_id, image_url in query_result]
     except Exception as ex:
         print(ex)
     finally:
