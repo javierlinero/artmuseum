@@ -277,7 +277,22 @@ def get_user_favorites(userid, limit=50):
     finally:
         return_db_conn(connection)
 
+def insert_user_favorites(userid, artworkid):
+    connection = get_db_conn()
+    try:
+        with connection.cursor() as cursor:
+            query_str='''
+            INSERT INTO favorites (user_id, artwork_id) VALUES (%s, %s)
+            '''
+            cursor.execute(query_str, (userid, artworkid))
+            connection.commit()
+    except Exception as ex:
+        connection.rollback()
+        raise ex
+    finally:
+        return_db_conn(connection)
 
+        
 def write_prefs(cursor, user_id, user_ratings):
     if len(read_prefs(cursor, user_id)) == 0:
         query_str = 'INSERT INTO user_preferences VALUES (%s, %s)'
