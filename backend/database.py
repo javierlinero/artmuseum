@@ -376,7 +376,7 @@ def get_art_by_date(query, limit=100):
         return_db_conn(connection)
 
 
-def get_art_by_search(query, limit=100):
+def get_art_by_search(query, limit=100, offset=0):
     q = '%' + query + '%'
     query_str = '''
         SELECT artwork_id, imageurl
@@ -417,7 +417,7 @@ def get_art_by_search(query, limit=100):
                 WHERE type ILIKE %s
             )
         ) AS combined_results
-        LIMIT %s
+        LIMIT %s OFFSET %s
     '''
     connection = get_db_conn()
     try:
