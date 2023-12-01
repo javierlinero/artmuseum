@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_constructors_in_immutables
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -20,25 +22,24 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   final PopupController _popupController = PopupController();
-  late bool locationEnabled = false;
   late final MapController _mapController;
+  final Completer<void> _locationPermissionCompleter = Completer();
 
   @override
   void initState() {
     super.initState();
     _mapController = MapController();
-    _locationSettings();
+    _handleLocationPermission();
   }
 
-  Future<void> _locationSettings() async {
+  Future<void> _handleLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
     if (permission == LocationPermission.whileInUse ||
         permission == LocationPermission.always) {
-      setState(() {
-        locationEnabled = true;
-      });
-    } else {
-      await Geolocator.requestPermission();
+      _locationPermissionCompleter.complete();
     }
   }
 
@@ -57,7 +58,9 @@ class _MapPageState extends State<MapPage> {
         body: BlocBuilder<LocationBloc, LocationState>(
           builder: (context, state) {
             if (state is LocationInitial) {
-              context.read<LocationBloc>().add(FetchCurrentLocation());
+              _locationPermissionCompleter.future.then((_) {
+                context.read<LocationBloc>().add(FetchCurrentLocation());
+              });
               return Center(child: CircularProgressIndicator());
             } else if (state is LocationLoaded) {
               return _buildMap(state, context);
