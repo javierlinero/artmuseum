@@ -48,12 +48,12 @@ def get_random_file():
             return json_file
 
 def get_random_art():
-    '''while True:
-        art_id = random.randint(166, 141746)  # Generate a random number between 166 and 141746
-        artwork = db.get_art_by_id(art_id)
-        print(artwork)
-        if artwork is not None:
-            return artwork'''
+    #while True:
+    #    art_id = random.randint(166, 141746)  # Generate a random number between 166 and 141746
+    #    artwork = db.get_art_by_id(art_id)
+    #    print(artwork)
+    #    if artwork is not None:
+    #        return artwork
     return db.get_art_by_id(random.choice(recommender.features_dir))
 
 def change_aotd():
@@ -119,6 +119,9 @@ def tinder_for_art_post():
     print("Updating pref of userid" + str(userid) + " with (" + str(artid) + "," + str(rating) + ")")
 
     db.set_user_pref(userid, (artid, rating))
+    #sending over favorite artwork into DB
+    if rating == 1:
+        db.insert_user_favorites(str(userid), artid)
 
     return jsonify({"message": "Preference updated successfully"}), 200
 
