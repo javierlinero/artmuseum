@@ -6,6 +6,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:puam_app/map/screens/markers.dart';
 import 'package:puam_app/shared/index.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:puam_app/map/index.dart';
 
@@ -18,14 +19,33 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   final PopupController _popupController = PopupController();
-
+  late bool locationEnabled = false;
   late final MapController _mapController;
 
   @override
   void initState() {
     super.initState();
     _mapController = MapController();
+    _locationSettings();
   }
+
+  Future<void> _locationSettings() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.whileInUse ||
+        permission == LocationPermission.always) {
+      setState(() {
+        locationEnabled = true;
+      });
+    } else {
+      await Geolocator.requestPermission();
+    }
+  }
+
+  // void _fetchLocation() {
+  //   if (mounted) {
+  //     BlocProvider.of<LocationBloc>(context).add(FetchCurrentLocation());
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
