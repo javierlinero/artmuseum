@@ -41,51 +41,45 @@ class _ProfileState extends State<Profile> {
 
   Column _buildProfilePage(BuildContext context, AuthStateLoggedIn state) {
     return Column(children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          IconButton(
-            icon: Icon(Icons.settings),
-            iconSize: 40,
-            onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Settings()));
-            },
-          )
-        ],
+      Align(
+        alignment: Alignment.topRight,
+        child: IconButton(
+          icon: Icon(Icons.settings),
+          iconSize: 40,
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Settings()));
+          },
+        ),
       ),
       Center(
-          child: Icon(
+      child: Icon(
         Icons.account_circle,
         size: 100,
       )),
       Container(
-          padding: EdgeInsets.all(15),
-          margin: EdgeInsets.all(15),
+          padding: EdgeInsets.only(top:15, bottom: 20),
           child: Center(
               child: Text(
             state.user.displayName ?? state.user.email ?? "",
             style: AppTheme.username,
           ))),
       Container(
-        padding: const EdgeInsets.only(left: 20),
+        padding: const EdgeInsets.only(bottom: 8),
         child: Align(
-          alignment: AlignmentDirectional.centerStart,
+          alignment: AlignmentDirectional.center,
           child: Text(
             'Favorites',
-            style: Theme.of(context).textTheme.bodySmall,
+            style: Theme.of(context).textTheme.bodyLarge,
             textAlign: TextAlign.start,
           ),
         ),
       ),
       const Divider(
-        height: 10,
-        thickness: 2,
-        indent: 20,
-        endIndent: 20,
+        height: 0,
+        thickness: 1,
         color: Colors.black,
       ),
-      Text('Liked art will appear here!'), //message appears if no favorites
       Expanded(
         child: FutureBuilder<List<Favorite>>(
           future: _repo.fetchFavorites(),
@@ -105,11 +99,35 @@ class _ProfileState extends State<Profile> {
                 children: List.generate(
                   favorites.length,
                   (index) {
-                    return Center(
-                      child: Image.network(
-                        '${favorites[index].imageURL}/full/pct:5/0/default.jpg',
-                        fit: BoxFit.fill,
+                    return Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 1.0,
+                        )
                       ),
+                      child: GestureDetector(
+                        onTap: () {
+                          print("Tapped a Container");
+                          Navigator.push(
+                            context,MaterialPageRoute(builder: (context) => FavoritesDetailsPage(favorites[index].artWorkID)),);
+                        },
+                        behavior: HitTestBehavior.opaque,
+                        child: ClipRect(
+                          child: Image.network(
+                            '${favorites[index].imageURL}/full/pct:5/0/default.jpg',
+                            fit: BoxFit.cover,
+                            loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Center(
+                                child: CircularProgressIndicator (
+                                  color: AppTheme.princetonOrange,
+                                  value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,),
+                              );
+                            } ),
+                          ),
+                        ),
                     );
                   },
                 ),
