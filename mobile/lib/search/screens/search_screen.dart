@@ -14,7 +14,7 @@ class _SearchState extends State<Search> {
   final TextEditingController _searchController = TextEditingController();
   final PagingController<int, SearchArtwork> _pagingController =
       PagingController(firstPageKey: 0);
-  static const _pageSize = 20;
+  static const _pageSize = 50;
 
   @override
   void initState() {
