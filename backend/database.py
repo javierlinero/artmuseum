@@ -389,7 +389,8 @@ def get_art_by_search(query, limit=100):
             UNION
             SELECT link.artwork_id, artworks.imageurl
             FROM artists
-            JOIN link ON artists.artist_id=link.artist_id 
+            JOIN link ON artists.artist_id=link.artist_id
+            JOIN artworks ON link.artwork_id = artworks.artwork_id
             WHERE artists.displayname ILIKE %s
             UNION
             SELECT artworks.artwork_id, artworks.imageurl
