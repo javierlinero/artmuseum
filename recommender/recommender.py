@@ -1,3 +1,4 @@
+import bisect
 import codecs
 import contextlib
 import glob
@@ -9,65 +10,106 @@ import os
 import random
 import database as db
 
-def similarity(user_ratings, img_features, target_img_features):
-    sim = 0
-    for i, rating in enumerate(user_ratings):
-        if img_features[i] is not None:
-            sim += rating[1] * np.dot(img_features[i], target_img_features)
-    return sim
+#features_dir = glob.glob('../recommender/features/*')
+features_dir = glob.glob('/home/ubuntu/artmuseum/backend/features/*')
+features_dir.sort()
+for i in range(len(features_dir)):
+    file = features_dir[i]
+    features_dir[i] = int(file[file.rindex('/')+1:])
+
+def similarity(prefs, target_img_features):
+    return np.dot(prefs, target_img_features)
 
 def id_to_feature(artid):
-    file = open('../recommender/features/' + str(artid), 'r')
+    file = open('/home/ubuntu/artmuseum/backend/features/' + str(artid), 'r')
     pickled = ''
     for line in file:
         pickled += line
     tensor = pickle.loads(codecs.decode(pickled.encode(), "base64"))
     return tensor
 
-def already_suggested(similarities, art_id):
+def already_rated(rated, art_id):
+    return rated[bisect.bisect_left(features_dir, art_id)]
+
+'''def already_suggested(similarities, art_id):
 	for s in similarities:
 		if s[0] == art_id:
 			return True
-	return False
+	return False'''
+
+class KeyWrapper:
+    def __init__(self, iterable, key):
+        self.it = iterable
+        self.key = key
+
+    def __getitem__(self, i):
+        return self.key(self.it[i])
+
+    def __len__(self):
+        return len(self.it)
+
+def insert_sim(similarities, feature_num, sim):
+    if len(similarities) == 0:
+        similarities.append((feature_num, sim))
+    else:
+        similarities.insert(bisect.bisect_left(KeyWrapper(similarities, key=lambda c: c[0]), feature_num),  (feature_num, sim))
+
+def already_suggested(similarities, art_id):
+    if len(similarities) == 0:
+        return False
+    if len(similarities) == bisect.bisect_left(KeyWrapper(similarities, key=lambda c: c[0]), art_id):
+        return False
+    return similarities[bisect.bisect_left(KeyWrapper(similarities, key=lambda c: c[0]), art_id)][0] == art_id
 
 def get_suggestions(userid, MAX_ART_SAMPLES):
-    MAX_PREF_SAMPLES = 5
-    SAMPLE_POOL_SIZE = 5
+    SAMPLE_POOL_SIZE = 10000
     swap_new_img_prob = 0.2
     with psycopg2.connect(database="init_db", user="puam", password=os.environ['PUAM_DB_PASSWORD'], 
                           host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com", port="5432", 
                           sslmode="require") as connection:
         with contextlib.closing(connection.cursor()) as cursor:
-            img_features = []
-            full_prefs = db.read_prefs(cursor, userid)
-            print('====== Prefs ========')
-            print(full_prefs)
-            print('====== Prefs ========')
-            '''full_prefs = [
-                (279, 0.1),
-                (280, 0.8),
-                (281, 0.3),
-            ]'''
-            num_pref_samples = min(len(full_prefs), MAX_PREF_SAMPLES)
-            user_ratings = random.sample(full_prefs, num_pref_samples)
-            for rating in user_ratings:
-                img_features.append(id_to_feature(rating[0]))
+            print("Reading prefs")
+            prefs = db.read_prefs(cursor, userid)
+            print("Finished reading prefs")
+            print("Reading rated")
+            rated = db.read_rated(cursor, userid)
+            print("Finished reading rated")
 
             similarities = []
-            features_dir = glob.glob('../recommender/features/*')
             num_art_samples = min(len(features_dir), SAMPLE_POOL_SIZE)
+            print("sampling art")
             while len(similarities) != num_art_samples:
-                feature_file = random.choice(features_dir)
-                feature_num = int(feature_file[feature_file.rindex('/')+1:])
+                feature_num = random.choice(features_dir)
 
-                if not (db.already_rated(userid, feature_num) or already_suggested(similarities, feature_num)):
-                    similarities.append((feature_num, similarity(user_ratings, img_features, id_to_feature(feature_num))))
+                # speedup already_rated/already_suggested?
+                time_init = time.time()
+                a = already_rated(rated, feature_num)
+                #a = False
+                time_a = time.time()
+                b = already_suggested(similarities, feature_num)
+                time_b = time.time()
 
+                #if not (db.already_rated(userid, feature_num) or already_suggested(similarities, feature_num)):
+                if not (a or b):
+                    s = similarity(prefs, id_to_feature(feature_num))
+                    time_s = time.time()
+                    insert_sim(similarities, feature_num, s)
+                    #similarities.append((feature_num, s))
+                    time_app = time.time()
+                    total_time = time_app - time_init
+                    print("feature num: " + str(feature_num) + \
+                            "\talready_rated: " + str("{:.2f}".format((time_a - time_init) / total_time)) + \
+                            "\talready_suggested: " + str("{:.2f}".format((time_b - time_a) / total_time)) + \
+                            "\tsimilarity: " + str("{:.2f}".format((time_s - time_b)  / total_time)) + \
+                            "\tappend: " + str("{:.2f}".format((time_app - time_s) / total_time)))
+                    
+
+            print("sorting art")
             similarities = sorted(similarities, key=lambda s : s[1], reverse=True)
-
-            print(similarities)
+            print("finished sorting art")
 
             # Swap high similarity image with low similarity with probability swap_new_img_prob
+            print("begin random sampling")
             for i in range(MAX_ART_SAMPLES):
                 if MAX_ART_SAMPLES < num_art_samples and random.random() < swap_new_img_prob:
                     high_sim_ind = int(random.random() * MAX_ART_SAMPLES)
@@ -75,6 +117,7 @@ def get_suggestions(userid, MAX_ART_SAMPLES):
                     tmp = similarities[high_sim_ind]
                     similarities[high_sim_ind] = similarities[low_sim_ind]
                     similarities[low_sim_ind] = tmp
+            print("end random sampling")
 
             urls = []
             for i in range(MAX_ART_SAMPLES):

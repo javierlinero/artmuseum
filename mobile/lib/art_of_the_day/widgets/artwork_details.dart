@@ -18,19 +18,12 @@ class DetailsWidget extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(children: [
         AutoSizeText(
-          '$materials • ',
+          'Material: $materials',
           style: AppTheme.materialsText,
           maxFontSize: 12,
           minFontSize: 8,
           overflow: TextOverflow.clip,
         ),
-        AutoSizeText(
-          size,
-          style: AppTheme.materialsText,
-          maxFontSize: 12,
-          minFontSize: 8,
-          overflow: TextOverflow.clip,
-        )
       ]),
     );
   }

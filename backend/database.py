@@ -1,10 +1,14 @@
+import bisect
+from datetime import date
 import os
 import codecs
+import numpy as np
 import pickle
 from psycopg2 import pool
 import bisect
 import boto3
 import json
+import recommender
 from botocore.exceptions import ClientError
 
 def get_secret():
@@ -98,7 +102,8 @@ def initDB(cursor):
     query_str = '''
     CREATE TABLE user_preferences (
         user_id VARCHAR(255) PRIMARY KEY,
-        pref_str VARCHAR(1000),
+        pref_str VARCHAR(20000),
+        rated_str VARCHAR(63000),
         FOREIGN KEY (user_id) REFERENCES users(UserID) ON DELETE CASCADE
     )
     '''
@@ -116,6 +121,42 @@ def initDB(cursor):
     )
     '''
     cursor.execute(query_str, [])
+
+    drop_str = 'DROP TABLE IF EXISTS aotd'
+    cursor.execute(drop_str, [])
+    query_str = '''
+    CREATE TABLE aotd (
+        user_id VARCHAR(255),
+        artwork_id INTEGER,
+        date VARCHAR(12),
+        PRIMARY KEY (user_id),
+        FOREIGN KEY (user_id) REFERENCES users(UserID) ON DELETE CASCADE
+    )
+    '''
+    cursor.execute(query_str, [])
+
+def get_art_of_the_day(user_id):
+    connection = get_db_conn()
+    try:
+        with connection.cursor() as cursor:
+            query_str = "SELECT * FROM aotd WHERE user_id=%s"
+            cursor.execute(query_str, [user_id])
+            table = cursor.fetchall()
+
+            if len(table) == 0:
+                artid = recommender.get_suggestions(user_id, 1, False)[0]
+                query_str = "INSERT INTO aotd VALUES (%s, %s, %s)"
+                cursor.execute(query_str, (user_id, str(artid), str(date.today())))
+                return get_art_by_id(artid)
+            elif table[0][2] != str(date.today()):
+                artid = recommender.get_suggestions(user_id, 1, False)[0]
+                query_str = "UPDATE aotd SET artwork_id=%s, date=%s WHERE user_id=%s"
+                cursor.execute(query_str, (str(artid), str(date.today()), user_id))
+                return get_art_by_id(artid)
+            else:
+                return get_art_by_id(table[0][1])
+    finally:
+        return_db_conn(connection)
 
 def create_user(uid, email, display_name):
     insert_query = 'INSERT INTO users (userid, email, displayname) VALUES (%s, %s, %s);'
@@ -168,34 +209,44 @@ def get_user_favorites(userid, limit=50):
     finally:
         return_db_conn(connection)
 
-
-def write_prefs(cursor, user_id, user_ratings):
-    if len(read_prefs(cursor, user_id)) == 0:
-        query_str = 'INSERT INTO user_preferences VALUES (%s, %s)'
-        cursor.execute(query_str, (user_id, codecs.encode(
-            pickle.dumps(user_ratings), "base64").decode()))
-    else:
-        query_str = "UPDATE user_preferences SET pref_str=%s WHERE user_id=%s"
-        cursor.execute(query_str, (codecs.encode(
-            pickle.dumps(user_ratings), "base64").decode(), user_id))
-
+def write_prefs(cursor, user_id, user_ratings, rated):
+  query_str = 'SELECT user_id FROM user_preferences WHERE user_id=%s'
+  cursor.execute(query_str, [user_id])
+  table = cursor.fetchall()
+  if len(table) == 0:
+    query_str = 'INSERT INTO user_preferences VALUES (%s, %s, %s)'
+    cursor.execute(query_str,
+        (user_id, codecs.encode(pickle.dumps(user_ratings), "base64").decode(),
+                  codecs.encode(pickle.dumps(rated), "base64").decode()))
+  else:
+    query_str = 'UPDATE user_preferences SET pref_str=%s, rated_str=%s WHERE user_id=%s'
+    cursor.execute(query_str, (codecs.encode(pickle.dumps(user_ratings), "base64").decode(),
+                               codecs.encode(pickle.dumps(rated), "base64").decode(), user_id))
 
 def read_prefs(cursor, user_id):
-    query_str = "SELECT pref_str FROM user_preferences WHERE user_id='%s'" % (
-        user_id)
-    cursor.execute(query_str, [])
-    table = cursor.fetchall()
-    if len(table) == 0:
-        return table
-    else:
-        pref = table[0][0].encode()
-        return pickle.loads(codecs.decode(pref, "base64"))
+  query_str = "SELECT pref_str FROM user_preferences WHERE user_id='%s'" % (user_id)
+  cursor.execute(query_str, [])
+  table = cursor.fetchall()
+  if len(table) == 0:
+    uniform_v = ([0.0] * 1000)
+    return uniform_v
+  else:
+    pref = table[0][0].encode()
+    return pickle.loads(codecs.decode(pref, "base64"))
 
+def read_rated(cursor, user_id):
+  query_str = "SELECT rated_str FROM user_preferences WHERE user_id='%s'" % (user_id)
+  cursor.execute(query_str, [])
+  table = cursor.fetchall()
+  if len(table) == 0:
+    return [False] * 46000
+  else:
+    rated = table[0][0].encode()
+    return pickle.loads(codecs.decode(rated, "base64"))
 
 def drop_prefs(cursor):
     query_str = 'DELETE FROM user_preferences'
     cursor.execute(query_str, [])
-
 
 def get_user_pref(user_id):
     connection = get_db_conn()
@@ -206,50 +257,25 @@ def get_user_pref(user_id):
     finally:
         return_db_conn(connection)
 
-
-def insert_pref(pref, new_rating):
-    pref.insert(bisect.bisect_right(pref, new_rating), new_rating)
-
-
-class RatingComparator(object):
-    def __init__(self, val):
-        self.val = val
-
-    def __lt__(self, other):
-        return self.val[0] < other[0]
-
-
 def set_user_pref(user_id, new_rating):
     connection = get_db_conn()
     try:
         with connection.cursor() as cursor:
             pref = read_prefs(cursor, user_id)
-            insert_pref(pref, new_rating)  # preserve sorted by art_id
-            write_prefs(cursor, user_id, pref)
-    finally:
-        return_db_conn(connection)
+            pref += new_rating[1] * recommender.id_to_feature(new_rating[0])
+            pref /= np.linalg.norm(pref)
+            print()
+            print("===================")
+            print()
+            print("Feature: " + str(recommender.id_to_feature(new_rating[0])[0:10]))
+            print("New pref: " + str(pref[0:10]))
 
-
-def already_rated(user_id, art_id):
-    connection = get_db_conn()
-    try:
-        with connection.cursor() as cursor:
-            pref = read_prefs(cursor, user_id)
-            if len(pref) != 0 and pref[bisect.bisect_right(pref, RatingComparator((art_id, None)))-1][0] == art_id:
-                return True
-            return False
-    finally:
-        return_db_conn(connection)
-
-
-def write_dummy_pref(cursor):
-    pref = [
-        (279, 0.1),
-        (280, 0.8),
-        (281, 0.3),
-    ]
-
-    write_prefs(cursor, 1, pref)
+            rated = read_rated(cursor, user_id)
+            rated[bisect.bisect_left(recommender.features_dir, new_rating[0])] = True
+            print("Set rated[" + str(bisect.bisect_left(recommender.features_dir, new_rating[0])) + "]=True for artid " + str(new_rating[0]))
+            write_prefs(cursor, user_id, pref, rated)
+    except Exception as ex:
+        print(f"Exception: {ex}")
 
 def get_art_by_date(query, limit=100):
     connection = get_db_conn()
@@ -322,6 +348,5 @@ if __name__ == '__main__':
     try:
         with connection.cursor() as cursor:
             drop_prefs(cursor)
-            write_dummy_pref(cursor)
     finally:
         return_db_conn(connection)

@@ -9,6 +9,7 @@ from keras.preprocessing.image import img_to_array
 import os
 import psycopg2
 
+print('Loading model')
 resnet = tf.keras.applications.resnet50.ResNet50(
     include_top=True,
     weights='imagenet',
@@ -17,6 +18,7 @@ resnet = tf.keras.applications.resnet50.ResNet50(
     pooling=None,
     classes=1000,
 )
+print('Finished loading model')
 
 def url_to_features(url):
     try:
@@ -44,14 +46,17 @@ def write_features():
             cursor.execute(query_str)
             artwork_table = cursor.fetchall()
 
+            if not os.path.isdir('features'):
+                os.mkdir('features')
+
             i = 0
             for row in artwork_table:
                 file = open('features/' + str(row[0]), 'w')
                 write_feature_to_file(file, url_to_features(row[1]))
 
-            i += 1
-            if num_features != -1 and i == num_features:
-                break
+                i += 1
+                if num_features != -1 and i == num_features:
+                    break
 
 if __name__ == '__main__':
   write_features()

@@ -6,8 +6,12 @@ class ArtworkService {
 
   final String serverUrl = "http://puamdns.ddns.net";
 
-  Future<Artwork> fetchArtOfTheDay() async {
+  Future<Artwork> fetchArtOfTheDay({String? authToken}) async {
     try {
+      if (authToken != null) {
+        _dio.options.headers['Authorization'] = 'Bearer $authToken';
+      }
+
       Response response = await _dio.get('$serverUrl/art_of_the_day');
       var data = response.data;
 

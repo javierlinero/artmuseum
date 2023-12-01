@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors_in_immutables
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class PaintingWidget extends StatelessWidget {
@@ -16,9 +17,11 @@ class PaintingWidget extends StatelessWidget {
       child: Center(
         child: Container(
           alignment: Alignment.center,
-          child: Image.network(
-            '$imageUrl/full/full/0/default.jpg',
+          child: CachedNetworkImage(
+            imageUrl: '$imageUrl/full/full/0/default.jpg',
             fit: BoxFit.contain,
+            placeholder: (context, url) => CircularProgressIndicator(),
+            errorWidget: (context, url, error) => Icon(Icons.error),
           ),
         ),
       ),
