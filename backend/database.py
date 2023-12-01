@@ -379,20 +379,20 @@ def get_art_by_date(query, limit=100):
 def get_art_by_search(query, limit=100):
     q = '%' + query + '%'
     query_str = '''
-        SELECT artwork_id
+        SELECT artwork_id, imageurl
         FROM (
-            SELECT artworks.artwork_id
+            SELECT artworks.artwork_id, artworks.imageurl
             FROM artworks
             WHERE artworks.title ILIKE %s OR
             artworks.year ILIKE %s OR
             artworks.materials ILIKE %s
             UNION
-            SELECT link.artwork_id
+            SELECT link.artwork_id, artworks.imageurl
             FROM artists
             JOIN link ON artists.artist_id=link.artist_id 
             WHERE artists.displayname ILIKE %s
             UNION
-            SELECT artworks.artwork_id
+            SELECT artworks.artwork_id, artworks.imageurl
             FROM artworks
             WHERE EXISTS (
                 SELECT 1
@@ -400,7 +400,7 @@ def get_art_by_search(query, limit=100):
                 WHERE culture ILIKE %s
             )
             UNION
-            SELECT artworks.artwork_id
+            SELECT artworks.artwork_id, artworks.imageurl
             FROM artworks
             WHERE EXISTS (
                 SELECT 1
@@ -408,7 +408,7 @@ def get_art_by_search(query, limit=100):
                 WHERE period ILIKE %s
             )
             UNION
-            SELECT artworks.artwork_id
+            SELECT artworks.artwork_id, artworks.imageurl
             FROM artworks
             WHERE EXISTS (
                 SELECT 1
