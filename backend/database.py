@@ -358,6 +358,7 @@ def set_user_pref(user_id, new_rating):
             rated[bisect.bisect_left(recommender.features_dir, new_rating[0])] = True
             print("Set rated[" + str(bisect.bisect_left(recommender.features_dir, new_rating[0])) + "]=True for artid " + str(new_rating[0]))
             write_prefs(cursor, user_id, pref, rated)
+            connection.commit()
     except Exception as ex:
         print(f"Exception: {ex}")
     finally:
