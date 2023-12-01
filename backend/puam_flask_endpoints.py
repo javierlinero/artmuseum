@@ -209,13 +209,14 @@ def search():
         year = request.json.get('year')
         query = request.json.get('query')
         limit = request.json.get('limit')
+        offset = request.json.get('offset')
         if query is None:
             query= ''
         if year is None and query is not None:
             if limit is None:
-                result = db.get_art_by_search(query)
+                result = db.get_art_by_search(query=query, offset=offset)
             else:
-                result = db.get_art_by_search(query, limit)
+                result = db.get_art_by_search(query=query, limit=limit, offset=offset)
         else:
             if limit is None:
                 result = db.get_art_by_date(year)
