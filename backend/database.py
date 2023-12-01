@@ -1,5 +1,4 @@
 import bisect
-import contextlib
 from datetime import date
 import os
 import codecs
@@ -9,6 +8,7 @@ from psycopg2 import pool
 import bisect
 import boto3
 import json
+import recommender
 from botocore.exceptions import ClientError
 
 def get_secret():
@@ -52,26 +52,6 @@ def get_db_conn():
 
 def return_db_conn(conn):
     _connection_pool.putconn(conn)
-import psycopg2
-import recommender
-
-import queue
-
-_connection_pool = queue.Queue()
-
-connection pool for efficiency with DB
-def _get_conn():
-   try:
-       conn = _connection_pool.get(block=False)
-   except queue.Empty:
-       conn = psycopg2.connect(database="init_db",
-                               user="puam", password=os.environ['PUAM_DB_PASSWORD'],
-                               host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
-                               port="5432", sslmode="require")
-   return conn
-
-def _put_conn(conn):
-   _connection_pool.put(conn)
 
 def get_art_by_id(art_id):
     connection = get_db_conn()
@@ -156,10 +136,8 @@ def initDB(cursor):
     cursor.execute(query_str, [])
 
 def get_art_of_the_day(user_id):
-    with psycopg2.connect(database="init_db",
-                          user="puam", password=os.environ['PUAM_DB_PASSWORD'],
-                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com",
-                          port='5432') as connection:
+    connection = get_db_conn()
+    try:
         with connection.cursor() as cursor:
             query_str = "SELECT * FROM aotd WHERE user_id=%s"
             cursor.execute(query_str, [user_id])
@@ -177,6 +155,8 @@ def get_art_of_the_day(user_id):
                 return get_art_by_id(artid)
             else:
                 return get_art_by_id(table[0][1])
+    finally:
+        return_db_conn(connection)
 
 def create_user(uid, email, display_name):
     insert_query = 'INSERT INTO users (userid, email, displayname) VALUES (%s, %s, %s);'
@@ -368,6 +348,5 @@ if __name__ == '__main__':
     try:
         with connection.cursor() as cursor:
             drop_prefs(cursor)
-            write_dummy_pref(cursor)
     finally:
         return_db_conn(connection)
