@@ -30,7 +30,11 @@ _connection_pool = None
 def create_connection_pool():
     global _connection_pool
     if _connection_pool is None:
-        dbname, user, password, host, port, ssl = get_secret()
+        try:
+            dbname, user, password, host, port, ssl = get_secret()
+        except Exception:
+            print('Trying with non-AWS DB url...')
+            dbname, user, password, host, port, ssl = urlparser()
         _connection_pool = pool.ThreadedConnectionPool(
             minconn=1,
             maxconn=10,
@@ -331,6 +335,22 @@ def get_art_by_search(query, limit=100):
         print(ex)
     finally:
         return_db_conn(connection)
+
+def urlparser():
+    url = os.environ['DB_PASSWORD']
+    if url is None:
+        print('error: Missing DB url, cant connect to DB!')
+    url_components = urlparse(url)
+
+    # extract any ssl_params
+    ssl_params = dict(param.split("=") for param in url_components.query.split("&"))
+
+    dbname = url_components[1:]
+    user = url_components.username
+    password = url_components.password
+    host = url_components.hostname
+    port = url_components.port
+    return dbname, user, password, host, port, ssl_params
 
 if __name__ == '__main__':
     connection = get_db_conn()
