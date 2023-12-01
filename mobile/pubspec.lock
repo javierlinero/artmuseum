@@ -53,10 +53,10 @@ packages:
     dependency: "direct main"
     description:
       name: appinio_swiper
-      sha256: "1946476dcdf2cda6a0bfa5c9fde8d98131228a2c675be26beb14bfa58e479bbc"
+      sha256: "52e768fec376de70b53eff20b2591294f7f577e8aca35ece8cf83f0acdfe28e5"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "2.0.3"
   archive:
     dependency: transitive
     description:

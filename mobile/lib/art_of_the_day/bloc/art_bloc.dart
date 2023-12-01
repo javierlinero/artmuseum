@@ -12,7 +12,7 @@ class ArtBloc extends Bloc<ArtEvent, ArtState> {
       FetchArtOfTheDayEvent event, Emitter<ArtState> emit) async {
     emit(ArtLoading());
     try {
-      Artwork artwork = await _repository.getArtOfTheDay();
+      Artwork artwork = await _repository.getArtOfTheDay(event.token);
       emit(ArtLoaded(artwork));
     } catch (error) {
       emit(ArtError(error.toString()));
