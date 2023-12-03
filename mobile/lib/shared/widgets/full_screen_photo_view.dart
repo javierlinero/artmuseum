@@ -30,7 +30,7 @@ class FullScreenPhotoView extends StatelessWidget {
             return PhotoViewGalleryPageOptions(
               imageProvider: NetworkImage('$imageUrl/full/full/0/default.jpg'),
               minScale: PhotoViewComputedScale.contained,
-              maxScale: PhotoViewComputedScale.covered * 2,
+              maxScale: PhotoViewComputedScale.covered * 5,
             );
           },
           scrollPhysics: BouncingScrollPhysics(),
