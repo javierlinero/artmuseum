@@ -129,18 +129,7 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
                     height: undoHeight,
                     // child: TinderUndoButton(
                     //     appinioController: appinioController, state: artState),
-                    child: IconButton(
-                        icon: Icon(Icons.zoom_out_map, color: Colors.black),
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => FullScreenPhotoView(
-                                  imageUrl: artState
-                                      .recommendations[artState.currentIndex]
-                                      .imageUrl),
-                            ),
-                          );
-                        }),
+                    child: FullscreenButton(),
                   ),
                 ),
                 Container(
