@@ -14,7 +14,7 @@
 # Project Overview:
 
 ## Mobile App Setup
-For a detailed guide on setting up a local emulator to run the app, please refer to our comprehensive tutorial <a href="/artmuseum/mobile/README.md"> here </a>
+For a detailed guide on setting up a local emulator to run the app, please refer to our comprehensive tutorial [here.](/mobile/README.md)
 
 
 ### Built With
