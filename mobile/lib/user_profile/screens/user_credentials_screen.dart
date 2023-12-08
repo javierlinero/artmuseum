@@ -15,6 +15,10 @@ class UserCredentials extends StatefulWidget {
 final TextEditingController _controllerEmail = TextEditingController();
 final TextEditingController _controllerPassword = TextEditingController();
 final TextEditingController _controllerDisplayName = TextEditingController();
+final TextEditingController _controllerConfirmPassword =
+    TextEditingController();
+
+bool _isSignUpButtonEnabled = false;
 
 void _onSubmit(BuildContext context) {
   BlocProvider.of<AuthBloc>(context).add(
@@ -27,12 +31,32 @@ void _onSubmit(BuildContext context) {
   Navigator.pop(context);
 }
 
-void _googleClick(BuildContext context) {
-  BlocProvider.of<AuthBloc>(context).add(AuthEventGoogleSignIn());
-  Navigator.pop(context);
+bool _isEmailValid(String email) {
+  Pattern pattern = r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+';
+  RegExp regex = RegExp(pattern.toString());
+  return regex.hasMatch(email);
 }
 
 class _UserCredentialsState extends State<UserCredentials> {
+  @override
+  void initState() {
+    super.initState();
+    _controllerPassword.addListener(_validateForm);
+    _controllerConfirmPassword.addListener(_validateForm);
+    _controllerDisplayName.addListener(_validateForm);
+    _controllerEmail.addListener(_validateForm);
+  }
+
+  void _validateForm() {
+    setState(() {
+      _isSignUpButtonEnabled =
+          _controllerPassword.text == _controllerConfirmPassword.text &&
+              _controllerPassword.text.isNotEmpty &&
+              _controllerDisplayName.text.isNotEmpty &&
+              _isEmailValid(_controllerEmail.text);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -150,17 +174,61 @@ class _UserCredentialsState extends State<UserCredentials> {
             ),
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          child: TextFormField(
+            obscureText: true,
+            controller: _controllerConfirmPassword,
+            cursorColor: AppTheme.princetonOrange.withOpacity(0.5),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Color.fromARGB(255, 227, 224, 224),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.princetonOrange),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.princetonOrange),
+              ),
+              labelText: 'Re-type Password',
+              labelStyle: TextStyle(
+                color: Colors.black.withOpacity(0.5),
+              ),
+              floatingLabelStyle: TextStyle(
+                color: AppTheme.princetonOrange.withOpacity(0.75),
+              ),
+            ),
+          ),
+        ),
         ElevatedButton(
-          onPressed: () {
-            _onSubmit(context);
-            _controllerEmail.clear();
-            _controllerPassword.clear();
-          },
-          style:
-              FilledButton.styleFrom(backgroundColor: AppTheme.princetonOrange),
-          child: Text(('Sign Up'), style: AppTheme.signUp),
+          onPressed: _isSignUpButtonEnabled
+              ? () {
+                  _onSubmit(context);
+                  _controllerEmail.clear();
+                  _controllerPassword.clear();
+                  _controllerConfirmPassword.clear();
+                }
+              : null, // Disable if passwords don't match
+          style: FilledButton.styleFrom(
+            backgroundColor: _isSignUpButtonEnabled
+                ? AppTheme.princetonOrange
+                : Colors.grey, // Grey out if disabled
+          ),
+          child: Text('Sign Up', style: AppTheme.signUp),
         ),
       ]),
     );
+  }
+
+  @override
+  void dispose() {
+    _controllerEmail.removeListener(_validateForm);
+    _controllerPassword.removeListener(_validateForm);
+    _controllerDisplayName.removeListener(_validateForm);
+    _controllerConfirmPassword.removeListener(_validateForm);
+    _controllerEmail.dispose();
+    _controllerPassword.dispose();
+    _controllerDisplayName.dispose();
+    _controllerConfirmPassword.dispose();
+    super.dispose();
   }
 }
