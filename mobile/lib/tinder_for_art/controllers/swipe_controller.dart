@@ -33,10 +33,10 @@ class AppinioController {
     debugPrint('Handling Swipe: index = $index, direction = $direction');
 
     // Logic for assigning ratings based on swipe direction
-    int intRating;
+    num intRating;
     switch (direction) {
       case AppinioSwiperDirection.left:
-        intRating = -1;
+        intRating = -0.2;
         break;
       case AppinioSwiperDirection.top:
         intRating = 0;
