@@ -212,6 +212,18 @@ def search():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/search_artist', methods=['GET'])
+def search_artist():
+    try:
+        artist = request.json.get('artistid')
+        if artist is None:
+            raise Exception("Missing artistid")
+        result = db.get_artwork_by_artist(artist)
+
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/art_info', methods=['GET'])
 def art_information():
     try:

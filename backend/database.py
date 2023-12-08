@@ -428,6 +428,22 @@ def get_art_by_search(query, limit=100, offset=0):
     finally:
         return_db_conn(connection)
 
+def get_artwork_by_artist(artistid):
+    connection = get_db_conn()
+    try:
+        if isinstance(artistid, int):
+            query='''
+            SELECT link.artwork_id FROM link WHERE artist_id=%s
+            '''
+            with connection.cursor() as cursor:
+                cursor.execute(query, (artistid))
+                query_result = cursor.fetchall()
+                return [artwork_id[0] for artwork_id in query_result]
+        else:
+            raise Exception("Artistid is not an integer")
+    finally:
+        return_db_conn(connection)
+
 if __name__ == '__main__':
     connection = get_db_conn()
     try:
