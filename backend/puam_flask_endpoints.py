@@ -39,21 +39,7 @@ def require_auth(f):
             return jsonify({"error": str(e)}), 403
     return decorated_function
 
-def get_random_file():
-    while True:
-        file_num = random.randint(166, 141746)  # Generate a random number between 166 and 141746
-        object_name = 'HASIMAGES/artobject_' + str(file_num) + '.json'
-        json_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), object_name)
-        if os.path.exists(json_file):
-            return json_file
-
 def get_random_art():
-    #while True:
-    #    art_id = random.randint(166, 141746)  # Generate a random number between 166 and 141746
-    #    artwork = db.get_art_by_id(art_id)
-    #    print(artwork)
-    #    if artwork is not None:
-    #        return artwork
     return db.get_art_by_id(random.choice(recommender.features_dir))
 
 def change_aotd():
@@ -209,13 +195,14 @@ def search():
         year = request.json.get('year')
         query = request.json.get('query')
         limit = request.json.get('limit')
+        offset = request.json.get('offset')
         if query is None:
             query= ''
         if year is None and query is not None:
             if limit is None:
-                result = db.get_art_by_search(query)
+                result = db.get_art_by_search(query=query, offset=offset)
             else:
-                result = db.get_art_by_search(query, limit)
+                result = db.get_art_by_search(query=query, limit=limit, offset=offset)
         else:
             if limit is None:
                 result = db.get_art_by_date(year)

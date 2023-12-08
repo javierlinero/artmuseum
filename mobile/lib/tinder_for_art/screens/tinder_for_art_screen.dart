@@ -127,8 +127,9 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
                       horizontal: deviceWidth(context) * 0.05),
                   child: SizedBox(
                     height: undoHeight,
-                    child: TinderUndoButton(
-                        appinioController: appinioController, state: artState),
+                    // child: TinderUndoButton(
+                    //     appinioController: appinioController, state: artState),
+                    child: FullscreenButton(),
                   ),
                 ),
                 Container(

@@ -30,7 +30,7 @@ def get_secret():
     return dbname, user, password, host, port, ssl
 
 def urlparser():
-    url = os.environ['DB_PASSWORD']
+    url = os.environ['DB_URL']
     if url is None:
         print('error: Missing DB url, cant connect to DB!')
     url_components = urlparse(url)
@@ -215,11 +215,13 @@ def get_art_of_the_day(user_id):
                 artid = recommender.get_suggestions(user_id, 1, False)[0]
                 query_str = "INSERT INTO aotd VALUES (%s, %s, %s)"
                 cursor.execute(query_str, (user_id, str(artid), str(date.today())))
+                connection.commit()
                 return get_art_by_id(artid)
             elif table[0][2] != str(date.today()):
                 artid = recommender.get_suggestions(user_id, 1, False)[0]
                 query_str = "UPDATE aotd SET artwork_id=%s, date=%s WHERE user_id=%s"
                 cursor.execute(query_str, (str(artid), str(date.today()), user_id))
+                connection.commit()
                 return get_art_by_id(artid)
             else:
                 return get_art_by_id(table[0][1])
@@ -292,20 +294,16 @@ def insert_user_favorites(userid, artworkid):
     finally:
         return_db_conn(connection)
 
-
-def write_prefs(cursor, user_id, user_ratings, rated):
-  query_str = 'SELECT user_id FROM user_preferences WHERE user_id=%s'
-  cursor.execute(query_str, [user_id])
-  table = cursor.fetchall()
-  if len(table) == 0:
-    query_str = 'INSERT INTO user_preferences VALUES (%s, %s, %s)'
-    cursor.execute(query_str,
-        (user_id, codecs.encode(pickle.dumps(user_ratings), "base64").decode(),
-                  codecs.encode(pickle.dumps(rated), "base64").decode()))
-  else:
-    query_str = 'UPDATE user_preferences SET pref_str=%s, rated_str=%s WHERE user_id=%s'
-    cursor.execute(query_str, (codecs.encode(pickle.dumps(user_ratings), "base64").decode(),
-                               codecs.encode(pickle.dumps(rated), "base64").decode(), user_id))
+        
+def write_prefs(cursor, user_id, user_ratings):
+    if len(read_prefs(cursor, user_id)) == 0:
+        query_str = 'INSERT INTO user_preferences VALUES (%s, %s)'
+        cursor.execute(query_str, (user_id, codecs.encode(
+            pickle.dumps(user_ratings), "base64").decode()))
+    else:
+        query_str = "UPDATE user_preferences SET pref_str=%s WHERE user_id=%s"
+        cursor.execute(query_str, (codecs.encode(
+            pickle.dumps(user_ratings), "base64").decode(), user_id))
 
 def read_prefs(cursor, user_id):
   query_str = "SELECT pref_str FROM user_preferences WHERE user_id='%s'" % (user_id)
@@ -376,23 +374,24 @@ def get_art_by_date(query, limit=100):
         return_db_conn(connection)
 
 
-def get_art_by_search(query, limit=100):
+def get_art_by_search(query, limit=100, offset=0):
     q = '%' + query + '%'
     query_str = '''
-        SELECT artwork_id
+        SELECT artwork_id, imageurl
         FROM (
-            SELECT artworks.artwork_id
+            SELECT artworks.artwork_id, artworks.imageurl
             FROM artworks
             WHERE artworks.title ILIKE %s OR
             artworks.year ILIKE %s OR
             artworks.materials ILIKE %s
             UNION
-            SELECT link.artwork_id
+            SELECT link.artwork_id, artworks.imageurl
             FROM artists
-            JOIN link ON artists.artist_id=link.artist_id 
+            JOIN link ON artists.artist_id=link.artist_id
+            JOIN artworks ON link.artwork_id = artworks.artwork_id
             WHERE artists.displayname ILIKE %s
             UNION
-            SELECT artworks.artwork_id
+            SELECT artworks.artwork_id, artworks.imageurl
             FROM artworks
             WHERE EXISTS (
                 SELECT 1
@@ -400,7 +399,7 @@ def get_art_by_search(query, limit=100):
                 WHERE culture ILIKE %s
             )
             UNION
-            SELECT artworks.artwork_id
+            SELECT artworks.artwork_id, artworks.imageurl
             FROM artworks
             WHERE EXISTS (
                 SELECT 1
@@ -408,7 +407,7 @@ def get_art_by_search(query, limit=100):
                 WHERE period ILIKE %s
             )
             UNION
-            SELECT artworks.artwork_id
+            SELECT artworks.artwork_id, artworks.imageurl
             FROM artworks
             WHERE EXISTS (
                 SELECT 1
@@ -416,14 +415,14 @@ def get_art_by_search(query, limit=100):
                 WHERE type ILIKE %s
             )
         ) AS combined_results
-        LIMIT %s
+        LIMIT %s OFFSET %s
     '''
     connection = get_db_conn()
     try:
         with connection.cursor() as cursor:
-            cursor.execute(query_str, (q, q, q, q, q, q, q, limit))
+            cursor.execute(query_str, (q, q, q, q, q, q, q, limit, offset))
             query_result = cursor.fetchall()
-            return [artwork_id[0] for artwork_id in query_result]
+            return [(artwork_id, image_url) for artwork_id, image_url in query_result]
     except Exception as ex:
         print(ex)
     finally:
@@ -450,5 +449,6 @@ if __name__ == '__main__':
     try:
         with connection.cursor() as cursor:
             initDB(cursor)
+            connection.commit()
     finally:
         return_db_conn(connection)

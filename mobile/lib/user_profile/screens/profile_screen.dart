@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puam_app/shared/index.dart';
@@ -11,16 +13,23 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  late ProfileRepo _repo;
-  late AuthStateLoggedIn _currentState;
+  ProfileRepo? _repo;
+  Future<List<Favorite>>? _favoritesFuture;
 
-  @override
-  void initState() {
-    super.initState();
+  void _updateRepoAndFetchFavorites(AuthStateLoggedIn state) {
     _repo = ProfileRepo(
-      getToken: () => _currentState.user.getIdToken(),
+      getToken: () => state.user.getIdToken(),
       favoritesService: FavoritesService(),
     );
+
+    _favoritesFuture = _repo!.fetchFavorites();
+  }
+
+  Future<void> _refreshFavorites() async {
+    setState(() {
+      // Re-fetch favorites
+      _favoritesFuture = _repo?.fetchFavorites();
+    });
   }
 
   @override
@@ -29,7 +38,8 @@ class _ProfileState extends State<Profile> {
       body: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
           if (state is AuthStateLoggedIn) {
-            _currentState = state; // Update the current state
+            _updateRepoAndFetchFavorites(
+                state); // Update repo and fetch favorites
             return _buildProfilePage(context, state);
           } else {
             return SizedBox.shrink();
@@ -41,81 +51,118 @@ class _ProfileState extends State<Profile> {
 
   Column _buildProfilePage(BuildContext context, AuthStateLoggedIn state) {
     return Column(children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          IconButton(
-            icon: Icon(Icons.settings),
-            iconSize: 40,
-            onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Settings()));
-            },
-          )
-        ],
+      Align(
+        alignment: Alignment.topRight,
+        child: IconButton(
+          icon: Icon(Icons.settings),
+          iconSize: 40,
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Settings()));
+          },
+        ),
       ),
       Center(
-          child: Icon(
-        Icons.account_circle,
-        size: 100,
-      )),
+        child: Icon(
+          Icons.account_circle,
+          size: 100,
+        ),
+      ),
       Container(
-          padding: EdgeInsets.all(15),
-          margin: EdgeInsets.all(15),
-          child: Center(
-              child: Text(
+        padding: EdgeInsets.only(top: 15, bottom: 20),
+        child: Center(
+          child: Text(
             state.user.displayName ?? state.user.email ?? "",
             style: AppTheme.username,
-          ))),
+          ),
+        ),
+      ),
       Container(
-        padding: const EdgeInsets.only(left: 20),
+        padding: const EdgeInsets.only(bottom: 8),
         child: Align(
-          alignment: AlignmentDirectional.centerStart,
+          alignment: AlignmentDirectional.center,
           child: Text(
             'Favorites',
-            style: Theme.of(context).textTheme.bodySmall,
+            style: Theme.of(context).textTheme.bodyLarge,
             textAlign: TextAlign.start,
           ),
         ),
       ),
       const Divider(
-        height: 10,
-        thickness: 2,
-        indent: 20,
-        endIndent: 20,
+        height: 0,
+        thickness: 1,
         color: Colors.black,
       ),
-      Text('Liked art will appear here!'), //message appears if no favorites
       Expanded(
         child: FutureBuilder<List<Favorite>>(
-          future: _repo.fetchFavorites(),
+          future: _favoritesFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator(); // Show a loader
+              return CircularProgressIndicator();
             } else if (snapshot.hasError) {
-              return Text("Error: ${snapshot.error}"); // Handle error
+              return Text("Error: ${snapshot.error}");
             } else if (snapshot.hasData) {
               List<Favorite> favorites = snapshot.data ?? [];
               if (favorites.isEmpty) {
-                return Text(
-                    'No favorites yet!'); // Show message if list is empty
+                return RefreshIndicator(
+                    onRefresh: _refreshFavorites,
+                    child: Text('No favorites yet!'));
               }
-              return GridView.count(
-                crossAxisCount: 3,
-                children: List.generate(
-                  favorites.length,
-                  (index) {
-                    return Center(
-                      child: Image.network(
-                        '${favorites[index].imageURL}/full/pct:5/0/default.jpg',
-                        fit: BoxFit.fill,
-                      ),
-                    );
-                  },
+              return RefreshIndicator(
+                onRefresh: _refreshFavorites,
+                child: GridView.count(
+                  crossAxisCount: 3,
+                  children: List.generate(
+                    favorites.length,
+                    (index) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 1.0,
+                          ),
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FavoritesDetailsPage(
+                                    favorites[index].artWorkID),
+                              ),
+                            );
+                          },
+                          behavior: HitTestBehavior.opaque,
+                          child: ClipRect(
+                            child: Image.network(
+                              '${favorites[index].imageURL}/full/pct:5/0/default.jpg',
+                              fit: BoxFit.cover,
+                              loadingBuilder: (BuildContext context,
+                                  Widget child,
+                                  ImageChunkEvent? loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppTheme.princetonOrange,
+                                    value: loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                .cumulativeBytesLoaded /
+                                            loadingProgress.expectedTotalBytes!
+                                        : null,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               );
             } else {
-              return Text('No data'); // Handle no data case
+              return Text('No data');
             }
           },
         ),
