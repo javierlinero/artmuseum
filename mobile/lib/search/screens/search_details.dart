@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:puam_app/search/bloc/search_detail_bloc.dart';
 import 'package:puam_app/shared/index.dart';
-import 'package:puam_app/user_profile/index.dart';
+import 'package:puam_app/search/index.dart';
 import 'package:puam_app/art_of_the_day/widgets/index.dart';
 
 
-class FavoritesDetailsPage extends StatefulWidget {
+class SearchDetailsPage extends StatefulWidget {
   
   final String artWorkID; 
 
-  const FavoritesDetailsPage(this.artWorkID, {super.key});
+  const SearchDetailsPage(this.artWorkID, {super.key});
 
   @override
-  State<FavoritesDetailsPage> createState() => _FavoritesDetailsPageState();
+  State<SearchDetailsPage> createState() => _SearchDetailsPageState();
 }
 
-class _FavoritesDetailsPageState extends State<FavoritesDetailsPage> {
-  late FavBloc _favBloc;
+class _SearchDetailsPageState extends State<SearchDetailsPage> {
+  late SearchDetailBloc _searchDetailBloc;
   
   
   double deviceHeight(BuildContext context) =>
@@ -26,13 +27,13 @@ class _FavoritesDetailsPageState extends State<FavoritesDetailsPage> {
    @override
   void initState() {
     super.initState();
-    _favBloc = FavBloc(FavoriteRepo());
-    _favBloc.add(FetchFavoriteEvent(artid:  widget.artWorkID));
+    _searchDetailBloc = SearchDetailBloc(SearchDetailRepo());
+    _searchDetailBloc.add(FetchSearchDetailEvent(artid:  widget.artWorkID));
   }
 
   @override
   void dispose() {
-    _favBloc.close();
+    _searchDetailBloc.close();
     super.dispose();
   }
   
@@ -40,14 +41,14 @@ class _FavoritesDetailsPageState extends State<FavoritesDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(),
-      body: BlocBuilder<FavBloc, FavState> (
-        bloc: _favBloc,
+      body: BlocBuilder<SearchDetailBloc, SearchDetailState> (
+        bloc: _searchDetailBloc,
         builder: (context, state) {
-          if (state is FavLoading) {
+          if (state is SearchDetailLoading) {
             return Center(child: CircularProgressIndicator());
           }
-          else if (state is FavLoaded) {
-            final fav = state.favoritesDetails;
+          else if (state is SearchDetailLoaded) {
+            final fav = state.searchDetails;
             return LayoutBuilder(
               builder: (context, constraints) {
                 return SingleChildScrollView(
@@ -93,7 +94,7 @@ class _FavoritesDetailsPageState extends State<FavoritesDetailsPage> {
                     ]),
                 );
               });
-          } else  if (state is FavError) {
+          } else  if (state is SearchDetailError) {
             return Center(child: Text(state.message),);
           }
           return Center(child: Text('Unexpected state'));
