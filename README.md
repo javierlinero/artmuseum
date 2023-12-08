@@ -11,6 +11,11 @@
 </div>
 
 ## About The Project!
+# Project Overview:
+
+## Mobile App Setup
+For a detailed guide on setting up a local emulator to run the app, please refer to our comprehensive tutorial <a href="/artmuseum/mobile/README.md"> here </a>
+
 
 ### Built With
 ![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
