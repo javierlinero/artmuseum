@@ -30,7 +30,7 @@ def get_secret():
     return dbname, user, password, host, port, ssl
 
 def urlparser():
-    url = os.environ['DB_PASSWORD']
+    url = os.environ['DB_URL']
     if url is None:
         print('error: Missing DB url, cant connect to DB!')
     url_components = urlparse(url)
@@ -433,5 +433,6 @@ if __name__ == '__main__':
     try:
         with connection.cursor() as cursor:
             initDB(cursor)
+            connection.commit()
     finally:
         return_db_conn(connection)
