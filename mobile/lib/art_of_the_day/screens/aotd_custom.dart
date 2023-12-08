@@ -55,7 +55,8 @@ class _ArtOfTheDayContentState extends State<ArtOfTheDayContent> {
         } else if (state is ArtLoaded) {
           return _buildArtwork(state.artwork);
         } else if (state is ArtError) {
-          return Center(child: Text(state.message));
+          // return Center(child: Text(state.message));
+          return ArtOfTheDayDefault();
         }
         return Center(child: Text('Unexpected state'));
       },

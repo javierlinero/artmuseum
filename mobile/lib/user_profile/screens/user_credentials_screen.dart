@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puam_app/shared/index.dart';
@@ -50,12 +52,10 @@ class _UserCredentialsState extends State<UserCredentials> {
     );
   }
 
-  Column _buildUserCredentialsPage(BuildContext context) {
-    return Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-      const SizedBox(
-        width: 339.91,
-        height: 61.63,
-        child: Text(
+  Widget _buildUserCredentialsPage(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Text(
           'Sign up to use exclusive features for free!',
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -66,135 +66,101 @@ class _UserCredentialsState extends State<UserCredentials> {
             height: 0,
           ),
         ),
-      ),
-      ElevatedButton(
-        onPressed: () {
-          _googleClick(context);
-        },
-        style:
-            FilledButton.styleFrom(backgroundColor: AppTheme.princetonOrange),
-        child: Text(('Continue with Google'), style: AppTheme.signUp),
-      ),
-      Container(
-        margin: const EdgeInsets.all(15),
-        width: .90 * MediaQuery.of(context).size.width,
-        decoration: const ShapeDecoration(
-          shape: RoundedRectangleBorder(
-            side: BorderSide(
-              width: 1,
-              strokeAlign: BorderSide.strokeAlignCenter,
+        Container(
+          margin: const EdgeInsets.all(15),
+          decoration: const ShapeDecoration(
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                width: 1,
+                strokeAlign: BorderSide.strokeAlignCenter,
+              ),
             ),
           ),
         ),
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        child: TextFormField(
-          controller: _controllerEmail,
-          decoration: const InputDecoration(
-            filled: true,
-            fillColor: Colors.grey,
-            border: UnderlineInputBorder(),
-            labelText: 'E-Mail Address',
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          child: TextFormField(
+            controller: _controllerEmail,
+            cursorColor: AppTheme.princetonOrange.withOpacity(0.5),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Color.fromARGB(255, 227, 224, 224),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.princetonOrange),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.princetonOrange),
+              ),
+              labelText: 'Email Address',
+              labelStyle: TextStyle(
+                color: Colors.black.withOpacity(0.5),
+              ),
+              floatingLabelStyle: TextStyle(
+                color: AppTheme.princetonOrange.withOpacity(0.75),
+              ),
+            ),
           ),
         ),
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        child: TextFormField(
-          controller: _controllerDisplayName,
-          decoration: const InputDecoration(
-            filled: true,
-            fillColor: Colors.grey,
-            border: UnderlineInputBorder(),
-            labelText: 'Display Name',
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          child: TextFormField(
+            controller: _controllerDisplayName,
+            cursorColor: AppTheme.princetonOrange.withOpacity(0.5),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Color.fromARGB(255, 227, 224, 224),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.princetonOrange),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.princetonOrange),
+              ),
+              labelText: 'Display Name',
+              labelStyle: TextStyle(
+                color: Colors.black.withOpacity(0.5),
+              ),
+              floatingLabelStyle: TextStyle(
+                color: AppTheme.princetonOrange.withOpacity(0.75),
+              ),
+            ),
           ),
         ),
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        child: TextFormField(
-          controller: _controllerPassword,
-          decoration: const InputDecoration(
-            filled: true,
-            fillColor: Colors.grey,
-            border: UnderlineInputBorder(),
-            labelText: 'Password',
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          child: TextFormField(
+            obscureText: true,
+            controller: _controllerPassword,
+            cursorColor: AppTheme.princetonOrange.withOpacity(0.5),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Color.fromARGB(255, 227, 224, 224),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.princetonOrange),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppTheme.princetonOrange),
+              ),
+              labelText: 'Password',
+              labelStyle: TextStyle(
+                color: Colors.black.withOpacity(0.5),
+              ),
+              floatingLabelStyle: TextStyle(
+                color: AppTheme.princetonOrange.withOpacity(0.75),
+              ),
+            ),
           ),
         ),
-      ),
-      // Padding(
-      //   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-      //   child: TextFormField(
-      //     decoration: const InputDecoration(
-      //       filled: true,
-      //       fillColor: Colors.grey,
-      //       border: UnderlineInputBorder(),
-      //       labelText: 'Confirm Password',
-      //     ),
-      //   ),
-      // ),
-      ElevatedButton(
-        onPressed: () {
-          _onSubmit(context);
-          _controllerEmail.clear();
-          _controllerPassword.clear();
-        },
-        style:
-            FilledButton.styleFrom(backgroundColor: AppTheme.princetonOrange),
-        child: Text(('Sign Up'), style: AppTheme.signUp),
-      ),
-      const SizedBox(
-        width: 351,
-        height: 90,
-        child: Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(
-                text: 'By signing up, you agree to our ',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 24,
-                  fontFamily: 'Lato',
-                  fontWeight: FontWeight.w400,
-                  height: 0,
-                ),
-              ),
-              TextSpan(
-                text: 'Terms, Data Policy ',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 24,
-                  fontFamily: 'Lato',
-                  fontWeight: FontWeight.w700,
-                  height: 0,
-                ),
-              ),
-              TextSpan(
-                text: 'and ',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 24,
-                  fontFamily: 'Lato',
-                  fontWeight: FontWeight.w400,
-                  height: 0,
-                ),
-              ),
-              TextSpan(
-                text: 'Cookies Policy.',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 24,
-                  fontFamily: 'Lato',
-                  fontWeight: FontWeight.w700,
-                  height: 0,
-                ),
-              ),
-            ],
-          ),
-          textAlign: TextAlign.center,
+        ElevatedButton(
+          onPressed: () {
+            _onSubmit(context);
+            _controllerEmail.clear();
+            _controllerPassword.clear();
+          },
+          style:
+              FilledButton.styleFrom(backgroundColor: AppTheme.princetonOrange),
+          child: Text(('Sign Up'), style: AppTheme.signUp),
         ),
-      )
-    ]);
+      ]),
+    );
   }
 }
