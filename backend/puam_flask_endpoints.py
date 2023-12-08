@@ -39,21 +39,7 @@ def require_auth(f):
             return jsonify({"error": str(e)}), 403
     return decorated_function
 
-def get_random_file():
-    while True:
-        file_num = random.randint(166, 141746)  # Generate a random number between 166 and 141746
-        object_name = 'HASIMAGES/artobject_' + str(file_num) + '.json'
-        json_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), object_name)
-        if os.path.exists(json_file):
-            return json_file
-
 def get_random_art():
-    #while True:
-    #    art_id = random.randint(166, 141746)  # Generate a random number between 166 and 141746
-    #    artwork = db.get_art_by_id(art_id)
-    #    print(artwork)
-    #    if artwork is not None:
-    #        return artwork
     return db.get_art_by_id(random.choice(recommender.features_dir))
 
 def change_aotd():
