@@ -215,11 +215,13 @@ def get_art_of_the_day(user_id):
                 artid = recommender.get_suggestions(user_id, 1, False)[0]
                 query_str = "INSERT INTO aotd VALUES (%s, %s, %s)"
                 cursor.execute(query_str, (user_id, str(artid), str(date.today())))
+                connection.commit()
                 return get_art_by_id(artid)
             elif table[0][2] != str(date.today()):
                 artid = recommender.get_suggestions(user_id, 1, False)[0]
                 query_str = "UPDATE aotd SET artwork_id=%s, date=%s WHERE user_id=%s"
                 cursor.execute(query_str, (str(artid), str(date.today()), user_id))
+                connection.commit()
                 return get_art_by_id(artid)
             else:
                 return get_art_by_id(table[0][1])
