@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:puam_app/shared/index.dart';
 
 AppBar appBar({String? helpText, BuildContext? context}) {
   return AppBar(
@@ -24,11 +25,15 @@ AppBar appBar({String? helpText, BuildContext? context}) {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
+                      backgroundColor: Colors.white,
                       title: Text('Help'),
                       content: Text(helpText),
                       actions: <Widget>[
                         TextButton(
-                          child: Text('Close'),
+                          child: Text(
+                            'Close',
+                            style: TextStyle(color: AppTheme.princetonOrange),
+                          ),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
