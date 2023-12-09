@@ -14,9 +14,7 @@ class AppTheme {
   static TextStyle artworkTitle = GoogleFonts.libreCaslonDisplay(
     color: Colors.black,
     fontSize: 40,
-    fontWeight: FontWeight.w400,
-    decoration: TextDecoration.underline,
-    height: 0.01,
+    fontWeight: FontWeight.bold,
   );
 
   // Artist TextStyle
@@ -62,7 +60,7 @@ class AppTheme {
     fontSize: 16,
     fontWeight: FontWeight.w400,
   );
-  
+
   // Sign up TextStyle
   static TextStyle signUp = GoogleFonts.lato(
     color: Colors.white,
@@ -79,13 +77,10 @@ class AppTheme {
     height: 0.09,
   );
 
-    // Category Item TextStyle
+  // Category Item TextStyle
   static TextStyle categoryItem = GoogleFonts.roboto(
     color: Colors.black,
     fontSize: 15,
     fontWeight: FontWeight.w600,
   );
-
 }
-
-

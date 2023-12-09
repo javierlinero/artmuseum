@@ -81,7 +81,7 @@ class _ArtOfTheDayDefaultState extends State<ArtOfTheDayDefault> {
                           horizontal: deviceWidth(context) * 0.03,
                         ),
                         height: constraints.maxHeight * 0.05,
-                        child: ArtistYearWidget(
+                        child: ArtistWidget(
                             artists: aotd.artists, year: aotd.year),
                       ),
                       Container(
