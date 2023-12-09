@@ -12,32 +12,32 @@ class UserCredentials extends StatefulWidget {
   State<UserCredentials> createState() => _UserCredentialsState();
 }
 
-final TextEditingController _controllerEmail = TextEditingController();
-final TextEditingController _controllerPassword = TextEditingController();
-final TextEditingController _controllerDisplayName = TextEditingController();
-final TextEditingController _controllerConfirmPassword =
-    TextEditingController();
-
-bool _isSignUpButtonEnabled = false;
-
-void _onSubmit(BuildContext context) {
-  BlocProvider.of<AuthBloc>(context).add(
-    AuthEventEmailSignUp(
-      _controllerEmail.text,
-      _controllerPassword.text,
-      _controllerDisplayName.text,
-    ),
-  );
-  Navigator.pop(context);
-}
-
-bool _isEmailValid(String email) {
-  Pattern pattern = r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+';
-  RegExp regex = RegExp(pattern.toString());
-  return regex.hasMatch(email);
-}
-
 class _UserCredentialsState extends State<UserCredentials> {
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
+  final TextEditingController _controllerDisplayName = TextEditingController();
+  final TextEditingController _controllerConfirmPassword =
+      TextEditingController();
+
+  bool _isSignUpButtonEnabled = false;
+
+  void _onSubmit(BuildContext context) {
+    BlocProvider.of<AuthBloc>(context).add(
+      AuthEventEmailSignUp(
+        _controllerEmail.text,
+        _controllerPassword.text,
+        _controllerDisplayName.text,
+      ),
+    );
+    Navigator.pop(context);
+  }
+
+  bool _isEmailValid(String email) {
+    Pattern pattern = r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+';
+    RegExp regex = RegExp(pattern.toString());
+    return regex.hasMatch(email);
+  }
+
   @override
   void initState() {
     super.initState();
