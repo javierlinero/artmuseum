@@ -1,7 +1,10 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:puam_app/shared/index.dart';
 
-AppBar appBar() {
+AppBar appBar({String? helpText, BuildContext? context}) {
   return AppBar(
     scrolledUnderElevation: 0,
     backgroundColor: Colors.white,
@@ -13,5 +16,35 @@ AppBar appBar() {
       ),
     ),
     centerTitle: true,
+    actions: (helpText != null && context != null)
+        ? [
+            IconButton(
+              icon: Icon(Icons.help_outline),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      backgroundColor: Colors.white,
+                      title: Text('Help'),
+                      content: Text(helpText),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text(
+                            'Close',
+                            style: TextStyle(color: AppTheme.princetonOrange),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+          ]
+        : null,
   );
 }

@@ -9,49 +9,52 @@ class LoggedOutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.person_outline,
-                size: 200,
-              )
-            ],
-          ),
-          Container(
-            height: constraints.maxHeight * 0.1,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Scaffold(
+      appBar: appBar(),
+      body: LayoutBuilder(builder: (context, constraints) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => UserCredentials()));
-                  },
-                  style: FilledButton.styleFrom(
-                      backgroundColor: AppTheme.princetonOrange),
-                  child: Text(('Sign Up'), style: AppTheme.signUp),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Login()));
-                  },
-                  style: FilledButton.styleFrom(
-                      backgroundColor: AppTheme.princetonOrange),
-                  child: Text(('Login'), style: AppTheme.signUp),
+                Icon(
+                  Icons.person_outline,
+                  size: 200,
                 )
               ],
             ),
-          ),
-        ],
-      );
-    });
+            Container(
+              height: constraints.maxHeight * 0.1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserCredentials()));
+                    },
+                    style: FilledButton.styleFrom(
+                        backgroundColor: AppTheme.princetonOrange),
+                    child: Text(('Sign Up'), style: AppTheme.signUp),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Login()));
+                    },
+                    style: FilledButton.styleFrom(
+                        backgroundColor: AppTheme.princetonOrange),
+                    child: Text(('Login'), style: AppTheme.signUp),
+                  )
+                ],
+              ),
+            ),
+          ],
+        );
+      }),
+    );
   }
 }
