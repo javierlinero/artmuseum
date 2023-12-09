@@ -54,6 +54,7 @@ class _SearchState extends State<Search> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: _searchController,
+              cursorColor: AppTheme.princetonOrange,
               decoration: InputDecoration(
                 labelText: 'Search',
                 fillColor: Colors.white,
@@ -65,6 +66,12 @@ class _SearchState extends State<Search> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
                   borderSide: BorderSide(color: AppTheme.princetonOrange),
+                ),
+                labelStyle: TextStyle(
+                  color: Colors.black.withOpacity(0.5),
+                ),
+                floatingLabelStyle: TextStyle(
+                  color: AppTheme.princetonOrange.withOpacity(0.75),
                 ),
                 suffixIcon: IconButton(
                   icon: Icon(Icons.search, color: AppTheme.princetonOrange),
