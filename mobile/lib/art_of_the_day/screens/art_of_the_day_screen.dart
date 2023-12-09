@@ -8,7 +8,7 @@ class ArtOfTheDayPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
+      appBar: appBar(helpText: HelpData.aotdHelp, context: context),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, authState) {
           // If the user logs out, we trigger a state change in ArtBloc
