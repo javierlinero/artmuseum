@@ -82,7 +82,7 @@ class _ProfileState extends State<Profile> {
         child: Align(
           alignment: AlignmentDirectional.center,
           child: Text(
-            'Favorites',
+            'Liked Images',
             style: Theme.of(context).textTheme.bodyLarge,
             textAlign: TextAlign.start,
           ),
@@ -106,7 +106,7 @@ class _ProfileState extends State<Profile> {
               if (favorites.isEmpty) {
                 return RefreshIndicator(
                     onRefresh: _refreshFavorites,
-                    child: Text('No favorites yet!'));
+                    child: Text('No liked images yet!'));
               }
               return RefreshIndicator(
                 onRefresh: _refreshFavorites,
