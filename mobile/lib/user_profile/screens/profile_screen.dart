@@ -135,7 +135,7 @@ class _ProfileState extends State<Profile> {
                           behavior: HitTestBehavior.opaque,
                           child: ClipRect(
                             child: Image.network(
-                              '${favorites[index].imageURL}/full/pct:5/0/default.jpg',
+                              '${favorites[index].imageURL}/full/pct:15/0/default.jpg',
                               fit: BoxFit.cover,
                               loadingBuilder: (BuildContext context,
                                   Widget child,
