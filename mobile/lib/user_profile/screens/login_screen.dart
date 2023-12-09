@@ -48,7 +48,6 @@ class _LoginState extends State<Login> {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: TextFormField(
-          obscureText: true,
           controller: _controllerEmail,
           cursorColor: AppTheme.princetonOrange.withOpacity(0.5),
           decoration: InputDecoration(
