@@ -7,11 +7,9 @@ class ArtistWidget extends StatelessWidget {
   const ArtistWidget({
     super.key,
     required this.artists,
-    required this.year,
   });
 
   final List<String> artists;
-  final String year;
 
   @override
   Widget build(BuildContext context) {

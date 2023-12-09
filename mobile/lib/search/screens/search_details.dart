@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:puam_app/search/bloc/search_detail_bloc.dart';
 import 'package:puam_app/shared/index.dart';
 import 'package:puam_app/search/index.dart';
 import 'package:puam_app/art_of_the_day/widgets/index.dart';
@@ -44,24 +43,33 @@ class _SearchDetailsPageState extends State<SearchDetailsPage> {
             if (state is SearchDetailLoading) {
               return Center(child: CircularProgressIndicator());
             } else if (state is SearchDetailLoaded) {
-              final fav = state.searchDetails;
-              return LayoutBuilder(builder: (context, constraints) {
-                return SingleChildScrollView(
-                  child: Column(
+              final searchDetail = state.searchDetails;
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                            height: constraints.maxHeight * 0.5,
-                            child: PaintingWidget(imageUrl: fav.imageUrl)),
-                        SizedBox(
-                          height: 25,
+                          height: constraints.maxHeight * 0.5,
+                          child:
+                              PaintingWidget(imageUrl: searchDetail.imageUrl),
                         ),
+                        SizedBox(height: 5),
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: deviceWidth(context) * 0.03,
                           ),
                           height: constraints.maxHeight * 0.05,
-                          child: ArtworkNameWidget(title: fav.title),
+                          child: ArtworkNameWidget(title: searchDetail.title),
+                        ),
+                        SizedBox(height: 5),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: deviceWidth(context) * 0.03,
+                          ),
+                          height: constraints.maxHeight * 0.01,
+                          child: YearWidget(year: searchDetail.year),
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(
@@ -69,15 +77,15 @@ class _SearchDetailsPageState extends State<SearchDetailsPage> {
                           ),
                           height: constraints.maxHeight * 0.025,
                           child: DetailsWidget(
-                              materials: fav.materials, size: fav.size),
+                              materials: searchDetail.materials,
+                              size: searchDetail.size),
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: deviceWidth(context) * 0.03,
                           ),
                           height: constraints.maxHeight * 0.05,
-                          child: ArtistWidget(
-                              artists: fav.artists, year: fav.year),
+                          child: ArtistWidget(artists: searchDetail.artists),
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(
@@ -85,11 +93,13 @@ class _SearchDetailsPageState extends State<SearchDetailsPage> {
                           ),
                           height: constraints.maxHeight * 0.2,
                           child: ArtworkDescriptionWidget(
-                              description: fav.description),
+                              description: searchDetail.description),
                         ),
-                      ]),
-                );
-              });
+                      ],
+                    ),
+                  );
+                },
+              );
             } else if (state is SearchDetailError) {
               return Center(
                 child: Text(state.message),

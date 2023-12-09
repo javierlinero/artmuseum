@@ -44,23 +44,31 @@ class _FavoritesDetailsPageState extends State<FavoritesDetailsPage> {
               return Center(child: CircularProgressIndicator());
             } else if (state is FavLoaded) {
               final fav = state.favoritesDetails;
-              return LayoutBuilder(builder: (context, constraints) {
-                return SingleChildScrollView(
-                  child: Column(
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                            height: constraints.maxHeight * 0.5,
-                            child: PaintingWidget(imageUrl: fav.imageUrl)),
-                        SizedBox(
-                          height: 25,
+                          height: constraints.maxHeight * 0.5,
+                          child: PaintingWidget(imageUrl: fav.imageUrl),
                         ),
+                        SizedBox(height: 5),
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: deviceWidth(context) * 0.03,
                           ),
                           height: constraints.maxHeight * 0.05,
                           child: ArtworkNameWidget(title: fav.title),
+                        ),
+                        SizedBox(height: 5),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: deviceWidth(context) * 0.03,
+                          ),
+                          height: constraints.maxHeight * 0.01,
+                          child: YearWidget(year: fav.year),
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(
@@ -75,8 +83,7 @@ class _FavoritesDetailsPageState extends State<FavoritesDetailsPage> {
                             horizontal: deviceWidth(context) * 0.03,
                           ),
                           height: constraints.maxHeight * 0.05,
-                          child: ArtistWidget(
-                              artists: fav.artists, year: fav.year),
+                          child: ArtistWidget(artists: fav.artists),
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(
@@ -86,9 +93,11 @@ class _FavoritesDetailsPageState extends State<FavoritesDetailsPage> {
                           child: ArtworkDescriptionWidget(
                               description: fav.description),
                         ),
-                      ]),
-                );
-              });
+                      ],
+                    ),
+                  );
+                },
+              );
             } else if (state is FavError) {
               return Center(
                 child: Text(state.message),

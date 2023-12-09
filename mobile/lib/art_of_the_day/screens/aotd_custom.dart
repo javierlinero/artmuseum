@@ -83,7 +83,7 @@ class _ArtOfTheDayContentState extends State<ArtOfTheDayContent> {
                 height: constraints.maxHeight * 0.5,
                 child: PaintingWidget(imageUrl: aotd.imageUrl),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 5),
               Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: deviceWidth(context) * 0.03,
@@ -91,11 +91,12 @@ class _ArtOfTheDayContentState extends State<ArtOfTheDayContent> {
                 height: constraints.maxHeight * 0.05,
                 child: ArtworkNameWidget(title: aotd.title),
               ),
+              SizedBox(height: 5),
               Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: deviceWidth(context) * 0.03,
                 ),
-                height: constraints.maxHeight * 0.025,
+                height: constraints.maxHeight * 0.01,
                 child: YearWidget(year: aotd.year),
               ),
               Container(
@@ -111,7 +112,7 @@ class _ArtOfTheDayContentState extends State<ArtOfTheDayContent> {
                   horizontal: deviceWidth(context) * 0.03,
                 ),
                 height: constraints.maxHeight * 0.05,
-                child: ArtistWidget(artists: aotd.artists, year: aotd.year),
+                child: ArtistWidget(artists: aotd.artists),
               ),
               Container(
                 padding: EdgeInsets.symmetric(
