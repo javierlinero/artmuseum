@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -105,8 +105,14 @@ class _ProfileState extends State<Profile> {
               List<Favorite> favorites = snapshot.data ?? [];
               if (favorites.isEmpty) {
                 return RefreshIndicator(
-                    onRefresh: _refreshFavorites,
-                    child: Text('No liked images yet!'));
+                  onRefresh: _refreshFavorites,
+                  child: ListView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    children: <Widget>[
+                      Center(child: Text('No liked images yet!'))
+                    ],
+                  ),
+                );
               }
               return RefreshIndicator(
                 onRefresh: _refreshFavorites,
