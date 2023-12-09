@@ -48,25 +48,50 @@ class _LoginState extends State<Login> {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: TextFormField(
+          obscureText: true,
           controller: _controllerEmail,
-          decoration: const InputDecoration(
+          cursorColor: AppTheme.princetonOrange.withOpacity(0.5),
+          decoration: InputDecoration(
             filled: true,
             fillColor: Colors.grey,
-            border: UnderlineInputBorder(),
-            labelText: 'Username',
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: AppTheme.princetonOrange),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: AppTheme.princetonOrange),
+            ),
+            labelText: 'Email',
+            labelStyle: TextStyle(
+              color: Colors.black.withOpacity(0.5),
+            ),
+            floatingLabelStyle: TextStyle(
+              color: AppTheme.princetonOrange.withOpacity(0.75),
+            ),
           ),
         ),
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: TextFormField(
-          controller: _controllerPassword,
           obscureText: true,
-          decoration: const InputDecoration(
+          controller: _controllerPassword,
+          cursorColor: AppTheme.princetonOrange.withOpacity(0.5),
+          decoration: InputDecoration(
             filled: true,
             fillColor: Colors.grey,
-            border: UnderlineInputBorder(),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: AppTheme.princetonOrange),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: AppTheme.princetonOrange),
+            ),
             labelText: 'Password',
+            labelStyle: TextStyle(
+              color: Colors.black.withOpacity(0.5),
+            ),
+            floatingLabelStyle: TextStyle(
+              color: AppTheme.princetonOrange.withOpacity(0.75),
+            ),
           ),
         ),
       ),

@@ -108,7 +108,7 @@ class _UserCredentialsState extends State<UserCredentials> {
             cursorColor: AppTheme.princetonOrange.withOpacity(0.5),
             decoration: InputDecoration(
               filled: true,
-              fillColor: Color.fromARGB(255, 227, 224, 224),
+              fillColor: Colors.grey,
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.princetonOrange),
               ),
@@ -132,7 +132,7 @@ class _UserCredentialsState extends State<UserCredentials> {
             cursorColor: AppTheme.princetonOrange.withOpacity(0.5),
             decoration: InputDecoration(
               filled: true,
-              fillColor: Color.fromARGB(255, 227, 224, 224),
+              fillColor: Colors.grey,
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.princetonOrange),
               ),
@@ -157,7 +157,7 @@ class _UserCredentialsState extends State<UserCredentials> {
             cursorColor: AppTheme.princetonOrange.withOpacity(0.5),
             decoration: InputDecoration(
               filled: true,
-              fillColor: Color.fromARGB(255, 227, 224, 224),
+              fillColor: Colors.grey,
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.princetonOrange),
               ),
@@ -182,7 +182,7 @@ class _UserCredentialsState extends State<UserCredentials> {
             cursorColor: AppTheme.princetonOrange.withOpacity(0.5),
             decoration: InputDecoration(
               filled: true,
-              fillColor: Color.fromARGB(255, 227, 224, 224),
+              fillColor: Colors.grey,
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: AppTheme.princetonOrange),
               ),
