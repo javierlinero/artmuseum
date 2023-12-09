@@ -12,4 +12,7 @@ class HelpData {
       '- Click start to begin';
   static String progressScavengerHelp = '- Walk to the artwork\n'
       '- Click "Found" to advance to next art';
+  static String loggedInProfile =
+      '- Pull down under liked artworks to refresh\n'
+      '- Click an artwork to view it';
 }

@@ -35,6 +35,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: appBar(helpText: HelpData.loggedInProfile, context: context),
       body: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
           if (state is AuthStateLoggedIn) {
