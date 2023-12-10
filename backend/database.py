@@ -294,16 +294,19 @@ def insert_user_favorites(userid, artworkid):
     finally:
         return_db_conn(connection)
 
-        
-def write_prefs(cursor, user_id, user_ratings):
-    if len(read_prefs(cursor, user_id)) == 0:
-        query_str = 'INSERT INTO user_preferences VALUES (%s, %s)'
-        cursor.execute(query_str, (user_id, codecs.encode(
-            pickle.dumps(user_ratings), "base64").decode()))
-    else:
-        query_str = "UPDATE user_preferences SET pref_str=%s WHERE user_id=%s"
-        cursor.execute(query_str, (codecs.encode(
-            pickle.dumps(user_ratings), "base64").decode(), user_id))
+def write_prefs(cursor, user_id, user_ratings, rated):
+  query_str = 'SELECT user_id FROM user_preferences WHERE user_id=%s'
+  cursor.execute(query_str, [user_id])
+  table = cursor.fetchall()
+  if len(table) == 0:
+    query_str = 'INSERT INTO user_preferences VALUES (%s, %s, %s)'
+    cursor.execute(query_str,
+        (user_id, codecs.encode(pickle.dumps(user_ratings), "base64").decode(),
+                  codecs.encode(pickle.dumps(rated), "base64").decode()))
+  else:
+    query_str = 'UPDATE user_preferences SET pref_str=%s, rated_str=%s WHERE user_id=%s'
+    cursor.execute(query_str, (codecs.encode(pickle.dumps(user_ratings), "base64").decode(),
+                               codecs.encode(pickle.dumps(rated), "base64").decode(), user_id))
 
 def read_prefs(cursor, user_id):
   query_str = "SELECT pref_str FROM user_preferences WHERE user_id='%s'" % (user_id)
