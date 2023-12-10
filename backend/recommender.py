@@ -60,10 +60,9 @@ def already_suggested(similarities, art_id):
 def get_suggestions(userid, MAX_ART_SAMPLES, urls):
     SAMPLE_POOL_SIZE = 5000
     swap_new_img_prob = 0.2
-    with psycopg2.connect(database="init_db", user="puam", password=os.environ['PUAM_DB_PASSWORD'], 
-                          host="puam-app-db.c81admmts5ij.us-east-2.rds.amazonaws.com", port="5432", 
-                          sslmode="require") as connection:
-        with contextlib.closing(connection.cursor()) as cursor:
+    connection = db.get_db_conn()
+    try:
+        with connection.cursor() as cursor:
             print("Reading prefs")
             prefs = db.read_prefs(cursor, userid)
             print("Finished reading prefs")
@@ -125,6 +124,8 @@ def get_suggestions(userid, MAX_ART_SAMPLES, urls):
                     ret.append(artwork_id)
 
             return ret
+    finally:
+        db.return_db_conn(connection)
 
 
 if __name__ == '__main__':

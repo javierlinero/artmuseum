@@ -112,16 +112,25 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
       return Scaffold(body: Center(child: Text('Error: ${artState.error}')));
     } else {
       return Scaffold(
-        appBar: appBar(),
+        appBar: appBar(helpText: HelpData.tinderHelp, context: context),
         body: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
-            double swiperHeight = constraints.maxHeight * 0.7;
+            double swiperHeight = constraints.maxHeight * 0.6;
             double buttonsHeight = constraints.maxHeight * 0.25;
             double undoHeight = constraints.maxHeight * 0.05;
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
+                Container(
+                  height: constraints.maxHeight * 0.1,
+                  child: Center(
+                    child: Text(
+                      'Tinder for Art',
+                      style: AppTheme.pageTitle,
+                    ),
+                  ),
+                ),
                 Padding(
                   padding: EdgeInsets.symmetric(
                       horizontal: deviceWidth(context) * 0.05),

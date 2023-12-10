@@ -126,13 +126,19 @@ class _ScavengerHuntScreenState extends State<ScavengerHuntScreen> {
   Widget _buildInProgressScreen(
       ScavengerHuntInProgress state, BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
+      appBar:
+          appBar(helpText: HelpData.progressScavengerHelp, context: context),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text(
-                '${state.proximityHint}: ${state.distance.toStringAsFixed(0)} meters away.'),
+            Column(
+              children: [
+                Text(
+                    '${state.proximityHint}: ${state.distance.toStringAsFixed(0)} meters away.'),
+                Text('Image will get less blurry as you get closer!'),
+              ],
+            ),
             _buildBlurredImage(state),
             ElevatedButton(
               style: ElevatedButton.styleFrom(

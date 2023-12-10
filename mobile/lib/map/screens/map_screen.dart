@@ -54,7 +54,7 @@ class _MapPageState extends State<MapPage> {
     return BlocProvider<LocationBloc>(
       create: (context) => LocationBloc(_mapController),
       child: Scaffold(
-        appBar: appBar(),
+        appBar: appBar(helpText: HelpData.mapHelp, context: context),
         body: BlocBuilder<LocationBloc, LocationState>(
           builder: (context, state) {
             if (state is LocationInitial) {
