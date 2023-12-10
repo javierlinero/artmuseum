@@ -34,6 +34,7 @@ class TinderArtBloc extends Bloc<ArtworkEvent, ArtworkState> {
       final recommendations =
           await repository.getArtSuggestions(event.numSuggestions, event.token);
       emit(state.copyWith(isLoading: false, recommendations: recommendations));
+      await LocalStorageHelper.saveArtworks(recommendations);
     } catch (e) {
       emit(state.copyWith(isLoading: false, error: e.toString()));
     }
