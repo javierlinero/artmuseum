@@ -22,47 +22,6 @@ class _SettingsState extends State<Settings> {
       sections: [
         SettingsSection(
           margin: EdgeInsetsDirectional.all(10),
-          title: Text('Account'),
-          tiles: [
-            SettingsTile(
-              title: Text('Settings'),
-              leading: Icon(Icons.language),
-              onPressed: (BuildContext context) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => EditProfile()));
-              },
-            ),
-          ],
-        ),
-        SettingsSection(
-          margin: EdgeInsetsDirectional.all(10),
-          title: Text('Preferences'),
-          tiles: [
-            SettingsTile(
-              title: Text('Language'),
-              leading: Icon(Icons.language),
-              onPressed: (BuildContext context) {},
-            ),
-            SettingsTile.switchTile(
-              title: Text('Dark Mode'),
-              leading: Icon(Icons.dark_mode),
-              onToggle: (value) {},
-              initialValue: true,
-            ),
-            SettingsTile(
-              title: Text('Location'),
-              leading: Icon(Icons.location_city),
-              onPressed: (BuildContext context) {},
-            ),
-            SettingsTile(
-              title: Text('Notifications'),
-              leading: Icon(Icons.notifications),
-              onPressed: (BuildContext context) {},
-            ),
-          ],
-        ),
-        SettingsSection(
-          margin: EdgeInsetsDirectional.all(10),
           tiles: [
             SettingsTile(
               title: Text('Logout'),

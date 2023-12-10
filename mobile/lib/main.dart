@@ -44,6 +44,7 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         title: 'Princeton University Art Museum',
         theme: ThemeData(
+          scaffoldBackgroundColor: Colors.white,
           useMaterial3: true,
         ),
         home: MySplashScreen(),
@@ -55,8 +56,6 @@ class _MyAppState extends State<MyApp> {
 @override
 Widget build(BuildContext context) {
   return Scaffold(
-    appBar: AppBar(
-      backgroundColor: Colors.white,
-    ),
+    appBar: AppBar(),
   );
 }

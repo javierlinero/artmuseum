@@ -54,26 +54,50 @@ class _ScavengerHuntScreenState extends State<ScavengerHuntScreen> {
 
   Widget _buildInitialScreen(BuildContext context) {
     return Scaffold(
-      appBar: appBar(helpText: HelpData.intialScavengerHelp, context: context),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildSlider(),
-          Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.princetonOrange,
+      appBar: appBar(),
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          final topSectionHeight = constraints.maxHeight * 0.1;
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                height: topSectionHeight,
+                child: Center(
+                  child: Text(
+                    'Scavenger Hunt',
+                    style: AppTheme.pageTitle,
+                  ),
+                ),
               ),
-              onPressed: () =>
-                  BlocProvider.of<ArtworkScavengerHuntBloc>(context)
-                      .add(StartScavengerHunt(artworks.toInt())),
-              child: Text(
-                'Start Scavenger Hunt',
-                style: TextStyle(color: Colors.black),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      children: [
+                        Text('Select the amount of artworks to search for!'),
+                        _buildSlider(),
+                      ],
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.princetonOrange,
+                      ),
+                      onPressed: () =>
+                          BlocProvider.of<ArtworkScavengerHuntBloc>(context)
+                              .add(StartScavengerHunt(artworks.toInt())),
+                      child: Text(
+                        'Start Scavenger Hunt',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }
@@ -81,6 +105,7 @@ class _ScavengerHuntScreenState extends State<ScavengerHuntScreen> {
   Widget _buildSlider() {
     return SfSlider(
         activeColor: AppTheme.princetonOrange,
+        inactiveColor: Colors.grey,
         value: artworks,
         min: 1,
         max: 20,

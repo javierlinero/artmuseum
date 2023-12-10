@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:puam_app/shared/index.dart';
 
 // Will make dependent upon API
-class ArtistYearWidget extends StatelessWidget {
-  const ArtistYearWidget({
+class ArtistWidget extends StatelessWidget {
+  const ArtistWidget({
     super.key,
     required this.artists,
-    required this.year,
   });
 
   final List<String> artists;
-  final String year;
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +34,6 @@ class ArtistYearWidget extends StatelessWidget {
             );
           }).toList(),
         ),
-        SizedBox(width: 20),
-        AutoSizeText(
-          year,
-          style: AppTheme.yearText,
-          maxFontSize: 12,
-          minFontSize: 10,
-        )
       ],
     );
   }

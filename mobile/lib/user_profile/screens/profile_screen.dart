@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -83,7 +83,7 @@ class _ProfileState extends State<Profile> {
         child: Align(
           alignment: AlignmentDirectional.center,
           child: Text(
-            'Favorites',
+            'Liked Images',
             style: Theme.of(context).textTheme.bodyLarge,
             textAlign: TextAlign.start,
           ),
@@ -99,15 +99,21 @@ class _ProfileState extends State<Profile> {
           future: _favoritesFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Text("Error: ${snapshot.error}");
             } else if (snapshot.hasData) {
               List<Favorite> favorites = snapshot.data ?? [];
               if (favorites.isEmpty) {
                 return RefreshIndicator(
-                    onRefresh: _refreshFavorites,
-                    child: Text('No favorites yet!'));
+                  onRefresh: _refreshFavorites,
+                  child: ListView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    children: <Widget>[
+                      Center(child: Text('No liked images yet!'))
+                    ],
+                  ),
+                );
               }
               return RefreshIndicator(
                 onRefresh: _refreshFavorites,
@@ -136,7 +142,7 @@ class _ProfileState extends State<Profile> {
                           behavior: HitTestBehavior.opaque,
                           child: ClipRect(
                             child: Image.network(
-                              '${favorites[index].imageURL}/full/pct:5/0/default.jpg',
+                              '${favorites[index].imageURL}/full/pct:15/0/default.jpg',
                               fit: BoxFit.cover,
                               loadingBuilder: (BuildContext context,
                                   Widget child,

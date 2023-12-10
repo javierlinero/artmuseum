@@ -54,6 +54,7 @@ class _SearchState extends State<Search> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: _searchController,
+              cursorColor: AppTheme.princetonOrange,
               decoration: InputDecoration(
                 labelText: 'Search',
                 fillColor: Colors.white,
@@ -65,6 +66,12 @@ class _SearchState extends State<Search> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
                   borderSide: BorderSide(color: AppTheme.princetonOrange),
+                ),
+                labelStyle: TextStyle(
+                  color: Colors.black.withOpacity(0.5),
+                ),
+                floatingLabelStyle: TextStyle(
+                  color: AppTheme.princetonOrange.withOpacity(0.75),
                 ),
                 suffixIcon: IconButton(
                   icon: Icon(Icons.search, color: AppTheme.princetonOrange),
@@ -79,7 +86,7 @@ class _SearchState extends State<Search> {
               pagingController: _pagingController,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
-  /*               crossAxisSpacing: 5,
+                /*               crossAxisSpacing: 5,
                 mainAxisSpacing: 5, */
                 childAspectRatio: 1,
               ),
@@ -99,36 +106,41 @@ class _SearchState extends State<Search> {
 
   _buildResult(SearchArtwork item) {
     return Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.black,
-                          width: 1.0,
-                        )
-                      ),
-                      child: GestureDetector(
-                        onTap: () {
-                          print("Tapped a Container");
-                          Navigator.push(
-                            context,MaterialPageRoute(builder: (context) => SearchDetailsPage(item.artworkId)),);
-                        },
-                        behavior: HitTestBehavior.opaque,
-                        child: ClipRect(
-                          child: Image.network(
-                            '${item.imageUrl}/full/pct:5/0/default.jpg',
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
-                            loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Center(
-                                child: CircularProgressIndicator (
-                                  color: AppTheme.princetonOrange,
-                                  value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,),
-                              );
-                            } ),
-                          ),
-                        ),
-                    );
+      decoration: BoxDecoration(
+          border: Border.all(
+        color: Colors.black,
+        width: 1.0,
+      )),
+      child: GestureDetector(
+        onTap: () {
+          print("Tapped a Container");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SearchDetailsPage(item.artworkId)),
+          );
+        },
+        behavior: HitTestBehavior.opaque,
+        child: ClipRect(
+          child: Image.network('${item.imageUrl}/full/pct:15/0/default.jpg',
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
+              loadingBuilder: (BuildContext context, Widget child,
+                  ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: AppTheme.princetonOrange,
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes!
+                        : null,
+                  ),
+                );
+              }),
+        ),
+      ),
+    );
   }
 
   @override
