@@ -54,7 +54,10 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
                 return SignUpPage();
               } else {
                 // UI for other states (e.g., loading)
-                return Center(child: CircularProgressIndicator());
+                return Center(
+                    child: CircularProgressIndicator(
+                  color: AppTheme.princetonOrange,
+                ));
               }
             },
           ),
@@ -106,7 +109,9 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text('Loading your recommendations!'),
-              CircularProgressIndicator(),
+              CircularProgressIndicator(
+                color: AppTheme.princetonOrange,
+              ),
             ],
           )));
     } else if (artState.currentIndex >= artCards.length) {

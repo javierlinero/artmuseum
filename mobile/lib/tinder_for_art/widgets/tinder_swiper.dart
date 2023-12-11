@@ -1,6 +1,7 @@
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:puam_app/shared/index.dart';
 // import 'package:puam_app/shared/index.dart';
 import 'package:puam_app/tinder_for_art/index.dart';
 
@@ -35,7 +36,9 @@ class TinderSwiper extends StatelessWidget {
               imageUrl:
                   '${imageCards[index].imageUrl}/full/pct:15/0/default.jpg',
               fit: BoxFit.fill,
-              placeholder: (context, url) => CircularProgressIndicator(),
+              placeholder: (context, url) => CircularProgressIndicator(
+                color: AppTheme.princetonOrange,
+              ),
               errorWidget: (context, url, error) => Icon(Icons.error),
             ),
           ]),

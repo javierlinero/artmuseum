@@ -36,7 +36,10 @@ class _LoginState extends State<Login> {
         }
       }), builder: (context, state) {
         if (state is AuthStateLoading) {
-          return Center(child: CircularProgressIndicator());
+          return Center(
+              child: CircularProgressIndicator(
+            color: AppTheme.princetonOrange,
+          ));
         }
         return _buildLoginPage(context);
       }),

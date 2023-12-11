@@ -99,7 +99,10 @@ class _ProfileState extends State<Profile> {
           future: _favoritesFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return Center(
+                  child: CircularProgressIndicator(
+                color: AppTheme.princetonOrange,
+              ));
             } else if (snapshot.hasError) {
               return Text("Error: ${snapshot.error}");
             } else if (snapshot.hasData) {

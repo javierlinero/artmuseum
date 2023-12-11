@@ -69,7 +69,10 @@ class _UserCredentialsState extends State<UserCredentials> {
         }
       }), builder: (context, state) {
         if (state is AuthStateLoading) {
-          return Center(child: CircularProgressIndicator());
+          return Center(
+              child: CircularProgressIndicator(
+            color: AppTheme.princetonOrange,
+          ));
         }
         return _buildUserCredentialsPage(context);
       }),

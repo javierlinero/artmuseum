@@ -61,7 +61,10 @@ class _MapPageState extends State<MapPage> {
               _locationPermissionCompleter.future.then((_) {
                 context.read<LocationBloc>().add(FetchCurrentLocation());
               });
-              return Center(child: CircularProgressIndicator());
+              return Center(
+                  child: CircularProgressIndicator(
+                color: AppTheme.princetonOrange,
+              ));
             } else if (state is LocationLoaded) {
               return _buildMap(state, context);
             } else if (state is LocationError) {
