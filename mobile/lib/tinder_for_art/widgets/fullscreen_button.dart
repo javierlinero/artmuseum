@@ -12,9 +12,9 @@ class FullscreenButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<TinderArtBloc, ArtworkState>(
       builder: (context, artState) {
-        if (artState.currentIndex >= artState.recommendations.length) {
-          return Container();
-        }
+        // if (artState.currentIndex >= artState.recommendations.length) {
+        //   return Container();
+        // }
         return IconButton(
           icon: Icon(Icons.zoom_out_map, color: Colors.black),
           onPressed: () {

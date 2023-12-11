@@ -48,7 +48,7 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
                 }
 
                 // Building UI when user is logged in
-                return _buildTFAPage(context, artState);
+                return _buildTFAPage(context, artState, authState);
               } else if (authState is AuthStateLoggedOut) {
                 // UI for logged out state
                 return SignUpPage();
@@ -65,6 +65,7 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
 
   void loadArtworks(BuildContext context, AuthState authState) async {
     List<TinderArt>? savedArtworks = await LocalStorageHelper.loadArtworks();
+    artCards.clear();
     if (savedArtworks != null && savedArtworks.isNotEmpty) {
       context.read<TinderArtBloc>().add(LoadSavedArtworks(savedArtworks));
       setState(() {
@@ -77,14 +78,15 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
     }
   }
 
-  Widget _buildTFAPage(BuildContext context, ArtworkState artState) {
+  Widget _buildTFAPage(
+      BuildContext context, ArtworkState artState, AuthState authState) {
     final appinioController = AppinioController(
       totalArtworks: artCards.length,
       context: context,
       swiperController: _swiperController,
     );
 
-    // // Populate artCards only once when recommendations are fetched
+    // Populate artCards only once when recommendations are fetched
     // if (artState.recommendations.isNotEmpty && artCards.isEmpty) {
     //   preloadImages(artState.recommendations, context).then((_) {
     //     setState(() {
@@ -108,6 +110,18 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
               CircularProgressIndicator(),
             ],
           )));
+    } else if (artState.currentIndex >= artCards.length) {
+      return Scaffold(
+        appBar: appBar(),
+        body: Center(
+          child: ElevatedButton(
+              onPressed: () {
+                loadArtworks(context, authState);
+                artCards.addAll(artState.recommendations);
+              },
+              child: Text('Get more images')),
+        ),
+      );
     } else if (artState.error != null) {
       return Scaffold(body: Center(child: Text('Error: ${artState.error}')));
     } else {
@@ -131,15 +145,26 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: deviceWidth(context) * 0.05),
-                  child: SizedBox(
-                    height: undoHeight,
-                    // child: TinderUndoButton(
-                    //     appinioController: appinioController, state: artState),
-                    child: FullscreenButton(),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: deviceWidth(context) * 0.05),
+                      child: Text(
+                          'Artworks Left: ${artCards.length - artState.currentIndex}'),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: deviceWidth(context) * 0.05),
+                      child: SizedBox(
+                        height: undoHeight,
+                        // child: TinderUndoButton(
+                        //     appinioController: appinioController, state: artState),
+                        child: FullscreenButton(),
+                      ),
+                    ),
+                  ],
                 ),
                 Container(
                   height: swiperHeight,
