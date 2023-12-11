@@ -73,7 +73,7 @@ class _ProfileState extends State<Profile> {
         padding: EdgeInsets.only(top: 15, bottom: 20),
         child: Center(
           child: Text(
-            state.user.displayName ?? state.user.email ?? "",
+            state.displayName ?? state.user.email ?? "",
             style: AppTheme.username,
           ),
         ),
