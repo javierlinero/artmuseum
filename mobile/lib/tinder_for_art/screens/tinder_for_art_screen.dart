@@ -15,7 +15,7 @@ class TinderForArtPage extends StatefulWidget {
 
 class _TinderForArtPageState extends State<TinderForArtPage> {
   double deviceWidth(BuildContext context) => MediaQuery.of(context).size.width;
-  final List<TinderArt> artCards = [];
+  List<TinderArt> artCards = [];
   AppinioSwiperController _swiperController = AppinioSwiperController();
   bool isInitialized = false;
 
@@ -69,12 +69,11 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
     if (savedArtworks != null && savedArtworks.isNotEmpty) {
       context.read<TinderArtBloc>().add(LoadSavedArtworks(savedArtworks));
       setState(() {
-        artCards.addAll(savedArtworks);
+        artCards = savedArtworks;
       });
     } else if (authState is AuthStateLoggedIn) {
-      context
-          .read<TinderArtBloc>()
-          .add(FetchArtworkRecommendations(10, authState.token));
+      TinderArtBloc artBloc = context.read<TinderArtBloc>();
+      artBloc.add(FetchArtworkRecommendations(10, authState.token));
     }
   }
 
@@ -113,13 +112,30 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
     } else if (artState.currentIndex >= artCards.length) {
       return Scaffold(
         appBar: appBar(),
-        body: Center(
-          child: ElevatedButton(
-              onPressed: () {
-                loadArtworks(context, authState);
-                artCards.addAll(artState.recommendations);
-              },
-              child: Text('Get more images')),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              'You have finished your recommendations!',
+              style: AppTheme.pageTitle,
+              textAlign: TextAlign.center,
+            ),
+            ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all(AppTheme.princetonOrange),
+                ),
+                onPressed: () {
+                  loadArtworks(context, authState);
+                  setState(() {
+                    artCards = artState.recommendations;
+                  });
+                },
+                child: Text(
+                  'Get more recommendations!',
+                  style: TextStyle(color: Colors.black),
+                )),
+          ],
         ),
       );
     } else if (artState.error != null) {
@@ -152,7 +168,9 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
                       padding: EdgeInsets.symmetric(
                           horizontal: deviceWidth(context) * 0.05),
                       child: Text(
-                          'Artworks Left: ${artCards.length - artState.currentIndex}'),
+                        'Artworks Left: ${artCards.length - artState.currentIndex}',
+                        style: AppTheme.artworkDescription,
+                      ),
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
