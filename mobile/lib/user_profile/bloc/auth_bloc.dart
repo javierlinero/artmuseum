@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:puam_app/tinder_for_art/index.dart';
 import 'package:puam_app/user_profile/index.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
@@ -51,6 +52,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     on<AuthEventSignOut>((event, emit) async {
       await _authService.signOut();
+      await LocalStorageHelper.clearArtworks();
       emit(AuthStateLoggedOut());
     });
 

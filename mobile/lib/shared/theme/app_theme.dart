@@ -51,7 +51,6 @@ class AppTheme {
     color: Colors.black,
     fontSize: 30,
     fontWeight: FontWeight.w400,
-    height: 0.02,
   );
 
   // Artwork Description TextStyle

@@ -10,6 +10,11 @@ class LocalStorageHelper {
     await prefs.setString('saved_artworks', artworksJson);
   }
 
+  static Future<void> clearArtworks() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
+
   static Future<List<TinderArt>?> loadArtworks() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? artworksJson = prefs.getString('saved_artworks');
