@@ -167,13 +167,13 @@ class _MapPageState extends State<MapPage> {
                     child: _locationButton(context),
                   ),
                 ),
-                Positioned(
-                  right: 20,
-                  bottom: 100,
-                  child: _startScavengerHuntButton(context),
-                ),
               ],
-            )
+            ),
+            Positioned(
+              left: 10,
+              top: 10,
+              child: _startScavengerHuntButton(context),
+            ),
           ],
         ),
       ),
