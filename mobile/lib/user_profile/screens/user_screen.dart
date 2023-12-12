@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:puam_app/shared/index.dart';
 import 'package:puam_app/user_profile/index.dart';
 
 class SignUpPage extends StatefulWidget {
