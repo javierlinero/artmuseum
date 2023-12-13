@@ -41,7 +41,10 @@ class _FavoritesDetailsPageState extends State<FavoritesDetailsPage> {
           bloc: _favBloc,
           builder: (context, state) {
             if (state is FavLoading) {
-              return Center(child: CircularProgressIndicator());
+              return Center(
+                  child: CircularProgressIndicator(
+                color: AppTheme.princetonOrange,
+              ));
             } else if (state is FavLoaded) {
               final fav = state.favoritesDetails;
               return LayoutBuilder(

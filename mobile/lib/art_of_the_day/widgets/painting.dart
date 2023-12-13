@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:puam_app/shared/index.dart';
 
 import '../../shared/widgets/full_screen_photo_view.dart';
 
@@ -22,7 +23,9 @@ class PaintingWidget extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             CachedNetworkImage(
-              placeholder: (context, url) => CircularProgressIndicator(),
+              placeholder: (context, url) => CircularProgressIndicator(
+                color: AppTheme.princetonOrange,
+              ),
               errorWidget: (context, url, error) => Icon(Icons.error),
               fit: BoxFit.contain,
               imageUrl: '$imageUrl/full/pct:25/0/default.jpg',

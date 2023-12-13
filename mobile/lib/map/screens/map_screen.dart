@@ -61,7 +61,10 @@ class _MapPageState extends State<MapPage> {
               _locationPermissionCompleter.future.then((_) {
                 context.read<LocationBloc>().add(FetchCurrentLocation());
               });
-              return Center(child: CircularProgressIndicator());
+              return Center(
+                  child: CircularProgressIndicator(
+                color: AppTheme.princetonOrange,
+              ));
             } else if (state is LocationLoaded) {
               return _buildMap(state, context);
             } else if (state is LocationError) {
@@ -75,97 +78,104 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
-  PopupScope _buildMap(LocationLoaded state, BuildContext context) {
-    return PopupScope(
-      popupController: _popupController,
-      child: Stack(
-        children: [
-          FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(
-              initialCenter: state.location,
-              maxZoom: 21,
-              minZoom: 15,
-              initialZoom: 18,
-              onTap: (_, __) => _popupController
-                  .hideAllPopups(), // Hide popup when the map is tapped.
-            ),
-            children: [
-              TileLayer(
-                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  Widget _buildMap(LocationLoaded state, BuildContext context) {
+    var padding = MediaQuery.of(context).padding;
+    return Container(
+      height: MediaQuery.of(context).size.height - padding.top - padding.bottom,
+      child: PopupScope(
+        popupController: _popupController,
+        child: Stack(
+          children: [
+            FlutterMap(
+              mapController: _mapController,
+              options: MapOptions(
+                initialCenter: state.location,
                 maxZoom: 21,
-                userAgentPackageName: 'com.puam.app',
+                minZoom: 15,
+                initialZoom: 18,
+                onTap: (_, __) => _popupController
+                    .hideAllPopups(), // Hide popup when the map is tapped.
               ),
-              CurrentLocationLayer(
-                followCurrentLocationStream:
-                    context.read<LocationBloc>().followCurrentLocationStream,
-              ),
-              MarkerClusterLayerWidget(
-                options: MarkerClusterLayerOptions(
-                  maxClusterRadius: 80,
-                  rotate: false,
-                  disableClusteringAtZoom: 20,
-                  zoomToBoundsOnClick: false,
-                  markers: artMarkers,
-                  onMarkersClustered: (p0) => _popupController.hideAllPopups(),
-                  size: const Size(40, 40),
-                  builder: (context, markers) {
-                    return Container(
-                      height: 30,
-                      width: 30,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          color: AppTheme.princetonOrange,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 2,
-                          )),
-                      child: Text(markers.length.toString()),
-                    );
-                  },
-                  popupOptions: PopupOptions(
-                    popupSnap: PopupSnap.markerTop,
-                    popupAnimation: PopupAnimation.fade(),
-                    popupController: _popupController,
-                    popupBuilder: (_, marker) {
-                      if (marker is CampusArtMarker) {
-                        return _buildPopup(marker);
-                      } else {
-                        throw Error();
-                      }
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  maxZoom: 21,
+                  userAgentPackageName: 'com.puam.app',
+                ),
+                CurrentLocationLayer(
+                  followCurrentLocationStream: context
+                      .read<LocationBloc>()
+                      .followCurrentLocationStream
+                      .asBroadcastStream(),
+                ),
+                MarkerClusterLayerWidget(
+                  options: MarkerClusterLayerOptions(
+                    maxClusterRadius: 80,
+                    rotate: false,
+                    disableClusteringAtZoom: 20,
+                    zoomToBoundsOnClick: false,
+                    markers: artMarkers,
+                    onMarkersClustered: (p0) =>
+                        _popupController.hideAllPopups(),
+                    size: const Size(40, 40),
+                    builder: (context, markers) {
+                      return Container(
+                        height: 30,
+                        width: 30,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: AppTheme.princetonOrange,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2,
+                            )),
+                        child: Text(markers.length.toString()),
+                      );
+                    },
+                    popupOptions: PopupOptions(
+                      popupSnap: PopupSnap.markerTop,
+                      popupAnimation: PopupAnimation.fade(),
+                      popupController: _popupController,
+                      popupBuilder: (_, marker) {
+                        if (marker is CampusArtMarker) {
+                          return _buildPopup(marker);
+                        } else {
+                          throw Error();
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  alignment: Alignment.topRight,
+                  child: ZoomButtons(
+                    onZoomIn: () {
+                      context.read<LocationBloc>().add(ZoomIn());
+                    },
+                    onZoomOut: () {
+                      context.read<LocationBloc>().add(ZoomOut());
                     },
                   ),
                 ),
-              ),
-              Container(
-                padding: EdgeInsets.all(10),
-                alignment: Alignment.topRight,
-                child: ZoomButtons(
-                  onZoomIn: () {
-                    context.read<LocationBloc>().add(ZoomIn());
-                  },
-                  onZoomOut: () {
-                    context.read<LocationBloc>().add(ZoomOut());
-                  },
+                Container(
+                  padding: EdgeInsets.all(10),
+                  alignment: Alignment.bottomRight,
+                  child: SizedBox(
+                    height: 75,
+                    child: _locationButton(context),
+                  ),
                 ),
-              ),
-              Container(
-                padding: EdgeInsets.all(10),
-                alignment: Alignment.bottomRight,
-                child: SizedBox(
-                  height: 75,
-                  child: _locationButton(context),
-                ),
-              ),
-              Positioned(
-                right: 20,
-                bottom: 100,
-                child: _startScavengerHuntButton(context),
-              ),
-            ],
-          )
-        ],
+              ],
+            ),
+            Positioned(
+              left: 10,
+              top: 10,
+              child: _startScavengerHuntButton(context),
+            ),
+          ],
+        ),
       ),
     );
   }

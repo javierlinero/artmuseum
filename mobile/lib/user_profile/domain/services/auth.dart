@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:dio/dio.dart';
 
@@ -11,6 +12,53 @@ class AuthService {
 
   Future<String?> getUserToken() async {
     return await currentUser?.getIdToken() ?? '';
+  }
+
+  Future<String?> getUserDisplayName() async {
+    // Check if current user's display name is available
+    String? displayName = _firebaseAuth.currentUser?.displayName;
+
+    // If display name is available, return it
+    if (displayName != null && displayName.isNotEmpty) {
+      return displayName;
+    }
+
+    // If not, fetch from the server
+    try {
+      String? token = await _firebaseAuth.currentUser?.getIdToken();
+
+      // Dio instance for network request
+      Dio dio = Dio();
+
+      // Endpoint URL
+      String endpointUrl = 'http://puamdns.ddns.net/user_profile';
+
+      // Prepare headers
+      Map<String, dynamic> headers = {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      };
+
+      // Make GET request
+      Response response = await dio.get(
+        endpointUrl,
+        options: Options(headers: headers),
+      );
+
+      // Parse response
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = response.data;
+        return responseData['displayName'];
+      } else {
+        // Handle non-200 responses
+        debugPrint('Error: Unexpected server response');
+        return null;
+      }
+    } catch (e) {
+      // Handle network or Dio errors
+      debugPrint('Error: $e');
+      return null;
+    }
   }
 
   Future<void> signInWithEmailAndPassword({

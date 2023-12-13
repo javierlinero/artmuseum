@@ -46,15 +46,15 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
                   loadArtworks(context, authState);
                   isInitialized = true;
                 }
-
-                // Building UI when user is logged in
                 return _buildTFAPage(context, artState, authState);
-              } else if (authState is AuthStateLoggedOut) {
-                // UI for logged out state
+              } else if (authState is AuthStateLoggedOut ||
+                  authState is AuthStateFailure) {
                 return SignUpPage();
               } else {
-                // UI for other states (e.g., loading)
-                return Center(child: CircularProgressIndicator());
+                return Center(
+                    child: CircularProgressIndicator(
+                  color: AppTheme.princetonOrange,
+                ));
               }
             },
           ),
@@ -106,7 +106,9 @@ class _TinderForArtPageState extends State<TinderForArtPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text('Loading your recommendations!'),
-              CircularProgressIndicator(),
+              CircularProgressIndicator(
+                color: AppTheme.princetonOrange,
+              ),
             ],
           )));
     } else if (artState.currentIndex >= artCards.length) {

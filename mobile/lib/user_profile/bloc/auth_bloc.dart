@@ -19,9 +19,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           displayName: event.displayName,
         );
         emit(AuthStateLoggedIn(
-            _authService.currentUser!, await _authService.getUserToken()));
-      } catch (e) {
-        emit(AuthStateFailure(e.toString()));
+            _authService.currentUser!,
+            await _authService.getUserToken(),
+            await _authService.getUserDisplayName()));
+      } on FirebaseAuthException catch (e) {
+        emit(AuthStateFailure(e));
       }
     });
 
@@ -33,9 +35,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           password: event.password,
         );
         emit(AuthStateLoggedIn(
-            _authService.currentUser!, await _authService.getUserToken()));
-      } catch (e) {
-        emit(AuthStateFailure(e.toString()));
+            _authService.currentUser!,
+            await _authService.getUserToken(),
+            await _authService.getUserDisplayName()));
+      } on FirebaseAuthException catch (e) {
+        emit(AuthStateFailure(e));
       }
     });
 
@@ -44,9 +48,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthStateLoading());
         await _authService.signInWithGoogle();
         emit(AuthStateLoggedIn(
-            _authService.currentUser!, await _authService.getUserToken()));
-      } catch (e) {
-        emit(AuthStateFailure(e.toString()));
+            _authService.currentUser!,
+            await _authService.getUserToken(),
+            await _authService.getUserDisplayName()));
+      } on FirebaseAuthException catch (e) {
+        emit(AuthStateFailure(e));
       }
     });
 
@@ -68,7 +74,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void _onUserChanged(
       AuthEventUserChanged event, Emitter<AuthState> emit) async {
-    emit(AuthStateLoggedIn(event.user, await _authService.getUserToken()));
+    emit(AuthStateLoggedIn(event.user, await _authService.getUserToken(),
+        await _authService.getUserDisplayName()));
   }
 
   // Event handler for user not found
@@ -79,7 +86,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _onInitialize(AuthEventInitialize event, Emitter<AuthState> emit) async {
     final currentUser = _authService.currentUser;
     if (currentUser != null) {
-      emit(AuthStateLoggedIn(currentUser, await _authService.getUserToken()));
+      emit(AuthStateLoggedIn(currentUser, await _authService.getUserToken(),
+          await _authService.getUserDisplayName()));
     } else {
       emit(AuthStateLoggedOut());
     }

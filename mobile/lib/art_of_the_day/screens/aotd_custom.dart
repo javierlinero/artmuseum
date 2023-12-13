@@ -51,7 +51,10 @@ class _ArtOfTheDayContentState extends State<ArtOfTheDayContent> {
       bloc: _artBloc,
       builder: (context, state) {
         if (state is ArtLoading || state is ArtInitial) {
-          return Center(child: CircularProgressIndicator());
+          return Center(
+              child: CircularProgressIndicator(
+            color: AppTheme.princetonOrange,
+          ));
         } else if (state is ArtLoaded) {
           return _buildArtwork(state.artwork);
         } else if (state is ArtError) {

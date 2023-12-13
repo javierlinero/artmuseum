@@ -160,7 +160,9 @@ class _ScavengerHuntScreenState extends State<ScavengerHuntScreen> {
 
   Widget _buildBlurredImage(ScavengerHuntInProgress state) {
     if (state.distance < 0) {
-      return CircularProgressIndicator();
+      return CircularProgressIndicator(
+        color: AppTheme.princetonOrange,
+      );
     } else {
       return ClipRect(
         child: ConstrainedBox(
@@ -176,7 +178,9 @@ class _ScavengerHuntScreenState extends State<ScavengerHuntScreen> {
               imageUrl:
                   '${state.currentTarget.imageUrl}/full/full/0/default.jpg',
               fit: BoxFit.contain,
-              placeholder: (context, url) => CircularProgressIndicator(),
+              placeholder: (context, url) => CircularProgressIndicator(
+                color: AppTheme.princetonOrange,
+              ),
               errorWidget: (context, url, error) => Icon(Icons.error),
             ),
           ),
@@ -217,7 +221,10 @@ class _ScavengerHuntScreenState extends State<ScavengerHuntScreen> {
     }
     return Scaffold(
       appBar: AppBar(title: Text('Scavenger Hunt')),
-      body: Center(child: CircularProgressIndicator()),
+      body: Center(
+          child: CircularProgressIndicator(
+        color: AppTheme.princetonOrange,
+      )),
     );
   }
 }

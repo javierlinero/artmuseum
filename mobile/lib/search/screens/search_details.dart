@@ -41,7 +41,10 @@ class _SearchDetailsPageState extends State<SearchDetailsPage> {
           bloc: _searchDetailBloc,
           builder: (context, state) {
             if (state is SearchDetailLoading) {
-              return Center(child: CircularProgressIndicator());
+              return Center(
+                  child: CircularProgressIndicator(
+                color: AppTheme.princetonOrange,
+              ));
             } else if (state is SearchDetailLoaded) {
               final searchDetail = state.searchDetails;
               return LayoutBuilder(
