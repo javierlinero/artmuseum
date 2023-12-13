@@ -17,7 +17,7 @@ class AuthStateLoggedIn extends AuthState {
 class AuthStateLoggedOut extends AuthState {}
 
 class AuthStateFailure extends AuthState {
-  final String error;
+  final FirebaseAuthException error;
 
   AuthStateFailure(this.error);
 }

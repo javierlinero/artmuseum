@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:puam_app/shared/index.dart';
 import 'package:puam_app/user_profile/index.dart';
 
@@ -18,6 +19,8 @@ class _UserCredentialsState extends State<UserCredentials> {
   final TextEditingController _controllerConfirmPassword =
       TextEditingController();
 
+  FToast fToast = FToast();
+
   void _onSubmit(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       BlocProvider.of<AuthBloc>(context).add(
@@ -27,7 +30,10 @@ class _UserCredentialsState extends State<UserCredentials> {
           _controllerDisplayName.text,
         ),
       );
-      Navigator.pop(context);
+      AuthState authState = context.read<AuthState>();
+      if (authState is AuthStateLoggedIn) {
+        Navigator.pop(context);
+      }
     }
   }
 
@@ -111,24 +117,25 @@ class _UserCredentialsState extends State<UserCredentials> {
 
   @override
   Widget build(BuildContext context) {
+    fToast.init(context);
     return Scaffold(
       appBar: appBar(),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: ((context, state) {
           if (state is AuthStateFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error)),
-            );
+            debugPrint(state.error.code);
+            if (state.error.code == 'email-already-in-use') {
+              fToast.showToast(
+                  gravity: ToastGravity.CENTER,
+                  child: ErrorMessagePopup(error: 'Email already exists.'));
+            } else {
+              fToast.showToast(
+                  gravity: ToastGravity.CENTER,
+                  child: ErrorMessagePopup(error: state.error.code));
+            }
           }
         }),
         builder: (context, state) {
-          if (state is AuthStateLoading) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: AppTheme.princetonOrange,
-              ),
-            );
-          }
           return SingleChildScrollView(
             child: Form(
               key: _formKey,

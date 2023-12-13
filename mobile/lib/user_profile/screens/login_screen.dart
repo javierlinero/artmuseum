@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:puam_app/shared/index.dart';
 import 'package:puam_app/user_profile/index.dart';
 
@@ -75,7 +76,7 @@ class _LoginState extends State<Login> {
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
+  final FToast ftoast = FToast();
   void _onSubmit(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       BlocProvider.of<AuthBloc>(context).add(
@@ -84,27 +85,32 @@ class _LoginState extends State<Login> {
           _controllerPassword.text,
         ),
       );
-      Navigator.pop(context);
+      AuthBloc authBloc = context.read<AuthBloc>();
+      if (authBloc.state is AuthStateLoggedIn) {
+        Navigator.pop(context);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    ftoast.init(context);
     return Scaffold(
       appBar: appBar(),
       body: BlocConsumer<AuthBloc, AuthState>(listener: ((context, state) {
         if (state is AuthStateFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error)),
-          );
+          debugPrint(state.error.code);
+          if (state.error.code == 'invalid-credential') {
+            ftoast.showToast(
+                gravity: ToastGravity.CENTER,
+                child: ErrorMessagePopup(error: 'Incorrect email or password'));
+          } else {
+            ftoast.showToast(
+                gravity: ToastGravity.CENTER,
+                child: ErrorMessagePopup(error: state.error.code));
+          }
         }
       }), builder: (context, state) {
-        if (state is AuthStateLoading) {
-          return Center(
-              child: CircularProgressIndicator(
-            color: AppTheme.princetonOrange,
-          ));
-        }
         return _buildLoginPage(context);
       }),
     );

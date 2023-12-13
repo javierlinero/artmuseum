@@ -22,8 +22,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             _authService.currentUser!,
             await _authService.getUserToken(),
             await _authService.getUserDisplayName()));
-      } catch (e) {
-        emit(AuthStateFailure(e.toString()));
+      } on FirebaseAuthException catch (e) {
+        emit(AuthStateFailure(e));
       }
     });
 
@@ -38,8 +38,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             _authService.currentUser!,
             await _authService.getUserToken(),
             await _authService.getUserDisplayName()));
-      } catch (e) {
-        emit(AuthStateFailure(e.toString()));
+      } on FirebaseAuthException catch (e) {
+        emit(AuthStateFailure(e));
       }
     });
 
@@ -51,8 +51,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             _authService.currentUser!,
             await _authService.getUserToken(),
             await _authService.getUserDisplayName()));
-      } catch (e) {
-        emit(AuthStateFailure(e.toString()));
+      } on FirebaseAuthException catch (e) {
+        emit(AuthStateFailure(e));
       }
     });
 
