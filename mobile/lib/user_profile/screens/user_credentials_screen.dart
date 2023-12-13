@@ -23,17 +23,19 @@ class _UserCredentialsState extends State<UserCredentials> {
 
   void _onSubmit(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      BlocProvider.of<AuthBloc>(context).add(
+      final authBloc = BlocProvider.of<AuthBloc>(context);
+      authBloc.add(
         AuthEventEmailSignUp(
           _controllerEmail.text,
           _controllerPassword.text,
           _controllerDisplayName.text,
         ),
       );
-      AuthState authState = context.read<AuthState>();
-      if (authState is AuthStateLoggedIn) {
-        Navigator.pop(context);
-      }
+      authBloc.stream.listen((state) {
+        if (state is AuthStateLoggedIn) {
+          Navigator.pop(context);
+        }
+      });
     }
   }
 
@@ -117,7 +119,6 @@ class _UserCredentialsState extends State<UserCredentials> {
 
   @override
   Widget build(BuildContext context) {
-    fToast.init(context);
     return Scaffold(
       appBar: appBar(),
       body: BlocConsumer<AuthBloc, AuthState>(
@@ -136,6 +137,7 @@ class _UserCredentialsState extends State<UserCredentials> {
           }
         }),
         builder: (context, state) {
+          fToast.init(context);
           return SingleChildScrollView(
             child: Form(
               key: _formKey,
