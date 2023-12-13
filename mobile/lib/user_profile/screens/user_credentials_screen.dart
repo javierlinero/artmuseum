@@ -32,8 +32,10 @@ class _UserCredentialsState extends State<UserCredentials> {
         ),
       );
       authBloc.stream.listen((state) {
-        if (state is AuthStateLoggedIn) {
-          Navigator.pop(context);
+        if (mounted && state is AuthStateLoggedIn) {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
         }
       });
     }

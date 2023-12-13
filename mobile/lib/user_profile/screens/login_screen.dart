@@ -79,37 +79,31 @@ class _LoginState extends State<Login> {
   final FToast ftoast = FToast();
   void _onSubmit(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      final authBloc = BlocProvider.of<AuthBloc>(context);
-      authBloc.add(
+      BlocProvider.of<AuthBloc>(context).add(
         AuthEventEmailSignIn(
           _controllerEmail.text,
           _controllerPassword.text,
         ),
       );
-      authBloc.stream.listen((state) {
-        if (state is AuthStateLoggedIn) {
-          Navigator.pop(context);
-        }
-      });
+      AuthBloc authBloc = context.read<AuthBloc>();
+      if (authBloc.state is AuthStateLoggedIn) {
+        Navigator.pop(context);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    ftoast.init(context);
     return Scaffold(
       appBar: appBar(),
       body: BlocConsumer<AuthBloc, AuthState>(listener: ((context, state) {
-        ftoast.init(context);
         if (state is AuthStateFailure) {
           debugPrint(state.error.code);
           if (state.error.code == 'invalid-credential') {
             ftoast.showToast(
                 gravity: ToastGravity.CENTER,
                 child: ErrorMessagePopup(error: 'Incorrect email or password'));
-          } else if (state.error.code == 'too-many-requests') {
-            ftoast.showToast(
-                gravity: ToastGravity.CENTER,
-                child: ErrorMessagePopup(error: 'Too many requests sent.'));
           } else {
             ftoast.showToast(
                 gravity: ToastGravity.CENTER,
