@@ -47,7 +47,7 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
+      appBar: appBar(context: context, helpText: HelpData.searchHelp),
       body: Column(
         children: <Widget>[
           Padding(
