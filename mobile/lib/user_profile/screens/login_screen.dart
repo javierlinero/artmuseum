@@ -73,6 +73,7 @@ Padding _buildTextFormFieldWithErrorMessage({
 }
 
 class _LoginState extends State<Login> {
+  bool isButtonDisabled = false;
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -85,10 +86,6 @@ class _LoginState extends State<Login> {
           _controllerPassword.text,
         ),
       );
-      AuthBloc authBloc = context.read<AuthBloc>();
-      if (authBloc.state is AuthStateLoggedIn) {
-        Navigator.pop(context);
-      }
     }
   }
 
@@ -110,7 +107,12 @@ class _LoginState extends State<Login> {
                 child: ErrorMessagePopup(error: state.error.code));
           }
         }
+        if (state is AuthStateLoggedIn) {
+          Navigator.maybePop(context);
+        }
       }), builder: (context, state) {
+        isButtonDisabled =
+            state is AuthStateLoggedIn || state is AuthStateLoading;
         return _buildLoginPage(context);
       }),
     );
@@ -130,12 +132,16 @@ class _LoginState extends State<Login> {
             validator: _validatePassword,
             obscureText: true),
         ElevatedButton(
-          onPressed: () {
-            _onSubmit(context);
-          },
-          style:
-              FilledButton.styleFrom(backgroundColor: AppTheme.princetonOrange),
-          child: Text(('Log In'), style: AppTheme.signUp),
+          onPressed: isButtonDisabled
+              ? null
+              : () {
+                  _onSubmit(context);
+                },
+          style: ElevatedButton.styleFrom(
+            backgroundColor:
+                isButtonDisabled ? Colors.grey : AppTheme.princetonOrange,
+          ),
+          child: Text('Log In', style: AppTheme.signUp),
         ),
       ]),
     );
