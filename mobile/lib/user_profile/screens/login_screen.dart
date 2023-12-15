@@ -85,10 +85,6 @@ class _LoginState extends State<Login> {
           _controllerPassword.text,
         ),
       );
-      AuthBloc authBloc = context.read<AuthBloc>();
-      if (authBloc.state is AuthStateLoggedIn) {
-        Navigator.pop(context);
-      }
     }
   }
 
@@ -109,6 +105,9 @@ class _LoginState extends State<Login> {
                 gravity: ToastGravity.CENTER,
                 child: ErrorMessagePopup(error: state.error.code));
           }
+        }
+        if (state is AuthStateLoggedIn) {
+          Navigator.maybePop(context);
         }
       }), builder: (context, state) {
         return _buildLoginPage(context);

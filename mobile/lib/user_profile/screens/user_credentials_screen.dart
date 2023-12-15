@@ -31,13 +31,6 @@ class _UserCredentialsState extends State<UserCredentials> {
           _controllerDisplayName.text,
         ),
       );
-      authBloc.stream.listen((state) {
-        if (mounted && state is AuthStateLoggedIn) {
-          if (Navigator.canPop(context)) {
-            Navigator.pop(context);
-          }
-        }
-      });
     }
   }
 
@@ -137,8 +130,13 @@ class _UserCredentialsState extends State<UserCredentials> {
                   child: ErrorMessagePopup(error: state.error.code));
             }
           }
+          if (state is AuthStateLoggedIn) {
+            Navigator.maybePop(context);
+          }
         }),
         builder: (context, state) {
+          bool isButtonDisabled =
+              state is AuthStateLoggedIn || state is AuthStateLoading;
           fToast.init(context);
           return SingleChildScrollView(
             child: Form(
@@ -187,9 +185,15 @@ class _UserCredentialsState extends State<UserCredentials> {
                       obscureText: true,
                     ),
                     ElevatedButton(
-                      onPressed: () => _onSubmit(context),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppTheme.princetonOrange,
+                      onPressed: isButtonDisabled
+                          ? null
+                          : () {
+                              _onSubmit(context);
+                            },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isButtonDisabled
+                            ? Colors.grey
+                            : AppTheme.princetonOrange,
                       ),
                       child: Text('Sign Up', style: AppTheme.signUp),
                     ),
