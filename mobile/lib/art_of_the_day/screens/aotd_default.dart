@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:puam_app/shared/index.dart';
 import 'package:puam_app/art_of_the_day/index.dart';
+import 'package:puam_app/tinder_for_art/domain/index.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 class ArtOfTheDayDefault extends StatefulWidget {
   const ArtOfTheDayDefault({super.key});
@@ -13,6 +15,8 @@ class ArtOfTheDayDefault extends StatefulWidget {
 
 class _ArtOfTheDayDefaultState extends State<ArtOfTheDayDefault> {
   late ArtBloc _artBloc;
+  GlobalKey helpButtonKey = GlobalKey(); // Add this line
+  late TutorialCoachMark tutorialCoachMark; // Add this line
 
   double deviceHeight(BuildContext context) =>
       MediaQuery.of(context).size.height;
@@ -23,6 +27,8 @@ class _ArtOfTheDayDefaultState extends State<ArtOfTheDayDefault> {
     super.initState();
     _artBloc = ArtBloc(ArtworkRepository());
     _artBloc.add(FetchArtOfTheDayEvent());
+    createTutorial();
+    _checkFirstRun();
   }
 
   @override
@@ -31,9 +37,53 @@ class _ArtOfTheDayDefaultState extends State<ArtOfTheDayDefault> {
     super.dispose();
   }
 
+  void _checkFirstRun() async {
+    bool firstRun = await LocalStorageHelper.isFirstRun();
+    if (firstRun) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => showTutorial());
+      await LocalStorageHelper.setFirstRunCompleted();
+    }
+  }
+
+  void createTutorial() {
+    tutorialCoachMark = TutorialCoachMark(
+      targets: _createTargets(),
+      colorShadow: Colors.black,
+      hideSkip: true,
+    );
+  }
+
+  List<TargetFocus> _createTargets() {
+    List<TargetFocus> targets = [];
+    targets.add(
+      TargetFocus(
+        identify: "Help Button",
+        keyTarget: helpButtonKey,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            child: Text(
+              "Tap the help buttons on each page to learn more.",
+              style: TextStyle(color: Colors.white),
+            ),
+          )
+        ],
+      ),
+    );
+    return targets;
+  }
+
+  void showTutorial() {
+    tutorialCoachMark.show(context: context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: appBar(
+          helpText: HelpData.aotdHelp,
+          context: context,
+          helpButtonKey: helpButtonKey),
       body: BlocBuilder<ArtBloc, ArtState>(
         bloc: _artBloc,
         builder: (context, state) {

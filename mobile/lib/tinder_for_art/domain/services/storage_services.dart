@@ -24,4 +24,14 @@ class LocalStorageHelper {
     }
     return null;
   }
+
+  static Future<void> setFirstRunCompleted() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isFirstRun', false);
+  }
+
+  static Future<bool> isFirstRun() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isFirstRun') ?? true;
+  }
 }

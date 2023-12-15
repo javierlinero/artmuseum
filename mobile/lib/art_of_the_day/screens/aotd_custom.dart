@@ -66,68 +66,72 @@ class _ArtOfTheDayContentState extends State<ArtOfTheDayContent> {
     );
   }
 
-  LayoutBuilder _buildArtwork(Artwork aotd) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: constraints.maxHeight * 0.1,
-                child: Center(
-                  child: Text(
-                    'Art of the Day',
-                    style: AppTheme.pageTitle,
+  Widget _buildArtwork(Artwork aotd) {
+    return Scaffold(
+      appBar: appBar(helpText: HelpData.aotdHelp, context: context),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: constraints.maxHeight * 0.1,
+                  child: Center(
+                    child: Text(
+                      'Art of the Day',
+                      style: AppTheme.pageTitle,
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                height: constraints.maxHeight * 0.5,
-                child: PaintingWidget(imageUrl: aotd.imageUrl),
-              ),
-              SizedBox(height: 5),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: deviceWidth(context) * 0.03,
+                Container(
+                  height: constraints.maxHeight * 0.5,
+                  child: PaintingWidget(imageUrl: aotd.imageUrl),
                 ),
-                height: constraints.maxHeight * 0.05,
-                child: ArtworkNameWidget(title: aotd.title),
-              ),
-              SizedBox(height: 5),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: deviceWidth(context) * 0.03,
+                SizedBox(height: 5),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: deviceWidth(context) * 0.03,
+                  ),
+                  height: constraints.maxHeight * 0.05,
+                  child: ArtworkNameWidget(title: aotd.title),
                 ),
-                height: constraints.maxHeight * 0.01,
-                child: YearWidget(year: aotd.year),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: deviceWidth(context) * 0.03,
+                SizedBox(height: 5),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: deviceWidth(context) * 0.03,
+                  ),
+                  height: constraints.maxHeight * 0.01,
+                  child: YearWidget(year: aotd.year),
                 ),
-                height: constraints.maxHeight * 0.025,
-                child:
-                    DetailsWidget(materials: aotd.materials, size: aotd.size),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: deviceWidth(context) * 0.03,
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: deviceWidth(context) * 0.03,
+                  ),
+                  height: constraints.maxHeight * 0.025,
+                  child:
+                      DetailsWidget(materials: aotd.materials, size: aotd.size),
                 ),
-                height: constraints.maxHeight * 0.05,
-                child: ArtistWidget(artists: aotd.artists),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: deviceWidth(context) * 0.03,
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: deviceWidth(context) * 0.03,
+                  ),
+                  height: constraints.maxHeight * 0.05,
+                  child: ArtistWidget(artists: aotd.artists),
                 ),
-                height: constraints.maxHeight * 0.2,
-                child: ArtworkDescriptionWidget(description: aotd.description),
-              ),
-            ],
-          ),
-        );
-      },
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: deviceWidth(context) * 0.03,
+                  ),
+                  height: constraints.maxHeight * 0.2,
+                  child:
+                      ArtworkDescriptionWidget(description: aotd.description),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
