@@ -47,7 +47,7 @@ class LoggedOutScreen extends StatelessWidget {
                     },
                     style: FilledButton.styleFrom(
                         backgroundColor: AppTheme.princetonOrange),
-                    child: Text(('Login'), style: AppTheme.signUp),
+                    child: Text(('Log In'), style: AppTheme.signUp),
                   )
                 ],
               ),
