@@ -61,6 +61,7 @@ dependencies:
   infinite_scroll_pagination: ^4.0.0
   photo_view: ^0.14.0
   fluttertoast: ^8.2.4
+  tutorial_coach_mark: ^1.2.11
 
 dev_dependencies:
   flutter_test:

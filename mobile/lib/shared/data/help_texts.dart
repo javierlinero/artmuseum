@@ -7,6 +7,9 @@ class HelpData {
   static String mapHelp = '- Click orange icons to view art\n'
       '- Click top left button to start scavenger hunt\n'
       '- Click location button in bottom left to focus your location';
+  static String searchHelp = '- Click the field and type your search query\n'
+      '- It can be artist, title, description, etc.\n'
+      '- Click an artwork to view it';
   static String intialScavengerHelp =
       '- Change slider to choose amount of artwork\n'
       '- Click start to begin';

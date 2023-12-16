@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:puam_app/shared/index.dart';
 
-AppBar appBar({String? helpText, BuildContext? context}) {
+AppBar appBar(
+    {String? helpText, BuildContext? context, GlobalKey? helpButtonKey}) {
   return AppBar(
     scrolledUnderElevation: 0,
     backgroundColor: Colors.white,
@@ -19,6 +20,7 @@ AppBar appBar({String? helpText, BuildContext? context}) {
     actions: (helpText != null && context != null)
         ? [
             IconButton(
+              key: helpButtonKey,
               icon: Icon(Icons.help_outline),
               onPressed: () {
                 showDialog(
