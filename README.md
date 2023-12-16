@@ -26,6 +26,30 @@ at Princeton not just a visit, but a personalized journey.
 
 ## Main Features:
 
+### Art of the Day
+**What it does**: Recommends a unique piece of artwork daily.
+**Details**: Displays an image with title, artist, year, materials, size, and more.
+**Personalization**: Tailored recommendations for logged-in users based on their 'Tinder for Art' preferences.
+**Interactive**: Zoom in/out for detailed viewing.
+### Login and Signup
+**What it does**: Allows account creation and management.
+**Features**: Secure login/logout functionality.
+### Tinder for Art
+**What it does**: Lets users swipe and react to artworks to indicate preferences.
+**Collection**: Liked artworks are saved in a personalized tab.
+**Adaptive**: Improves Art of the Day suggestions and personalizes future art selections.
+### Search
+**What it does**: Enables searching for artworks by various criteria.
+**Details**: Find art by title, artist, year, materials, and more.
+**Interactive**: Zoom in/out on artwork images.
+### Geolocation
+**What it does**: Helps discover art pieces on campus based on proximity.
+**Interactive**: Zoom in/out to cluster artwork.
+**Informative**: Displays artwork details like title, year, artist, and image.
+### Profile
+**What it does**: Showcases user's liked art pieces from Tinder for Art.
+**Account Management**: Access to login, logout, and account registration.
+
 ## Mobile App Setup
 For a detailed guide on setting up a local emulator to run the app, please refer to our comprehensive tutorial [here](/mobile/README.md).
 
