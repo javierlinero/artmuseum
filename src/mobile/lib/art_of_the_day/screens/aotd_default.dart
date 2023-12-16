@@ -15,8 +15,8 @@ class ArtOfTheDayDefault extends StatefulWidget {
 
 class _ArtOfTheDayDefaultState extends State<ArtOfTheDayDefault> {
   late ArtBloc _artBloc;
-  GlobalKey helpButtonKey = GlobalKey(); // Add this line
-  late TutorialCoachMark tutorialCoachMark; // Add this line
+  GlobalKey helpButtonKey = GlobalKey();
+  late TutorialCoachMark tutorialCoachMark;
 
   double deviceHeight(BuildContext context) =>
       MediaQuery.of(context).size.height;

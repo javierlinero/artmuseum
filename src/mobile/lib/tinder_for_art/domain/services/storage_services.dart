@@ -12,7 +12,7 @@ class LocalStorageHelper {
 
   static Future<void> clearArtworks() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    await prefs.remove('saved_artworks');
   }
 
   static Future<List<TinderArt>?> loadArtworks() async {
