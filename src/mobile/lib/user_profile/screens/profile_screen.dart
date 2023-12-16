@@ -109,6 +109,7 @@ class _ProfileState extends State<Profile> {
               List<Favorite> favorites = snapshot.data ?? [];
               if (favorites.isEmpty) {
                 return RefreshIndicator(
+                  color: AppTheme.princetonOrange,
                   onRefresh: _refreshFavorites,
                   child: ListView(
                     physics: AlwaysScrollableScrollPhysics(),
@@ -119,6 +120,7 @@ class _ProfileState extends State<Profile> {
                 );
               }
               return RefreshIndicator(
+                color: AppTheme.princetonOrange,
                 onRefresh: _refreshFavorites,
                 child: GridView.count(
                   crossAxisCount: 3,
